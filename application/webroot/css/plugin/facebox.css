@@ -1,0 +1,81 @@
+.modal {
+	display:none;
+}
+
+#facebox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2002;
+  text-align: left;
+  padding:14px;  
+  overflow:hidden;
+  font-size:13px;
+}
+
+#facebox .popup{
+  position:relative; 
+  padding:10px;
+  overflow:hidden;
+  background:#f8f8f8;
+  border-radius:6px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.5), inset 0px 1px 0px white;
+}
+
+	#facebox .simple_popup {
+		border-radius:4px;
+		background:#fff;		
+	}
+
+#facebox .close { 
+  position:absolute;
+  right:10px;
+  top:10px;
+}
+
+#facebox .content {
+  height: 100%;
+  border-top-right-radius:10px;
+  border-bottom-left-radius:10px;
+}
+
+#facebox .content > p:first-child{
+  margin-top:0;
+}
+#facebox .content > p:last-child{
+  margin-bottom:0;
+}
+	
+#facebox h3 { font-size:15px; font-weight:bold; margin-bottom:12px; }
+#facebox p { line-height:18px; }
+#facebox p.hint {  line-height:18px; font-size:12px; color:#999; margin-bottom:10px; }
+#facebox .buttons { text-align:right; margin-top:10px; }
+	#facebox .buttons button { width:100%; }
+	#facebox .buttons button span.label { width:100%; text-align:center; padding:0; }
+
+#facebox_loading {
+	left:0;
+	top:0;
+	z-index:2001;
+}
+
+#facebox_overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height:100%;
+  width:100%;
+}
+
+.is_facebox {
+	display:none;
+}
+
+.facebox_hide {
+  z-index:-100;
+}
+
+.facebox_overlayBG {
+  background-color: #000;
+  z-index: 2000;
+}
