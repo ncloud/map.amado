@@ -14,37 +14,37 @@
 	<div class='navbar navbar-fixed-top'>
       <div class='navbar-inner'>
         <div class='container'>
-          <a class='brand' href='index.php'>
+          <a class='brand' href='<?php echo site_url('/admin/');?>'>
             아마도.지도
           </a>
           <ul class='nav'>
             <li>
-              <a href='<?php echo site_url('/admin');?>'>전체</a>
+              <a href='<?php echo site_url('/admin/list/all');?>'>전체</a>
             </li>
             <li>
-              <a href='index.php?view=approved'>
-                Approved
+              <a href='<?php echo site_url('/admin/list/approved');?>'>
+                인증
                 <span class='badge badge-info'><?php echo $total_approved;?></span>
               </a>
             </li>
             <li>
-              <a href='index.php?view=pending'>
-                Pending
+              <a href='<?php echo site_url('/admin/list/pending');?>'>
+                대기
                 <span class='badge badge-info'><?php echo $total_pending;?></span>
               </a>
             </li>
             <li>
-              <a href='index.php?view=rejected'>
-                Rejected
+              <a href='<?php echo site_url('/admin/list/rejected');?>''>
+                거부
                 <span class='badge badge-info'><?php echo $total_rejected;?></span>
               </a>
             </li>
           </ul>
           <form class='navbar-search pull-left' action='index.php' method='get'>
-            <input type='text' name='search' class='search-query' placeholder='Search' autocomplete='off' value='$search'>
+            <input type='text' name='search' class='search-query' placeholder='검색...' autocomplete='off' value='<?php echo isset($search) ? $search : '';?>'>
           </form>
           <ul class='nav pull-right'>
-            <li><a href='login.php?task=logout'>Sign Out</a></li>
+            <li><a href='login.php?task=logout'>로그아웃</a></li>
           </ul>
         </div>
       </div>

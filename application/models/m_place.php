@@ -15,26 +15,52 @@ class M_Place extends CI_Model
 	
 	function gets()
 	{
-		return $this->db->from('places')->where('approved','yes')->get()->result();
+		return $this->db->from('places')->where('status','approved')->get()->result();
+	}
+	
+	function gets_all($count, $index = 1)
+	{
+        if($index > 1) {
+            $this->db->limit($count, ($index - 1));
+        } else {
+            $this->db->limit($count);
+        }
+		
+		return $this->db->from('places')->get()->result();		
+	}
+	
+	function gets_by_type($type)
+	{
+		$this->db->from('places');
+		
+		switch($type) {
+			case 'approved':
+			case 'rejected':
+			case 'pending':				
+				$this->db->where('status', $type);
+				break;
+		}	
+		
+		return $this->get()->result();	
 	}
 	
 	function get_count_by_approved()
 	{
-		$result = $this->db->from('places')->where('approved','yes')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','approved')->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
 	function get_count_by_rejected()
 	{
-		$result = $this->db->from('places')->where('approved','no')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','rejected')->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
 	function get_count_by_pending()
 	{
-		$result = $this->db->from('places')->where('approved',null)->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','pending')->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}

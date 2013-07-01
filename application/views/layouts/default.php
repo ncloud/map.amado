@@ -27,7 +27,6 @@
     <script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>
     <script type="text/javascript" src="<?php echo site_url('/js/plugin/label.js');?>"></script>
     
-    
 <?php echo $styles_for_layout;?>
 <?php echo $scripts_for_layout;?>
 </head>
