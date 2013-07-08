@@ -1,0 +1,5 @@
+body { padding-top:40px; }
+
+/* list */
+	table tr td.num { width:20px; }
+	table tr td.buttons { width:50px; }
