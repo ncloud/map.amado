@@ -79,6 +79,14 @@ class Admin extends APP_Controller {
 		return false;
 	}
 	
+	function add($type = 'place') {
+		switch($type) {
+			case 'place':
+				
+				break;		
+		}
+	}
+	
 	private function __get_lists($status, $page = 1)
 	{
 		$this->set('status', $status);

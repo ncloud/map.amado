@@ -17,19 +17,37 @@
           <a class="brand" href="<?php echo site_url("/admin/");?>">
             아마도.지도
           </a>
-          <?php $menu = isset($menu) ? $menu : ''; ?>
+          <?php 
+          	$menu = isset($menu) ? $menu : '';
+			$menu_title = '';
+			
+			switch($menu) {
+				case 'approved': $menu_title = '인증'; break;
+				case 'pending': $menu_title = '대기'; break;
+				case 'rejected': $menu_title = '거부'; break;
+				case 'all': default: $menu_title = '전체'; break;
+			} 
+          ?>
           <ul class="nav">
             <li<?php echo $menu == "all" ? ' class="active"' : "";?>>
-              <a href="<?php echo site_url("/admin/list/all");?>">전체</a>
+              <a href="<?php echo site_url("/admin/list/all");?>">장소</a>
             </li>
-            <li<?php echo $menu == "approved" ? ' class="active"' : "";?>>
-              <a href="<?php echo site_url("/admin/list/approved");?>">인증 <span class="badge badge-info"><?php echo $total_approved;?></span></a>
+            <li>
+            	<a href="#">코스</a>
             </li>
-            <li<?php echo $menu == "pending" ? ' class="active"' : "";?>>
-              <a href="<?php echo site_url("/admin/list/pending");?>">대기 <span class="badge badge-info"><?php echo $total_pending;?></span></a>
-            </li>
-            <li<?php echo $menu == "rejected" ? ' class="active"' : "";?>>
-              <a href="<?php echo site_url("/admin/list/rejected");?>">거부 <span class="badge badge-info"><?php echo $total_rejected;?></span></a>
+            <li class="<?php echo in_array($menu, array('approved','pending','rejected')) ? 'active ' : '';?>dropdown">
+            	<a href="<?php echo site_url("/admin/list/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
+            	<ul class="dropdown-menu">
+                    <li<?php echo $menu == "approved" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url("/admin/list/approved");?>">인증 장소 <span class="badge pull-right"><?php echo $total_approved;?></span></a>
+		            </li>
+		            <li<?php echo $menu == "pending" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url("/admin/list/pending");?>">대기 장소 <span class="badge pull-right"><?php echo $total_pending;?></span></a>
+		            </li>
+		            <li<?php echo $menu == "rejected" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url("/admin/list/rejected");?>">거부 장소 <span class="badge pull-right"><?php echo $total_rejected;?></span></a>
+		            </li>
+                </ul>
             </li>
           </ul>
           <ul class="nav pull-right">

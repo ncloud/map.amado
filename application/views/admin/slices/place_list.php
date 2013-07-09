@@ -2,13 +2,17 @@
   	<h4>
   	<?php
   		switch($status) {
-			case 'all': echo '전체 목록'; break;
-			case 'approved': echo '인증 목록'; break;
-			case 'pending': echo '대기 목록'; break;
-			case 'rejected': echo '거부 목록'; break;
+			case 'all': echo '전체 장소'; break;
+			case 'approved': echo '인증 장소'; break;
+			case 'pending': echo '대기 장소'; break;
+			case 'rejected': echo '거부 장소'; break;
 		}
 	?>
 		<small>(<?php echo $paging->total_count;?>)</small>
+  	
+	  	<div class="pull-right">
+			  <small><a href="<?php echo site_url('/admin/add');?>">장소 추가</a></small>
+	  	</div>
   	</h4>
   </div>
   
