@@ -5,6 +5,7 @@ class APP_Controller extends CI_Controller {
 	protected $data;
 	protected $debug;
     protected $language;
+	protected $queries;
 	
 	protected $signed;
 	
@@ -38,6 +39,18 @@ class APP_Controller extends CI_Controller {
             if(strpos($_SERVER['REQUEST_URI'],'?') !== false) {
                 $this->config->set_item('enable_query_strings', FALSE);
             }
+			
+        	$request_uri = $_SERVER['REQUEST_URI'];
+            if($pos = strpos($request_uri,'?')) {
+                $current_url = substr($request_uri,0,$pos);
+                $request_uri = substr($request_uri,$pos + 1);
+            } else {
+                $current_url = $request_uri;
+            }
+            $this->set('current_url', $current_url);
+            
+            parse_str($request_uri, $this->queries);
+        } else {
         }
         
 		if($this->input->is_ajax_request()) {
@@ -187,6 +200,16 @@ class APP_Controller extends CI_Controller {
 	}
 	
 	public function get_user_data() { return $this->user_data; }
+	
+	protected function error($title, $message)
+	{
+		$this->layout->setLayout('layouts/error');
+		
+		$this->set('title', $title);
+		$this->set('message', $message);
+		
+		$this->view('error');
+	}
 
     protected function set($key, $data) 
     {

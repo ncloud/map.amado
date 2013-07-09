@@ -36,6 +36,7 @@ $route['default_controller']                    	 = 'page';
 
 $route['admin/list']								 = 'admin/lists';
 $route['admin/list/(:any)']							 = 'admin/lists/$1';
+$route['admin/list/(:any)/(:num)']					 = 'admin/lists/$1/$2';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
