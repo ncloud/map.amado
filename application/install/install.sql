@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `places` (
   `lat` double NOT NULL,
   `lng` double NOT NULL,
   `address` varchar(200) NOT NULL,
-  `address_is_position` int(1) NOT NULL,
+  `address_is_position` enum('yes','no') NOT NULL DEFAULT 'no',
   `uri` varchar(200) NOT NULL,
   `description` varchar(255) NOT NULL,
   `sector` varchar(50) NOT NULL,

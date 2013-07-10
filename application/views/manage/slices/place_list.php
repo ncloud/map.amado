@@ -11,7 +11,7 @@
 		<small>(<?php echo $paging->total_count;?>)</small>
   	
 	  	<div class="pull-right">
-			  <small><a href="<?php echo site_url('/admin/add');?>">장소 추가</a></small>
+			  <small><a href="<?php echo site_url('/manage/add');?>">장소 추가</a></small>
 	  	</div>
   	</h4>
   </div>
@@ -59,14 +59,14 @@
             	<div class="btn-group">
 	              <a class="btn btn-<?php echo $place->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>				 
 				  <ul class="dropdown-menu">
-				     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/admin/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
-				     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/admin/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
+				     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/manage/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
+				     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/manage/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
 				     <li class="divider"></li>
-				     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/admin/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
+				     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url('/manage/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
 				  </ul>
 				</div>
 				<div class="btn-group">
-					<a class='btn btn-small' href="<?php echo site_url('/admin/edit/'.$place->id);?>">편집</a>
+					<a class='btn btn-small' href="<?php echo site_url('/manage/edit/'.$place->id);?>">편집</a>
 				</div>
             </td>
           </tr>
@@ -86,15 +86,15 @@
   <div class="pagination pagination-centered">
     <ul>
         <li<?echo $paging->page == 1 ? ' class="disabled"' : '';?>>
-          <a href="<?php echo $paging->page == 1 ? '#' : site_url('/admin/list/all/'.($paging->page-1));?>">&larr;</a>
+          <a href="<?php echo $paging->page == 1 ? '#' : site_url('/manage/list/all/'.($paging->page-1));?>">&larr;</a>
         </li>
       <?php
       	for($page = $paging->start; $page <= $paging->end ; $page++) {
       ?>
-        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url('/admin/list/all/'.$page);?>"><?php print_r($page);?></a></li>
+        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url('/manage/list/all/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
         <li<?echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
-          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url('/admin/list/all/'.($paging->page+1));?>">&rarr;</a>
+          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url('/manage/list/all/'.($paging->page+1));?>">&rarr;</a>
         </li>
     </ul>
   </div>

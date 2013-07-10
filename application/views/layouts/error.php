@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 	<meta charset="utf-8">
-	<link type='text/css' rel='stylesheet' href='<?php echo site_url('/css/admin.css');?>' />    
+	<link type='text/css' rel='stylesheet' href='<?php echo site_url('/css/manage.css');?>' />    
 	<link type='text/css' href='<?php echo site_url('/bootstrap/css/bootstrap.css');?>' rel='stylesheet' />
 	<link type='text/css' href='<?php echo site_url('/bootstrap/css/bootstrap-responsive.css');?>' rel='stylesheet' />
 	

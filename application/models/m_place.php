@@ -20,7 +20,7 @@ class M_Place extends CI_Model
 	
 	function gets()
 	{
-		return $this->db->from('places')->where('status','approved')->get()->result();
+		return $this->db->from('places')->where('status','approved')->order_by('id DESC')->get()->result();
 	}
 	
 	function gets_all($count, $index = 1)
@@ -31,7 +31,7 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->get()->result();		
+		return $this->db->from('places')->order_by('id DESC')->get()->result();		
 	}
 	
 	function gets_by_status($status, $count, $index = 1)
@@ -44,13 +44,13 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->get()->result();		
+		return $this->db->from('places')->order_by('id DESC')->get()->result();		
 	}
 	
 	
 	function gets_by_type($type)
 	{
-		$this->db->from('places');
+		$this->db->from('places')->order_by('id DESC');
 		
 		switch($type) {
 			case 'approved':
@@ -65,14 +65,14 @@ class M_Place extends CI_Model
 	
 	function get_count_by_approved()
 	{
-		$result = $this->db->from('places')->where('status','approved')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','approved')->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
 	function get_count_by_rejected()
 	{
-		$result = $this->db->from('places')->where('status','rejected')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','rejected')->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
@@ -91,7 +91,40 @@ class M_Place extends CI_Model
 		return false;
 	}
 	
+	function add($data) {
+		if(isset($data['address']) && !isset($data['address_is_position'])) {
+			$cuts = explode(',',$data['address']);
+			
+			if(count($cuts) == 2) {
+				$data['lat'] = doubleval($cuts[0]);
+				$data['lng'] = doubleval($cuts[1]);
+				
+				$data['address_is_position'] = 'yes';
+			}
+		}
+		
+		if($this->db->insert('places', $data)) {
+			return $this->db->insert_id();
+		}
+		
+		return false;
+	}
+	
 	function update($id, $data) {
+		if(!isset($data['lat'])) $data['lat'] = 0;
+		if(!isset($data['lng'])) $data['lng'] = 0;
+		
+		if(isset($data['address']) && !isset($data['address_is_position'])) {
+			$cuts = explode(',',$data['address']);
+			
+			if(count($cuts) == 2) {
+				$data['lat'] = doubleval($cuts[0]);
+				$data['lng'] = doubleval($cuts[1]);
+				
+				$data['address_is_position'] = 'yes';
+			}
+		}
+		
 		$this->db->where('id', $id);
 		return $this->db->update('places', $data);
 	}
