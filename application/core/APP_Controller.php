@@ -7,16 +7,19 @@ class APP_Controller extends CI_Controller {
     protected $language;
 	protected $queries;
 	
+	protected $site;
+	
 	protected $signed;
 	
     function __construct()
     {
         parent::__construct();
-        
+		    
+		$this->load->model('m_site');
+		
+        $this->load->library('auth');
         $this->load->library('input');
         $this->load->library('layout');
-        
-        $this->load->library('console');
 		
 		$this->debug = false;
 		if($this->config->item('dev_mode')) {
@@ -31,6 +34,25 @@ class APP_Controller extends CI_Controller {
         }
         
 	    $this->data = array();
+		
+		$this->site = new StdClass;
+		if(isset($this->uri->rsegments[3]) && strpos($this->uri->rsegments[3], 'site:') !== false) {
+			$site_value = substr($this->uri->rsegments[3], 5);
+			if(is_numeric($site_value)) {
+				$this->site = $this->m_site->get($site_value);
+			} else {
+				$this->site = $this->m_site->get_by_permalink($site_value);
+			}
+			
+			unset($this->uri->rsegments[3]);
+			array_unshift($this->uri->rsegments, null);
+			ksort($this->uri->rsegments);
+    	    unset($this->uri->rsegments[0]);
+		} else {
+			$this->site->id = null;
+		}
+
+		$this->set('site', $this->site);
 		
 		// --
 		
@@ -50,6 +72,26 @@ class APP_Controller extends CI_Controller {
             $this->set('current_url', $current_url);
             
             parse_str($request_uri, $this->queries);
+			
+			if ($this->auth->logged_in())
+			{
+				$this->user_data = $this->auth->get_user();
+	            
+	            if($this->user_data->vendor_id == FACEBOOK_VENDOR) {
+	                $t =  explode('_',$this->user_data->username);  
+	                $this->user_data->fb_id = $t[1]; // for Facebook userid
+	            } else {
+	                $this->user_data->fb_id = 0;
+	            }
+			} 
+			else 
+			{
+				$this->user_data 		= new StdClass;
+				$this->user_data->id 	= 0;
+				$this->user_data->fb_id = 0;
+			}
+			
+			$this->set('current_user', $this->user_data);
         } else {
         }
         
@@ -73,21 +115,6 @@ class APP_Controller extends CI_Controller {
             $this->set('mobile_mode', $this->detect_mobile());
         }
 		
-		// SIGNED
-		$admin_user = $this->config->item('admin_user');
-		$admin_pass = $this->config->item('admin_pass');
-		
-		if(isset($_COOKIE["amadomap_user"]) && isset($_COOKIE["amadomap_pass"])) {
-			if($_COOKIE["amadomap_user"] != crypt($admin_user, $admin_user) OR $_COOKIE["amadomap_pass"] != crypt($admin_pass, $admin_pass)) {
-				$this->signed = false;
-			} else {
-				$this->signed = true;
-			}
-		} else {
-			$this->signed = false;
-		}
-		$this->set('signed', $this->signed);
-        
 		$this->layout->setTitle('Title');
     }
 

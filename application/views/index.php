@@ -43,7 +43,7 @@
         <?php
             foreach($place_lists as $place) {
               echo 
-               "markers[{$place->id}] = (['{$place->title}', '{$place->type}', '{$place->lat}', '{$place->lng}', '{$place->description}', '".$place->uri."', '".$place->address."']);"; 
+               "markers[{$place->id}] = (['{$place->title}', '{$place->icon_id}', '{$place->lat}', '{$place->lng}', '{$place->description}', '".$place->uri."', '".$place->address."']);"; 
             }
 
            // images
@@ -240,39 +240,39 @@
       }
 
       // toggle (hide/show) markers of a given type (on the map)
-      function toggle(type) {
-        if($('#filter_'+type).is('.inactive')) {
-          show(type); 
+      function toggle(type_id) {
+        if($('#filter_'+type_id).is('.inactive')) {
+          show(type_id); 
         } else {
-          hide(type); 
+          hide(type_id); 
         }
       }
 
       // hide all markers of a given type
-      function hide(type) {
+      function hide(type_id) {
         $.each(gmarkers, function(i, val) {
-	          if (gmarkers[i].type == type) {
+	          if (gmarkers[i].type == type_id) {
 	            gmarkers[i].setVisible(false);
 	          }
 	        }
 	      );
-        $("#filter_"+type).addClass("inactive");
+        $("#filter_"+type_id).addClass("inactive");
       }
 
       // show all markers of a given type
-      function show(type) {
+      function show(type_id) {
         $.each(gmarkers, function(i, val) {
-          if (gmarkers[i].type == type) {
+          if (gmarkers[i].type == type_id) {
             gmarkers[i].setVisible(true);
           }
         });
         
-        $("#filter_"+type).removeClass("inactive");
+        $("#filter_"+type_id).removeClass("inactive");
       }
       
       // toggle (hide/show) marker list of a given type
-      function toggleList(type) {
-        $(".list .list-"+type).toggle();
+      function toggleList(type_id) {
+        $(".list .list-"+type_id).toggle();
       }
 
 
@@ -304,7 +304,7 @@
 	  	<!--<a href="#modal_info" data-toggle="modal"></a>-->
 	  </div>
 	  
-	  <?php if($signed) { ?>
+	  <?php if($current_user->id) { ?>
 	  <!--<div class="buttons" id="buttons">
 			<a href="#modal_info" class="btn btn-large btn-info" data-toggle="modal"><i class="icon-info-sign icon-white"></i>About this Map</a>
             <a href="#modal_add" class="btn btn-large btn-success" data-toggle="modal"><i class="icon-plus-sign icon-white"></i>장소 추가하기</a>
@@ -330,19 +330,19 @@
       <ul class="list" id="list_by_category"<?php echo $course_mode ? ' style="display:none;"' : '';?>>
         <?php
           foreach($place_types as $type) {
-            $markers_count = $count_by_type[$type->key];
-            echo "<li class='category category_{$type->key}'>
+            $markers_count = $count_by_type[$type->id];
+            echo "<li class='category category_{$type->id}'>
                 <div class='category_item'>
-                  <div class='category_toggle' onClick=\"toggle('{$type->key}')\" id='filter_{$type->key}'></div>
-                  <a href='#' onClick=\"toggleList('{$type->key}');\" class='category_info'><img src='./img/icons/{$type->key}.png' alt='' />{$type->name}<span class='total'> ({$markers_count})</span></a>
+                  <div class='category_toggle' onClick=\"toggle('{$type->id}')\" id='filter_{$type->id}'></div>
+                  <a href='#' onClick=\"toggleList('{$type->id}');\" class='category_info'><img src='./img/icons/{$type->id}.png' alt='' />{$type->name}<span class='total'> ({$markers_count})</span></a>
                 </div>
-                <ul class='list-items list-{$type->key}'>";
+                <ul class='list-items list-{$type->id}'>";
 			
 			if($markers_count > 0) {
-				$markers = $place_lists_by_type[$type->key];
+				$markers = $place_lists_by_type[$type->id];
 	            foreach($markers as $marker) {
 	            	$marker_id = $marker->id;
-	              echo "<li class='{$marker->type}'>
+	              echo "<li class='type_{$marker->type_id}'>
 	                    <a href='#' onMouseOver=\"markerListMouseOver('place', '{$marker_id}')\" onMouseOut=\"markerListMouseOut('place', '{$marker_id}')\" onClick=\"goToMarker('place','{$marker_id}');\">{$marker->title}</a>
 	                  </li>";
 	            }
@@ -381,7 +381,7 @@
         <div class="modal-body">
           <div id="result"></div>
           <fieldset>
-          <?php if($signed) { ?>
+          <?php if($current_user->id) { ?>
           	<input type="hidden" id="add_owner_name" name="owner_name" value="관리자" />
           	<input type="hidden" id="add_owner_email" name="owner_email" value="owner@domain.com" />
           <?php } else { ?>
@@ -409,7 +409,7 @@
               <div class="controls">
                 <select name="type" id="add_type" class="input-xlarge">
                 	<?php foreach($place_types as $type) { ?>
-                  	<option value="<?php echo $type->key;?>"><?php echo $type->name;?></option>
+                  	<option value="<?php echo $type->id;?>"><?php echo $type->name;?></option>
                   	<?php } ?>
                 </select>
               </div>
@@ -461,7 +461,7 @@
         <div class="modal-body">
           <div id="result"></div>
           <fieldset>
-          <?php if($signed) { ?>
+          <?php if($current_user->id) { ?>
             <input type="hidden" id="add_image_owner_name" name="owner_name" value="관리자" />
             <input type="hidden" id="add_image_owner_email" name="owner_email" value="owner@domain.com" />
           <?php } else { ?>

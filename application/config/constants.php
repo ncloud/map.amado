@@ -1,5 +1,16 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
+/* TIME */
+define('ONE_HOUR', 60*60*1);
+define('ONE_DAY', 60*60*24);
+define('SEVEN_DAY', 60*60*24*7);
+define('ONE_WEEK', 60*60*24*7);
+define('ONE_YEAR', 60*60*24*365);
+
+/* VENDOR */
+define('FACEBOOK_VENDOR', 1);
+define('TWITTER_VENDOR', 2);
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

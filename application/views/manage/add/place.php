@@ -44,15 +44,15 @@
         <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo $place->owner_email?>" id="">
       </div>
     </div>
-    <div class="control-group<?php echo isset($errors['type']) ? ' error' : '';?>">
+    <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
       <label class="control-label" for="">종류 *</label>
       <div class="controls">
-        <select id="type" class="span3" name="type">
+        <select id="type_id" class="span3" name="type_id">
         	<option value="">종류를 선택해주세요</option>
           <?php
           	foreach($place_types as $type) {
           ?>
-          	<option value="<?php echo $type->key;?>"<?php if($place->type == $type->key) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
+          	<option value="<?php echo $type->id;?>"<?php if($place->type_id == $type->id) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
           <?php
           	}
 		  ?>
@@ -96,7 +96,7 @@
   <?php
 	}
   ?>
-      <a href="<?php echo site_url('/manage');?>" class="btn">취소</a>
+      <a href="<?php echo site_url($site->id.'/manage');?>" class="btn">취소</a>
     </div>
   </fieldset>
 </form>
@@ -142,7 +142,7 @@
 		  <?php if(isset($place->lat)) { ?> lat: <?php echo $place->lat;?>, <?php } ?>
 		  <?php if(isset($place->lng)) { ?> lng: <?php echo $place->lng;?>, <?php } ?>
 		});
-	}).on()
+	})
 	
 	function searchFromAddress(form) {
 		GMaps.geocode({

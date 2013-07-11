@@ -1,0 +1,24 @@
+body {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	background-color: #f5f5f5 !important;
+}
+	.sign_or_join_form {
+		max-width: 350px;
+		margin: 0 auto 20px;
+		background-color: #fff;
+		border: 1px solid #e0e0e0;
+		border-radius: 5px;
+		box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	}
+	
+	.sign_or_join_form .input_wrap { padding: 19px 29px 29px; }
+	.sign_or_join_form .input_option_wrap { font-size:13px; border-top: 1px solid #ddd; padding-top: 18px; padding-bottom: 18px; background: #f8f8f8; }
+	
+
+	.sign_or_join_form.login_mode {}
+		.sign_or_join_form.login_mode .username { display:none; }
+	
+	.sign_or_join_form .alternative_wrap { text-align:center; }
+	.sign_or_join_form .social_wrap {  text-align:center; position:relative; margin-top: 16px; border-top: 1px dotted #ccc; padding-top: 16px; }
+		.sign_or_join_form .social_wrap .or { position:absolute; text-align:center; width:50px; background:#f8f8f8; top:-10px; left: 50%; margin-left: -25px; font-size: 12px; color: #999;  }

@@ -8,9 +8,9 @@ class M_Place extends CI_Model
         parent::__construct();    
     }
 	
-	function get_types()
+	function get_types($site_id)
 	{
-		return $this->db->from('place_types')->get()->result();
+		return $this->db->from('place_types')->where('site_id', $site_id)->get()->result();
 	}
 	
 	function get($id)
@@ -18,12 +18,12 @@ class M_Place extends CI_Model
 		return $this->db->from('places')->where('id', $id)->get()->row();
 	}
 	
-	function gets()
+	function gets($site_id)
 	{
-		return $this->db->from('places')->where('status','approved')->order_by('id DESC')->get()->result();
+		return $this->db->from('places')->where('status','approved')->where('site_id', $site_id)->order_by('id DESC')->get()->result();
 	}
 	
-	function gets_all($count, $index = 1)
+	function gets_all($site_id, $count, $index = 1)
 	{
         if($index > 1) {
             $this->db->limit($count, ($index - 1));
@@ -31,10 +31,10 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->order_by('id DESC')->get()->result();		
+		return $this->db->from('places')->where('site_id', $site_id)->order_by('id DESC')->get()->result();		
 	}
 	
-	function gets_by_status($status, $count, $index = 1)
+	function gets_by_status($site_id, $status, $count, $index = 1)
 	{
 		$this->db->where('status', $status);
 		
@@ -44,13 +44,13 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->order_by('id DESC')->get()->result();		
+		return $this->db->from('places')->where('site_id', $site_id)->order_by('id DESC')->get()->result();		
 	}
 	
 	
-	function gets_by_type($type)
+	function gets_by_type($site_id, $type)
 	{
-		$this->db->from('places')->order_by('id DESC');
+		$this->db->from('places')->where('site_id', $site_id)->order_by('id DESC');
 		
 		switch($type) {
 			case 'approved':
@@ -63,30 +63,30 @@ class M_Place extends CI_Model
 		return $this->get()->result();	
 	}
 	
-	function get_count_by_approved()
+	function get_count_by_approved($site_id)
 	{
-		$result = $this->db->from('places')->where('status','approved')->select('count(*) as count')->order_by('id DESC')->get()->row();
+		$result = $this->db->from('places')->where('status','approved')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
-	function get_count_by_rejected()
+	function get_count_by_rejected($site_id)
 	{
-		$result = $this->db->from('places')->where('status','rejected')->select('count(*) as count')->order_by('id DESC')->get()->row();
+		$result = $this->db->from('places')->where('status','rejected')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
-	function get_count_by_pending()
+	function get_count_by_pending($site_id)
 	{
-		$result = $this->db->from('places')->where('status','pending')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('status','pending')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}
 	
-	function get_count()
+	function get_count($site_id)
 	{
-		$result = $this->db->from('places')->select('count(*) as count')->get()->row();
+		$result = $this->db->from('places')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
 	}

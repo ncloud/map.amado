@@ -21,7 +21,9 @@
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-    
+
+	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>
+	    
     <script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
     <script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.facebox.js');?>"></script>
     <script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>

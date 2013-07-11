@@ -34,9 +34,35 @@
 
 $route['default_controller']                    	 = 'page';
 
-$route['manage/list']								 = 'manage/lists';
-$route['manage/list/(:any)']						 = 'manage/lists/$1';
-$route['manage/list/(:any)/(:num)']					 = 'manage/lists/$1/$2';
+// Manage
+$route['manage']								 	 = 'manage/index';
+
+/**
+ * Login
+ */
+$route['login']								    	 = 'page/login';
+$route['join']                                  	 = 'page/join';
+
+$route['login/facebook']                        	 = 'user/login_facebook';
+$route['logout']									 = 'user/logout';
+
+$route['login/do']                              	 = 'user/login';
+$route['join/do']                               	 = 'user/join';
+
+/* 
+ * site by permalink
+ */
+$route['(:any)/manage/list']						 = 'manage/lists/site:$1';
+$route['(:any)/manage/list/(:any)']					 = 'manage/lists/site:$1/$2';
+$route['(:any)/manage/list/(:any)/(:num)']			 = 'manage/lists/site:$1/$2/$3';
+
+$route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/site:$1/$4/$5/$6';
+$route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/site:$1/$4/$5';
+$route['(:any)/(:any)/(:any)/(:any)']				 = '$2/$3/site:$1/$4';
+$route['(:any)/(:any)/(:any)']						 = '$2/$3/site:$1';
+$route['(:any)/(:any)']								 = '$2/index/site:$1';
+$route['(:any)']									 = 'page/index/site:$1';
+
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -8,14 +8,14 @@ class M_Course extends CI_Model
         parent::__construct();    
     }
 	
-	function gets()
+	function gets($site_id)
 	{
-		return $this->db->from('courses')->get()->result();
+		return $this->db->from('courses')->where('site_id', $site_id)->get()->result();
 	}
 	
-	function gets_targets()
+	function gets_targets($course_id)
 	{
-		return $this->db->from('course_targets')->order_by('order_index ASC')->get()->result();
+		return $this->db->from('course_targets')->where('course_id', $course_id)->order_by('order_index ASC')->get()->result();
 	}
 	
 	

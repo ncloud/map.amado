@@ -3,8 +3,9 @@
 $config['app_version'] = '0.1';
 $config['dev_mode'] = true;
 
-$config['admin_user'] = 'admin';
-$config['admin_pass'] = 'password';
+// facebook
+$config['facebook_appid'] = '';
+$config['facebook_secret'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -225,7 +226,7 @@ $config['cache_path'] = '';
 | MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = "by_muzalive";
+$config['encryption_key'] = "by_ncloud";
 
 /*
 |--------------------------------------------------------------------------
@@ -250,7 +251,7 @@ $config['sess_expiration']		= 0;//7200;
 $config['sess_expire_on_close']	= FALSE;
 $config['sess_encrypt_cookie']	= FALSE;
 $config['sess_use_database']	= TRUE;
-$config['sess_table_name']		= 'ci_sessions';
+$config['sess_table_name']		= 'sessions';
 $config['sess_match_ip']		= FALSE;
 $config['sess_match_useragent']	= TRUE;
 $config['sess_time_to_update']	= 300;
@@ -351,10 +352,6 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
-
-// facebook
-$config['facebook_appid'] = $config['dev_mode'] ? '' : '';
-$config['facebook_secret'] = $config['dev_mode'] ? '' : '';
 
 
 /* End of file config.php */

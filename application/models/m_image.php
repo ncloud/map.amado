@@ -8,9 +8,9 @@ class M_image extends CI_Model
         parent::__construct();    
     }
 	
-	function gets()
+	function gets($site_id)
 	{
-		return $this->db->from('images')->where('approved','yes')->get()->result();
+		return $this->db->from('images')->where('approved','yes')->where('site_id', $site_id)->get()->result();
 	}
 	
 }
