@@ -8,20 +8,17 @@ function Label(opt_options) {
   span.className = "marker_label";
   span.setAttribute("id", "marker"+this.id);
 
-
-
   var div = this.div_ = document.createElement('div');
   div.appendChild(span);
   div.style.cssText = 'position: absolute; display: none';
 };
-Label.prototype = new google.maps.OverlayView;
 
+Label.prototype = new google.maps.OverlayView;
 
 // Implement onAdd
 Label.prototype.onAdd = function() {
   var pane = this.getPanes().overlayImage;
   pane.appendChild(this.div_);
-
 
   // Ensures the label is redrawn if the text or position is changed.
   var me = this;
@@ -44,7 +41,6 @@ Label.prototype.onAdd = function() {
 Label.prototype.onRemove = function() {
   this.div_.parentNode.removeChild(this.div_);
 
-
   // Label is removed from the map, stop updating its position/text.
   for (var i = 0, I = this.listeners_.length; i < I; ++i) {
     google.maps.event.removeListener(this.listeners_[i]);
@@ -57,23 +53,18 @@ Label.prototype.draw = function() {
   var projection = this.getProjection();
   var position = projection.fromLatLngToDivPixel(this.get('position'));
 
-
   var div = this.div_;
   div.style.left = position.x + 'px';
   div.style.top = position.y + 'px';
 
-
   var visible = this.get('visible');
   div.style.display = visible ? 'block' : 'none';
-
 
   var clickable = this.get('clickable');
   this.span_.style.cursor = clickable ? 'pointer' : '';
 
-
   var zIndex = this.get('zIndex');
   div.style.zIndex = zIndex;
-
 
   this.span_.innerHTML = this.get('text').toString();
 };

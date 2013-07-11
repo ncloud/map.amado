@@ -1,307 +1,17 @@
-
-    <script type="text/javascript">
-      var map;
-      var infowindow = null;
-      var gmarkers = {};
-      var highestZIndex = 0;  
-      var agent = "default";
-      var zoomControl = true;
-
-      // detect browser agent
-      $(document).ready(function(){
-        if(navigator.userAgent.toLowerCase().indexOf("iphone") > -1 || navigator.userAgent.toLowerCase().indexOf("ipod") > -1) {
-          agent = "iphone";
-          zoomControl = false;
-        }
-        if(navigator.userAgent.toLowerCase().indexOf("ipad") > -1) {
-          agent = "ipad";
-          zoomControl = false;
-        }
-      }); 
-      
-
-      // resize marker list onload/resize
-      $(document).ready(function(){
-        resizeList() 
-      });
-      $(window).resize(function() {
-        resizeList();
-      });
-      
-      // resize marker list to fit window
-      function resizeList() {
-        newHeight = $('html').height() - $("#header").outerHeight();
-        $('.list').css('height', newHeight + "px"); 
-      }
-
-
-      // initialize map
-      function initialize() {
-        // markers array: name, type (icon), lat, long, description, uri, address
-        var markers = new Array();
-        var images = new Array();
-        <?php
-            foreach($place_lists as $place) {
-              echo 
-               "markers[{$place->id}] = (['{$place->title}', '{$place->icon_id}', '{$place->lat}', '{$place->lng}', '{$place->description}', '".$place->uri."', '".$place->address."']);"; 
-            }
-
-           // images
-            foreach($image_lists as $image) {
-             echo "images.push(['{$image->title}', 'image', './uploads/30x30_{$image->image}', './uploads/{$image->image}', '{$image->lat}', '{$image->lng}', '{$image->start_date}']);";
-            }
-        ?>
-        
-        // set map options
-        var myOptions = {
-          zoom: 16,
-          center: new google.maps.LatLng(<?php echo $default_lat;?>,<?php echo $default_lng;?>),
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-          streetViewControl: false,
-          mapTypeControl: false,
-          panControl: false,
-          draggableCursor:'default',
-          zoomControl: zoomControl,
-          zoomControlOptions: {
-            style: google.maps.ZoomControlStyle.SMALL,
-            position: google.maps.ControlPosition.LEFT_CENTER
-          }
-        };
-        map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
-        zoomLevel = map.getZoom();
-
-        // prepare infowindow
-        infowindow = new google.maps.InfoWindow({
-          content: "holding..."
-        });
-
-        // only show marker labels if zoomed in
-        google.maps.event.addListener(map, 'zoom_changed', function() {
-          zoomLevel = map.getZoom();
-        });
-        
-        jQuery.each(images, function(i, val) {
-          var markerImage = new google.maps.MarkerImage(val[2], null, null, null, new google.maps.Size(30,30));
-          var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(val[4], val[5]),
-            map: map,
-            title: '',
-            clickable: true,
-            infoWindowHtml: '',
-            zIndex: 1,
-            icon: markerImage
-          });
-          gmarkers['image_' + i] = marker;
-
-          google.maps.event.addListener(marker, 'click', function () {
-            infowindow.setContent(
-              "<div class='marker_title'>"+val[0]+"</div>"
-              + "<div class='marker_desc'><img src='"+val[3]+"' alt='' /></div>"
-            );
-            infowindow.open(map, this);
-          });
-        });
-          
-        // add markers
-        jQuery.each(markers, function(i, val) {
-          if(typeof(val) == 'undefined') return;
-        
-          infowindow = new google.maps.InfoWindow({
-            content: ""
-          });
-
-          // show smaller marker icons on mobile
-          if(agent == "iphone") {
-            var iconSize = new google.maps.Size(31,42);
-          } else {
-            iconSize = null;
-          }
-
-          // build this marker
-          
-          var markerImage = new google.maps.MarkerImage("./img/icons/"+val[1]+".png", null, null, null, iconSize);
-          var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(val[2], val[3]),
-            map: map,
-            title: '',
-            clickable: true,
-            infoWindowHtml: '',
-            zIndex: 10 + i,
-            icon: markerImage
-          });
-          marker.type = val[1];
-          gmarkers['place_' + i] = marker;
-
-          // add marker hover events (if not viewing on mobile)
-          if(agent == "default") {
-            google.maps.event.addListener(marker, "mouseover", function() {
-           //   this.old_ZIndex = this.getZIndex(); 
-           //   this.setZIndex(9999); 
-              $("#marker"+i).show();//fadeIn('fast');
-           //   $("#marker"+i).css("z-index", "99999");
-            });
-            google.maps.event.addListener(marker, "mouseout", function() { 
-              //if (this.old_ZIndex && zoomLevel <= 15) {
-             //   this.setZIndex(this.old_ZIndex); 
-                $("#marker"+i).hide();//fadeOut('fast');
-              //}
-            }); 
-          }
-
-          // format marker URI for display and linking
-          var markerURI = val[5];
-          if(markerURI.substr(0,7) != "http://") {
-            markerURI = "http://" + markerURI; 
-          }
-          var markerURI_short = markerURI.replace("http://", "");
-          var markerURI_short = markerURI_short.replace("www.", "");
-
-          // add marker click effects (open infowindow)
-          google.maps.event.addListener(marker, 'click', function () {
-            infowindow.setContent(
-              "<div class='marker_title'>"+val[0]+"</div>"
-              + "<div class='marker_uri'><a target='_blank' href='"+markerURI+"'>"+markerURI_short+"</a></div>"
-              + "<div class='marker_desc'>"+val[4]+"</div>"
-              + "<div class='marker_address'>"+val[6]+"</div>"
-            );
-            infowindow.open(map, this);
-          });
-
-          // add marker label
-          var latLng = new google.maps.LatLng(val[2], val[3]);
-          var label = new Label({
-            map: map,
-            id: i
-          });
-          label.bindTo('position', marker);
-          label.set("text", val[0]);
-          label.bindTo('visible', marker);
-          label.bindTo('clickable', marker);
-          label.bindTo('zIndex', marker);
-        });
-
-        
-        // context menu
-        //  create the ContextMenuOptions object
-        var contextMenuOptions={};
-        contextMenuOptions.classNames={menu:'context_menu', menuSeparator:'context_menu_separator'};
-        
-        //  create an array of ContextMenuItem objects
-        var menuItems=[];        
-        menuItems.push({className:'context_menu_item', eventName:'add_here_click', label:'이곳에 장소 추가하기'});
-        menuItems.push({className:'context_menu_item', eventName:'add_image_here_click', label:'이곳에 사진  추가하기'});
-        menuItems.push({});
-        menuItems.push({className:'context_menu_item', eventName:'zoom_in_click', label:'지도 확대하기'});
-        menuItems.push({className:'context_menu_item', eventName:'zoom_out_click', label:'지도 축소하기'});
-        menuItems.push({});
-        menuItems.push({className:'context_menu_item', eventName:'center_map_click', label:'이곳을 지도 가운데 옮기기'});
-        contextMenuOptions.menuItems=menuItems;
-
-        //  create the ContextMenu object
-        var contextMenu = new ContextMenu(map, contextMenuOptions);
-
-        //  display the ContextMenu on a Map right click
-        google.maps.event.addListener(map, 'rightclick', function(mouseEvent){
-            contextMenu.show(mouseEvent.latLng);
-        });
-        
-        //  listen for the ContextMenu 'menu_item_selected' event
-        google.maps.event.addListener(contextMenu, 'menu_item_selected', function(latLng, eventName){
-            //  latLng is the position of the ContextMenu
-            //  eventName is the eventName defined for the clicked ContextMenuItem in the ContextMenuOptions
-            switch(eventName){
-                case 'add_here_click':
-                    $('#modal_add').data({defaultLatLng:latLng}).modal();
-                    break;
-                case 'add_image_here_click':
-                    $('#modal_image_add').data({defaultLatLng:latLng}).modal();
-                    break;
-                case 'zoom_in_click':
-                    map.setZoom(map.getZoom()+1);
-                    break;
-                case 'zoom_out_click':
-                    map.setZoom(map.getZoom()-1);
-                    break;
-                case 'center_map_click':
-                    map.panTo(latLng);
-                    break;
-            }
-        });
-        
-      } 
-
-      // zoom to specific marker
-      function goToMarker(type, marker_id) {
-        if(marker_id) {
-          map.panTo(gmarkers[type + '_' + marker_id].getPosition());
-       //   map.setZoom(15);
-          google.maps.event.trigger(gmarkers[type + '_' + marker_id], 'click');
-        }
-      }
-
-      // toggle (hide/show) markers of a given type (on the map)
-      function toggle(type_id) {
-        if($('#filter_'+type_id).is('.inactive')) {
-          show(type_id); 
-        } else {
-          hide(type_id); 
-        }
-      }
-
-      // hide all markers of a given type
-      function hide(type_id) {
-        $.each(gmarkers, function(i, val) {
-	          if (gmarkers[i].type == type_id) {
-	            gmarkers[i].setVisible(false);
-	          }
-	        }
-	      );
-        $("#filter_"+type_id).addClass("inactive");
-      }
-
-      // show all markers of a given type
-      function show(type_id) {
-        $.each(gmarkers, function(i, val) {
-          if (gmarkers[i].type == type_id) {
-            gmarkers[i].setVisible(true);
-          }
-        });
-        
-        $("#filter_"+type_id).removeClass("inactive");
-      }
-      
-      // toggle (hide/show) marker list of a given type
-      function toggleList(type_id) {
-        $(".list .list-"+type_id).toggle();
-      }
-
-
-      // hover on list item
-      function markerListMouseOver(type, marker_id) {
-		map.panTo(gmarkers[type + '_' + marker_id].getPosition());
-
-        $("#marker"+marker_id).css("display", "inline");
-      }
-      function markerListMouseOut(type, marker_id) {
-        $("#marker"+marker_id).css("display", "none");
-      }
-
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-  </head>
-  <body>
+	
     
-  <?php echo isset($error) && !empty($error) ? $error : ''; ?>
+    <?php echo isset($error) && !empty($error) ? $error : ''; ?>
     
+	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
+	
     <!-- google map -->
-    <div id="map_canvas"></div>
+    <div id="map"></div>
     
     <!-- right-side gutter -->
     <div class="menu" id="menu">        
 	  
 	  <div class="header" id="header">
-	  	<h1>아마도 지도 <span>성북동</span></h1>
-	  	<!--<a href="#modal_info" data-toggle="modal"></a>-->
+	  	<a class="site" href="<?php echo site_url('/'.$site->permalink);?>"><?php echo $site->name;?></a>
 	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -516,17 +226,260 @@
         </div>
       </form>
     </div>
+
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
     
-    <script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.js');?>"></script>
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/label.js');?>"></script>
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>
+
+    <script type="text/javascript">
+      var gmap = null;
+	  var contextMenu = null;
+      var gmarkers = {};      
+   
+      $(document).ready(function(){
+      	initialize();
+		
+        resizeList() 
+      });
+      
+      $(window).resize(function() {
+        resizeList();
+      });
+      
+      function initialize() {
+        var markers = new Array();
+        var images = new Array();
+        <?php
+            foreach($place_lists as $place) {
+              echo 
+               "markers[{$place->id}] = {title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', uri:'".$place->uri."', address:'".$place->address."'};"; 
+            }
+
+           // images
+            foreach($image_lists as $image) {
+             echo "images.push({title:'{$image->title}', type:'image', image:'./uploads/30x30_{$image->image}', original_image:'./uploads/{$image->image}', lat:'{$image->lat}', lng:'{$image->lng}'});";
+            }
+        ?>
+      	
+        gmap = new GMaps({
+		  div: '#map',  
+		  zoom: 16,
+		  lat: <?php echo $default_lat;?>,
+		  lng: <?php echo $default_lng;?>,
+		  
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+          streetViewControl: false,
+          mapTypeControl: false,
+          panControl: false,
+          draggableCursor:'default',
+          zoomControl: true,
+          zoomControlOptions: {
+            style: google.maps.ZoomControlStyle.SMALL,
+            position: google.maps.ControlPosition.LEFT_CENTER
+          }
+		});
+        
+        zoomLevel = gmap.getZoom();
+        google.maps.event.addListener(map, 'zoom_changed', function() {
+          zoomLevel = gmap.getZoom();
+        });
+        
+        jQuery.each(images, function(i, val) {
+          var info = "<div class='marker_title'>"+val.title+"</div>"
+              + "<div class='marker_desc'><img src='"+val.original_image+"' alt='' /></div>";
+              
+          var markerImage = new google.maps.MarkerImage(val.image, null, null, null, new google.maps.Size(30,30));
+          var marker = gmap.addMarker({
+			  lat: val.lat,
+			  lng: val.lng,
+			  title: '',
+			  zIndex: 10 + i,
+              icon: markerImage,
+              infoWindow: {
+              	content: info
+              },
+			  click: function(e) {
+
+			  },
+			  mouseover: function() {
+	              $("#marker"+i).show();//fadeIn('fast');
+	          },
+	          mouseout: function() { 
+	              $("#marker"+i).hide();//fadeOut('fast');
+	          }
+			});
+			
+          gmarkers['image_' + i] = marker;
+        });
+          
+        // add markers
+        jQuery.each(markers, function(i, val) {
+          if(typeof(val) == 'undefined') return;
+        
+          infowindow = new google.maps.InfoWindow({
+            content: ""
+          });
+
+          var iconSize = null;
+
+        // format marker URI for display and linking
+         var markerURI = val.uri;
+         if(markerURI.substr(0,7) != "http://") {
+        	markerURI = "http://" + markerURI; 
+         } 
+         var markerURI_short = markerURI.replace("http://", "");
+         var markerURI_short = markerURI_short.replace("www.", "");
+      
+         var info = 
+	          "<div class='marker_title'>"+val.title+"</div>"
+	          + "<div class='marker_uri'><a target='_blank' href='"+markerURI+"'>"+markerURI_short+"</a></div>"
+	          + "<div class='marker_desc'>"+val.description+"</div>"
+	          + "<div class='marker_address'>"+val.address+"</div>";	         
+	             
+          // build this marker
+          var markerImage = new google.maps.MarkerImage("./img/icons/"+val.icon+".png", null, null, null, iconSize);
+          var marker = gmap.addMarker({
+			  type: val.type,
+			  lat: val.lat,
+			  lng: val.lng,
+			  title: '',
+			  zIndex: 10 + i,
+              icon: markerImage,
+              infoWindow: {
+              	content: info
+              },
+			  click: function(e) {
+
+			  },
+			  mouseover: function() {
+	              $("#marker"+i).show();//fadeIn('fast');
+	          },
+	          mouseout: function() { 
+	              $("#marker"+i).hide();//fadeOut('fast');
+	          }
+			});
+
+          gmarkers['place_' + i] = marker;
+          
+          // add marker label
+          var label = new Label({id: i, map:gmap.map});
+          
+          label.bindTo('position', marker);
+          label.set("text", val.title);
+          label.bindTo('visible', marker);
+          label.bindTo('clickable', marker);
+          label.bindTo('zIndex', marker);
+        });
+        
+        
+        
+        // context menu
+        var contextMenuOptions={};
+        contextMenuOptions.classNames={menu:'context_menu', menuSeparator:'context_menu_separator'};
+        
+        var menuItems=[];        
+        menuItems.push({className:'context_menu_item', eventName:'add_here_click', label:'이곳에 장소 추가하기'});
+        menuItems.push({className:'context_menu_item', eventName:'add_image_here_click', label:'이곳에 사진  추가하기'});
+        menuItems.push({});
+        menuItems.push({className:'context_menu_item', eventName:'zoom_in_click', label:'지도 확대하기'});
+        menuItems.push({className:'context_menu_item', eventName:'zoom_out_click', label:'지도 축소하기'});
+        menuItems.push({});
+        menuItems.push({className:'context_menu_item', eventName:'center_map_click', label:'이곳을 지도 가운데 옮기기'});
+        contextMenuOptions.menuItems=menuItems;
+
+        contextMenu = new ContextMenu(gmap.map, contextMenuOptions);
+
+        google.maps.event.addListener(gmap.map, 'rightclick', function(mouseEvent){
+            contextMenu.show(mouseEvent.latLng);
+        });
+        
+        google.maps.event.addListener(contextMenu, 'menu_item_selected', function(latLng, eventName){
+            switch(eventName){
+                case 'add_here_click':
+                    $('#modal_add').data({defaultLatLng:latLng}).modal();
+                    break;
+                case 'add_image_here_click':
+                    $('#modal_image_add').data({defaultLatLng:latLng}).modal();
+                    break;
+                case 'zoom_in_click':
+                    gmap.setZoom(gmap.getZoom()+1);
+                    break;
+                case 'zoom_out_click':
+                    gmap.setZoom(gmap.getZoom()-1);
+                    break;
+                case 'center_map_click':
+                    gmap.panTo(latLng);
+                    break;
+            }
+        });
+      } 
+      
+      function resizeList() {
+        newHeight = $(window).height() - $("#header").outerHeight();
+        $('.list').css('height', newHeight + "px"); 
+      }
+      
+      function goToMarker(type, marker_id) {
+        if(marker_id) {
+          gmap.panTo(gmarkers[type + '_' + marker_id].getPosition());
+       //   map.setZoom(15);
+          google.maps.event.trigger(gmarkers[type + '_' + marker_id], 'click');
+        }
+      }
+
+      function toggle(type_id) {
+        if($('#filter_'+type_id).is('.inactive')) {
+          show(type_id); 
+        } else {
+          hide(type_id); 
+        }
+      }
+
+      function hide(type_id) {
+        $.each(gmarkers, function(i, val) {
+	          if (gmarkers[i].type == type_id) {
+	            gmarkers[i].setVisible(false);
+	          }
+	        }
+	      );
+        $("#filter_"+type_id).addClass("inactive");
+      }
+
+      function show(type_id) {
+        $.each(gmarkers, function(i, val) {
+          if (gmarkers[i].type == type_id) {
+            gmarkers[i].setVisible(true);
+          }
+        });
+        
+        $("#filter_"+type_id).removeClass("inactive");
+      }
+      
+      function toggleList(type_id) {
+        $(".list .list-"+type_id).toggle();
+      }
+
+      function markerListMouseOver(type, marker_id) {
+		gmap.panTo(gmarkers[type + '_' + marker_id].getPosition());
+
+        $("#marker"+marker_id).css("display", "inline");
+      }
+      
+      function markerListMouseOut(type, marker_id) {
+        $("#marker"+marker_id).css("display", "none");
+      }
+      
       // add modal form submit
       $('#modal_add').on('show', function (event) {
         var $this = $(this);
         var $form = $("#modal_addform");
         var address = "";
-        
            var data = $this.data();
            if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.lb;
+            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
             data.defaultLatLng = null;
            }
         
@@ -572,7 +525,7 @@
         
            var data = $this.data();
            if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.lb;
+            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
             data.defaultLatLng = null;
            }
         

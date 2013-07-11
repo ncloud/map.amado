@@ -60,7 +60,7 @@
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-      <label class="control-label" for="">제목 *</label>
+      <label class="control-label" for="">이름 *</label>
       <div class="controls">
         <input type="text" id="title" class="span4" name="title" value="<?php echo $place->title?>" id="">
       </div>
@@ -70,18 +70,27 @@
       <div class="controls">
         <input type="text" id="address" class="span4" name="address" value="<?php echo $place->address?>" id="">
         <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
+        <p class="help-block">
+          구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
+        </p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="">URL</label>
       <div class="controls">
         <input type="text" id="url" class="span4" name="uri" value="<?php echo $place->uri?>" id="">
+        <p class="help-block">
+          장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
+        </p>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="">설명</label>
       <div class="controls">
         <textarea id="description" class="span4" name="description"><?php echo $place->description?></textarea>
+        <p class="help-block">
+          최대 150자 내외로 장소에 대한 설명을 입력해주세요.
+        </p>
       </div>
     </div>
     <div class="form-actions">

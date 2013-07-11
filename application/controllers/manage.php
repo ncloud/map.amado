@@ -155,7 +155,7 @@ class Manage extends APP_Controller {
 		$errors = array();
 		
 		if(!isset($form['title']) || empty($form['title'])) {
-			$errors['title'] = '제목을 입력해주세요';
+			$errors['title'] = '이름을 입력해주세요';
 		} else {
 			if($change_place) $change_place->title = $form['title'];
 		}
