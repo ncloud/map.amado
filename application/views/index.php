@@ -83,81 +83,7 @@
     
     <!-- add something modal -->
     <div class="modal hide" id="modal_add">
-      <form action="add.php" method="post" id="modal_addform" class="form-horizontal">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">×</button>
-          <h3>추가하기</h3>
-        </div>
-        <div class="modal-body">
-          <div id="result"></div>
-          <fieldset>
-          <?php if($current_user->id) { ?>
-          	<input type="hidden" id="add_owner_name" name="owner_name" value="관리자" />
-          	<input type="hidden" id="add_owner_email" name="owner_email" value="owner@domain.com" />
-          <?php } else { ?>
-            <div class="control-group">
-              <label class="control-label" for="add_owner_name">신청자 이름</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="owner_name" id="add_owner_name" maxlength="100">
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_owner_email">신청자 이메일</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="owner_email" id="add_owner_email" maxlength="100">
-              </div>
-            </div>
-          <?php } ?>
-            <div class="control-group">
-              <label class="control-label" for="add_title">장소(공간) 이름</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="title" id="add_title" maxlength="100" autocomplete="off">
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="input01">장소(공간) 종류</label>
-              <div class="controls">
-                <select name="type" id="add_type" class="input-xlarge">
-                	<?php foreach($place_types as $type) { ?>
-                  	<option value="<?php echo $type->id;?>"><?php echo $type->name;?></option>
-                  	<?php } ?>
-                </select>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_address">장소(공간) 주소</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="address" id="add_address">
-                <p class="help-block">
-                  구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
-                </p>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_uri">장소(공간) URL</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" id="add_uri" name="uri" placeholder="http://">
-                <p class="help-block">
-                  장소(공간)에서 운영하고 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예: "http://www.yoursite.com"
-                </p>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_description">장소(공간) 설명</label>
-              <div class="controls">
-                <textarea class="input-xlarge" id="add_description" name="description" maxlength="150"></textarea>
-                <p class="help-block">
-                  최대 150자 내외로 장소(공간)에 대한 설명을 입력해주세요.
-                </p>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">신청하기</button>
-          <a href="#" class="btn" data-dismiss="modal" style="float: right;">닫기</a>
-        </div>
-      </form>
+    	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$place_types));?>
     </div>
     
     
@@ -474,26 +400,26 @@
       
       // add modal form submit
       $('#modal_add').on('show', function (event) {
-        var $this = $(this);
-        var $form = $("#modal_addform");
-        var address = "";
-           var data = $this.data();
-           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
-            data.defaultLatLng = null;
-           }
-        
-            $form.find( '#add_title' ).val("");
-            $form.find( '#add_type' ).val("");
-            $form.find( '#add_address' ).val(address);
-            $form.find( '#add_uri' ).val("");
-            $form.find( '#add_description' ).val("");
-            
-            $form.find("#result").html("").removeClass('alert alert-danger');              
-        
-            $form.find("p").show();
-            $form.find("fieldset").show();
-            $form.find(".btn-primary").show();
+		       var $this = $(this);
+		       var $form = $("#modal_addform");
+		       var address = "";
+	           var data = $this.data();
+	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
+	            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
+	            data.defaultLatLng = null;
+	           }
+	        
+	            $form.find( '#add_title' ).val("");
+	            $form.find( '#add_type' ).val("");
+	            $form.find( '#add_address' ).val(address);
+	            $form.find( '#add_uri' ).val("");
+	            $form.find( '#add_description' ).val("");
+	            
+	            $form.find("#result").html("").removeClass('alert alert-danger');              
+	        
+	            $form.find("p").show();
+	            $form.find("fieldset").show();
+	            $form.find(".btn-primary").show();
       });
 
       $("#modal_addform").ajaxForm({
@@ -519,25 +445,25 @@
       
       // add modal form submit
       $('#modal_image_add').on('show', function (event) {
-        var $this = $(this);
-        var $form = $("#modal_image_addform");
-        var address = "";
-        
-           var data = $this.data();
-           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
-            data.defaultLatLng = null;
-           }
-        
-            $form.find( '#add_image_title' ).val("");
-            $form.find( '#add_image_address' ).val(address);
-            $form.find( '#add_image_description' ).val("");
-            
-            $form.find("#result").html("").removeClass('alert alert-danger');              
-        
-            $form.find("p").show();
-            $form.find("fieldset").show();
-            $form.find(".btn-primary").show();
+		       var $this = $(this);
+		       var $form = $("#modal_image_addform");
+		       var address = "";
+	        
+	           var data = $this.data();
+	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
+	            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
+	            data.defaultLatLng = null;
+	           }
+	        
+	           $form.find( '#add_image_title' ).val("");
+	           $form.find( '#add_image_address' ).val(address);
+	           $form.find( '#add_image_description' ).val("");
+	            
+	           $form.find("#result").html("").removeClass('alert alert-danger');              
+	        
+	           $form.find("p").show();
+	           $form.find("fieldset").show();
+	           $form.find(".btn-primary").show();
       });
 
       $("#modal_image_addform").ajaxForm({

@@ -1,11 +1,12 @@
 <?php
 	$edit_mode = isset($edit_mode) ? $edit_mode : false;
+	$modal_mode = isset($modal_mode) ? $modal_mode : false;
+	
 	$errors = array();
 ?>
 
-<form id="manage" class="form-horizontal" method="post">
-
-  <div class="page-header">  
+<form id="manage" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+  <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	 <?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
 	  	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -20,6 +21,13 @@
 	  </div>
 	  <?php } ?>
   <?php
+  	if($modal_mode) {
+  ?>
+  <button type="button" class="close" data-dismiss="modal">×</button>
+  <?php		
+  	} 
+  ?>
+  <?php
   	if($edit_mode) {
   ?>
   	<h3>장소 편집</h3>
@@ -31,17 +39,20 @@
 	}
   ?>
   </div>
+  <?php if($modal_mode) { ?>
+  <div class="modal-body"> 
+  <?php } ?>
   <fieldset>
     <div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
       <label class="control-label" for="">등록자 이름 *</label>
       <div class="controls">
-        <input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo $place->owner_name?>" id="">
+        <input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo isset($place) ? $place->owner_name : ''?>" id="">
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
       <label class="control-label" for="">등록자 이메일 *</label>
       <div class="controls">
-        <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo $place->owner_email?>" id="">
+        <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" id="">
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
@@ -52,7 +63,7 @@
           <?php
           	foreach($place_types as $type) {
           ?>
-          	<option value="<?php echo $type->id;?>"<?php if($place->type_id == $type->id) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
+          	<option value="<?php echo $type->id;?>"<?php if(isset($place) && $place->type_id == $type->id) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
           <?php
           	}
 		  ?>
@@ -62,14 +73,20 @@
     <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
       <label class="control-label" for="">이름 *</label>
       <div class="controls">
-        <input type="text" id="title" class="span4" name="title" value="<?php echo $place->title?>" id="">
+        <input type="text" id="title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" id="">
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
       <label class="control-label" for="">주소 *</label>
       <div class="controls">
-        <input type="text" id="address" class="span4" name="address" value="<?php echo $place->address?>" id="">
+        <input type="text" id="address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" id="">
+        <?php
+        	if(!$modal_mode) {
+        ?>
         <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
+        <?php
+			}
+		?>
         <p class="help-block">
           구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
         </p>
@@ -78,7 +95,7 @@
     <div class="control-group">
       <label class="control-label" for="">URL</label>
       <div class="controls">
-        <input type="text" id="url" class="span4" name="uri" value="<?php echo $place->uri?>" id="">
+        <input type="text" id="url" class="span4" name="uri" value="<?php echo isset($place) ? $place->uri : ''?>" id="">
         <p class="help-block">
           장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
         </p>
@@ -87,13 +104,17 @@
     <div class="control-group">
       <label class="control-label" for="">설명</label>
       <div class="controls">
-        <textarea id="description" class="span4" name="description"><?php echo $place->description?></textarea>
+        <textarea id="description" class="span4" name="description"><?php echo isset($place) ? $place->description : ''?></textarea>
         <p class="help-block">
           최대 150자 내외로 장소에 대한 설명을 입력해주세요.
         </p>
       </div>
     </div>
-    <div class="form-actions">
+  </fieldset>
+  <?php if($modal_mode) { ?>
+  </div>
+  <?php } ?>
+  <div class="<?php echo $modal_mode ? 'modal-footer' : 'form-actions';?>">
   <?php
   	if($edit_mode) {
   ?>
@@ -106,11 +127,12 @@
 	}
   ?>
       <a href="<?php echo site_url($site->id.'/manage');?>" class="btn">취소</a>
-    </div>
-  </fieldset>
+  </div>
 </form>
 
-
+<?php
+	if(!$modal_mode) {
+?>
 <!--modal-->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -130,7 +152,7 @@
   	<div class="text-left pull-left">
   		<div class="input-append">
   			<form onsubmit="searchFromAddress(this); return false;">
-		  		<input class="span3" id="address_for_search" type="text" placeholder="주소" value="<?php echo $place->address_is_position == 'no' ? $place->address : '';?>" />
+		  		<input class="span3" id="address_for_search" type="text" placeholder="주소" value="<?php echo isset($place) ? ($place->address_is_position == 'no' ? $place->address : '') : '';?>" />
 		  		<input type="submit" class="btn" type="button" value="주소 검색" />
 		  	</form>
 		</div>
@@ -173,3 +195,7 @@
 		$("#myModal").modal('hide');
 	}
 </script>
+
+<?php 
+	} // modal_mode check end
+?>

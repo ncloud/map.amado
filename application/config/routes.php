@@ -36,6 +36,7 @@ $route['default_controller']                    	 = 'page';
 
 // Manage
 $route['manage']								 	 = 'manage/index';
+$route['ajax/(:any)']							     = 'ajax/$1';
 
 /**
  * Login
