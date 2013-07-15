@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="manage" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	 <?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -46,13 +46,35 @@
     <div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
       <label class="control-label" for="">등록자 이름 *</label>
       <div class="controls">
-        <input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo isset($place) ? $place->owner_name : ''?>" id="">
+      	<?php
+      		if($current_user->id) {
+      	?>
+      	<input type="hidden" id="owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
+      	<div class="text"><?php echo $current_user->name;?></div>
+		<?php
+			} else {
+		?>
+		<input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo isset($place) ? $place->owner_name : ''?>" />
+		<?php
+			}
+		?>
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
       <label class="control-label" for="">등록자 이메일 *</label>
       <div class="controls">
-        <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" id="">
+      	<?php
+      		if($current_user->id) {
+      	?>
+      	<input type="hidden" id="owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
+      	<div class="text"><?php echo $current_user->email;?></div>
+		<?php
+			} else {
+		?>
+        <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
+        <?php
+			}
+		?>
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
@@ -73,13 +95,13 @@
     <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
       <label class="control-label" for="">이름 *</label>
       <div class="controls">
-        <input type="text" id="title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" id="">
+        <input type="text" id="title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
       <label class="control-label" for="">주소 *</label>
       <div class="controls">
-        <input type="text" id="address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" id="">
+        <input type="text" id="address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
         <?php
         	if(!$modal_mode) {
         ?>
@@ -95,7 +117,7 @@
     <div class="control-group">
       <label class="control-label" for="">URL</label>
       <div class="controls">
-        <input type="text" id="url" class="span4" name="uri" value="<?php echo isset($place) ? $place->uri : ''?>" id="">
+        <input type="text" id="url" class="span4" name="uri" value="<?php echo isset($place) ? $place->uri : ''?>" />
         <p class="help-block">
           장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
         </p>
@@ -126,7 +148,18 @@
   <?php
 	}
   ?>
+  
+  <?php
+  	if($modal_mode) {
+  ?>
+      <a href="#" class="btn" data-dismiss="modal">취소</a>
+  <?php		
+  	} else {
+  ?>
       <a href="<?php echo site_url($site->id.'/manage');?>" class="btn">취소</a>
+  <?php
+	}
+  ?>
   </div>
 </form>
 

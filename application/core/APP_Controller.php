@@ -94,7 +94,16 @@ class APP_Controller extends CI_Controller {
 			$this->set('current_user', $this->user_data);
         } else {
         }
-        
+		
+		if($this->site->id) {
+			$this->load->model('m_role');
+			
+			$this->user_data->role = $this->m_role->get_role($this->site->id, $this->user_data->id);
+			if(!$this->user_data->role) $this->user_data->role = 'guest';
+		} else {
+			$this->user_data->role = 'guest';
+		}
+		        
 		if($this->input->is_ajax_request()) {
 		    $this->layout->setLayout('layouts/empty');
 		} else {

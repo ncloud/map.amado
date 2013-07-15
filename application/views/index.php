@@ -401,7 +401,7 @@
       // add modal form submit
       $('#modal_add').on('show', function (event) {
 		       var $this = $(this);
-		       var $form = $("#modal_addform");
+		       var $form = $("#addform");
 		       var address = "";
 	           var data = $this.data();
 	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
@@ -409,11 +409,11 @@
 	            data.defaultLatLng = null;
 	           }
 	        
-	            $form.find( '#add_title' ).val("");
-	            $form.find( '#add_type' ).val("");
-	            $form.find( '#add_address' ).val(address);
-	            $form.find( '#add_uri' ).val("");
-	            $form.find( '#add_description' ).val("");
+	            $form.find( '#title' ).val("");
+	            $form.find( '#type' ).val("");
+	            $form.find( '#address' ).val(address);
+	            $form.find( '#uri' ).val("");
+	            $form.find( '#description' ).val("");
 	            
 	            $form.find("#result").html("").removeClass('alert alert-danger');              
 	        
@@ -422,22 +422,22 @@
 	            $form.find(".btn-primary").show();
       });
 
-      $("#modal_addform").ajaxForm({
-        success: function(data) {
-            var content = $( data ).find( '#content' );
-            
+      $("#addform").ajaxForm({
+      	dataType: 'json',
+        success: function(data) {  
             // if submission was successful, show info alert
-            if(data == "success") {
-              $("#modal_addform #result").html("We've received your submission and will review it shortly. Thanks!"); 
-              $("#modal_addform #result").addClass("alert alert-info");
-              $("#modal_addform p").css("display", "none");
-              $("#modal_addform fieldset").css("display", "none");
-              $("#modal_addform .btn-primary").css("display", "none");
-              
-            // if submission failed, show error
+            if(data.success) {
+            	// TODO: 성공알림 후 닫기
             } else {
-              $("#modal_addform #result").html(data); 
-              $("#modal_addform #result").addClass("alert alert-danger");
+            	if(typeof(data.content) == 'object') {
+            		$.each(data.content, function(index, content) {
+            			$("#" + index).parents('.control-group').addClass('error');
+            		});
+	            // TODO: 에러 알림
+            	} else {
+	            // TODO: 에러 알림
+            	}
+	            
             }
           }
       });

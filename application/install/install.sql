@@ -95,26 +95,25 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `role_users` (
-  `site_id` int(11) unsigned NOT NULL,
+  `site_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `role_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`site_id`,`user_id`,`role_id`),
-  KEY `fk_role_id` (`site_id`, `role_id`)
+  UNIQUE KEY `site_id` (`site_id`,`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `level` int(11) unsigned DEFAULT NULL,
   `name` varchar(32) NOT NULL,
   `description` varchar(255)  DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `roles` (`id`, `name`) VALUES 
-	  ('1', 'login'), 
-	  ('2', 'guest'), 
-	  ('3', 'admin'), 
-	  ('4', 'super-admin');
+INSERT INTO `roles` (`id`, `name`, `level`) VALUES 
+	  ('1', 'member', '1'), 
+	  ('2', 'admin', '2'), 
+	  ('3', 'super-admin', '3');
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -148,6 +147,7 @@ INSERT INTO `sites` (`id`, `user_id`, `permalink`, `name`) VALUES
 
 /* INSERT INTO `courses` (`site_id`, `user_id`, `permalink`, `name`) VALUES 
     ('1', '1', 'basic', '기본'); */
-	  
+
 INSERT INTO `role_users` (`site_id`, `user_id`, `role_id`) VALUES 
-	  ('1', '1', '4');
+	  (null, '1', '3');
+	  	  

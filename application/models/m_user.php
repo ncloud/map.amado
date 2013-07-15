@@ -237,7 +237,7 @@ class M_User extends CI_Model
             
 			return $user;
 		} else {    
-			$role_name					= 'login';
+			$role_name					= 'member';
 			$password					= strtolower(random_string('alnum', 32));
 			
 			$user						= new StdClass;

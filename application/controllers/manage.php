@@ -4,10 +4,6 @@ class Manage extends APP_Controller {
     {
         parent::__construct();
 		
-		if(empty($this->user_data->id)) {
-			redirect('/login');
-		}
-		
 		$this->layout->setLayout('layouts/manage');
 		
 		$this->load->model('m_place');
@@ -33,6 +29,10 @@ class Manage extends APP_Controller {
 	
 	function index($page = 1)
 	{
+		if(empty($this->user_data->id)) {
+			redirect('/login');
+		}
+		
 		if(empty($this->site->id)) {
 		} else {
 			$this->__get_lists($this->site->id, 'all', $page);
@@ -43,6 +43,10 @@ class Manage extends APP_Controller {
 	function lists($status, $page = 1)
 	{
 		if(empty($this->site->id)) redirect('/manage');
+		
+		if(empty($this->user_data->id)) {
+			redirect('/login');
+		}
 		
 		$this->__get_lists($this->site->id, $status, $page);
 
@@ -72,6 +76,7 @@ class Manage extends APP_Controller {
 					$errors = $this->__check_for_place_form($_POST, $default_place);
 					if(!$errors) {
 						$_POST['site_id'] = $this->site->id;
+						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
 						if($place_id = $this->m_place->add($_POST)) {
 							redirect($this->site->permalink.'/manage');
@@ -83,12 +88,21 @@ class Manage extends APP_Controller {
 					}
 				}
 
-				$this->set('message', $message);
-				
-				$this->set('place', $default_place);
-				$this->set('place_types', $this->m_place->get_types($this->site->id));	
-				
-				$this->view('manage/add/place');
+				if($this->input->is_ajax_request()) {
+					$output = new StdClass;
+					$output->success = $message->type == 'successs' ? true : false;
+					$output->content = $message->content;
+					
+					$this->layout->setLayout('layouts/empty');
+					echo json_encode($output);	 
+				} else {
+					$this->set('message', $message);
+					
+					$this->set('place', $default_place);
+					$this->set('place_types', $this->m_place->get_types($this->site->id));	
+					
+					$this->view('manage/add/place');
+				}
 			break;		
 		}
 	}
@@ -99,32 +113,48 @@ class Manage extends APP_Controller {
 		
 		if($place = $this->m_place->get($id)) {
 			$message = null;
-				
-			if(!empty($_POST)) {
-				$errors = $this->__check_for_place_form($_POST, $place);
-				if(!$errors) {
-					$this->m_place->update($id, $_POST);
-				
-					$message = new StdClass;
-					$message->type = 'success';
-					$message->content = '변경사항을 저장했습니다.';
-				
-					$place = $this->m_place->get($id);
-				} else {
-					$message = new StdClass;
-					$message->type = 'error';
-					$message->content = $errors;
+			
+			
+			if($place->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = '변경 권한이 없습니다.';
+			} else {
+				if(!empty($_POST)) {
+					$errors = $this->__check_for_place_form($_POST, $place);
+					if(!$errors) {
+						$this->m_place->update($id, $_POST);
+					
+						$message = new StdClass;
+						$message->type = 'success';
+						$message->content = '변경사항을 저장했습니다.';
+					
+						$place = $this->m_place->get($id);
+					} else {
+						$message = new StdClass;
+						$message->type = 'error';
+						$message->content = $errors;
+					}
 				}
 			}
 			
-			$this->set('message', $message);
-			
-			$this->set('edit_mode', true);
-			
-			$this->set('place', $place);
-			$this->set('place_types', $this->m_place->get_types($this->site->id));
-			
-			$this->view('manage/add/place');
+			if($this->input->is_ajax_request()) {
+				$output = new StdClass;
+				$output->success = $message->type == 'successs' ? true : false;
+				$output->content = $message->content;
+				
+				$this->layout->setLayout('layouts/empty');
+				echo json_encode($output);	 
+			} else {
+				$this->set('message', $message);
+				
+				$this->set('edit_mode', true);
+				
+				$this->set('place', $place);
+				$this->set('place_types', $this->m_place->get_types($this->site->id));
+				
+				$this->view('manage/add/place');
+			}
 		} else {
 			$this->error('에러가 발생했습니다', '잘못된 페이지 주소입니다.');
 		}
@@ -132,6 +162,10 @@ class Manage extends APP_Controller {
 	
 	function change($type, $id, $value)
 	{
+		if(empty($this->user_data->i) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
+			return false;
+		}
+		
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		
 		switch($type) {

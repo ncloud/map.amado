@@ -21,14 +21,10 @@ class Auth_Database_Driver extends Auth_Driver {
 	/**
 	 * Checks if a session is active.
 	 *
-	 * @param   string   role name
-	 * @param   array    collection of role names
 	 * @return  boolean
 	 */
-	public function logged_in($role)
+	public function logged_in()
 	{
-		$this->obj->load->model('m_role');
-		$this->obj->load->model('m_role_user');
 		$this->obj->load->model('m_user');
 		
 		$status = FALSE;
@@ -36,46 +32,9 @@ class Auth_Database_Driver extends Auth_Driver {
 		// Get the user from the session
 		$user = $this->session->userdata($this->config->item('session_key'));
 
-		if (is_object($user))
+		if (is_object($user) && !empty($user->id))
 		{
-			// Everything is okay so far
 			$status = TRUE;
-
-			if ( ! empty($role))
-			{
-
-				// If role is an array
-				if (is_array($role))
-				{
-					// Check each role
-					foreach ($role as $role_iteration)
-					{
-						if ( ! is_object($role_iteration))
-						{
-							$role_iteration = $this->obj->m_role->get($role_iteration);
-						}
-						// If the user doesn't have the role
-						if( ! $this->obj->m_role_user->check($user->id, $role_iteration->id))
-						{
-							// Set the status false and get outta here
-							$status = FALSE;
-							break;
-						}
-					}
-				}
-				else
-				{
-				// Else just check the one supplied roles
-					if ( ! is_object($role))
-					{
-						// Load the role
-						$role = $this->obj->m_role->get($role);
-					}
-
-					// Check that the user has the given role
-					$status = $this->obj->m_role_user->check($user->id, $role->id);
-				}
-			}
 		}
 
 		return $status;
@@ -91,8 +50,6 @@ class Auth_Database_Driver extends Auth_Driver {
 	 */
 	public function login($user, $password, $remember)
 	{
-		$this->obj->load->model('m_role');
-		$this->obj->load->model('m_role_user');
 		$this->obj->load->model('m_user');
 		$this->obj->load->model('m_user_token');
 
@@ -103,11 +60,9 @@ class Auth_Database_Driver extends Auth_Driver {
 			// Load the user
 			$user = $this->obj->m_user->get_by_username($user);
 		}
-		
-		$role = $this->obj->m_role->get('login');
-		
+				
 		// If the passwords match, perform a login
-		if ($this->obj->m_role_user->check($user->id, $role->id) && $user->password === $password)
+		if ($user->password === $password)
 		{
 			if ($remember === TRUE)
 			{	
@@ -243,7 +198,7 @@ class Auth_Database_Driver extends Auth_Driver {
 
 	/**
 	 * Complete the login for a user by incrementing the logins and setting
-	 * session data: user_id, username, roles
+	 * session data: user_id, username
 	 *
 	 * @param   object   user model object
 	 * @return  void
