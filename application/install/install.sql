@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS CREATE TABLE `sites` (
+CREATE TABLE IF NOT EXISTS `sites` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned DEFAULT NULL,
   `permalink` varchar(128) DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `images` (
 CREATE TABLE IF NOT EXISTS `places` (
   `id` int(11) NOT NULL AUTO_INCREMENT,  
   `site_id` int(11) unsigned DEFAULT NULL,
-  `type_id` int(11) unsigned DEFAULT NULLL,
+  `type_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
   `approved` enum('yes','no') NOT NULL DEFAULT 'no',
   `title` varchar(100) NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `place_types` (
 
 INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`) VALUES 
 	  ('1', '1', '1', '역사/유적'),
-	  ('2', '1', '2,, '미술/전시'),
+	  ('2', '1', '2', '미술/전시'),
 	  ('3', '1', '3', '문화'), 
 	  ('4', '1', '4', '식당/맛집'), 
 	  ('5', '1', '5', '카페'), 
@@ -79,9 +79,6 @@ CREATE TABLE IF NOT EXISTS `courses` (
   UNIQUE KEY `permalink` (`permalink`),
   KEY `site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `courses` (`site_id`, `permalink`, `name`) VALUES 
-	  ('1', 'basic', '기본');
 	  
 CREATE TABLE IF NOT EXISTS `user_tokens` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -148,6 +145,9 @@ INSERT INTO `users` (`id`, `username`, `password`, `name`, `display_name`, `emai
 
 INSERT INTO `sites` (`id`, `user_id`, `permalink`, `name`) VALUES 
 	  ('1', '1', 'basic', '기본');
+
+/* INSERT INTO `courses` (`site_id`, `user_id`, `permalink`, `name`) VALUES 
+    ('1', '1', 'basic', '기본'); */
 	  
 INSERT INTO `role_users` (`site_id`, `user_id`, `role_id`) VALUES 
 	  ('1', '1', '4');
