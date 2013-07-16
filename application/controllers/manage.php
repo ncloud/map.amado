@@ -57,29 +57,45 @@ class Manage extends APP_Controller {
 		if(empty($this->site->id)) redirect('/');
 		
 		$message = null;
-		
+
 		switch($type) {
-			case 'place':
-				$default_place = new StdClass;
-				$default_place->type_id = '';
-				$default_place->title = '';
-				$default_place->description = '';
-				$default_place->address = '';
-				$default_place->address_is_position = 'no';
-				$default_place->lat = '37.5935645';
-				$default_place->lng = '127.0010451';
-				$default_place->uri = '';
-				$default_place->owner_name = '';
-				$default_place->owner_email = '';
+			case 'image':	
+				$default_image = new StdClass;
+				$default_image->title = '';
+				$default_image->description = '';
+				$default_image->address = '';
+				$default_image->address_is_position = 'no';
+				$default_image->lat = '37.5935645';
+				$default_image->lng = '127.0010451';
+				$default_image->attached = 'no';
+				$default_image->owner_name = '';
+				$default_image->owner_email = '';
 				
 				if(!empty($_POST)) {
-					$errors = $this->__check_for_place_form($_POST, $default_place);
+					$this->load->model('m_image');
+
+					if(isset($_FILES) && !empty($_FILES)) {
+						foreach($_FILES as $key=>$file) $_POST[$key] = $file;
+					}
+
+					$errors = $this->__check_for_image_form($_POST, $default_image);
 					if(!$errors) {
+						$_POST['file'] = $_POST['image'];
 						$_POST['site_id'] = $this->site->id;
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
+
+						unset($_POST['image']);
 						
-						if($place_id = $this->m_place->add($_POST)) {
-							redirect($this->site->permalink.'/manage');
+						$image_id = $this->m_image->add($_POST);
+
+						if(!$this->input->is_ajax_request()) {
+							if($image_id) {
+								redirect($this->site->permalink.'/manage');
+							}
+						} else {
+							$message = new StdClass;
+							$message->type = 'success';
+							$message->content = $image_id;
 						}
 					} else {
 						$message = new StdClass;
@@ -90,11 +106,63 @@ class Manage extends APP_Controller {
 
 				if($this->input->is_ajax_request()) {
 					$output = new StdClass;
-					$output->success = $message->type == 'successs' ? true : false;
+					$output->success = $message->type == 'success' ? true : false;
 					$output->content = $message->content;
 					
 					$this->layout->setLayout('layouts/empty');
-					echo json_encode($output);	 
+					echo json_encode($output);	
+				} else {
+					$this->set('message', $message);
+					
+					$this->set('image', $default_image);
+					
+					$this->view('manage/add/image');
+				}
+			break;
+			case 'place':
+				$default_place = new StdClass;
+				$default_place->type_id = '';
+				$default_place->title = '';
+				$default_place->description = '';
+				$default_place->address = '';
+				$default_place->address_is_position = 'no';
+				$default_place->lat = '37.5935645';
+				$default_place->lng = '127.0010451';
+				$default_place->url = '';
+				$default_place->owner_name = '';
+				$default_place->owner_email = '';
+				
+				if(!empty($_POST)) {
+					$errors = $this->__check_for_place_form($_POST, $default_place);
+					if(!$errors) {
+						$_POST['site_id'] = $this->site->id;
+						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
+						
+						$place_id = $this->m_place->add($_POST);
+
+						if(!$this->input->is_ajax_request()) {
+							if($place_id) {
+								redirect($this->site->permalink.'/manage');
+							}
+						} else {
+							$message = new StdClass;
+							$message->type = 'success';
+							$message->content = $place_id;
+						}
+					} else {
+						$message = new StdClass;
+						$message->type = 'error';
+						$message->content = $errors;
+					}
+				}
+
+				if($this->input->is_ajax_request()) {
+					$output = new StdClass;
+					$output->success = $message->type == 'success' ? true : false;
+					$output->content = $message->content;
+					
+					$this->layout->setLayout('layouts/empty');
+					echo json_encode($output);	
 				} else {
 					$this->set('message', $message);
 					
@@ -113,17 +181,34 @@ class Manage extends APP_Controller {
 		
 		if($place = $this->m_place->get($id)) {
 			$message = null;
-			
-			
+
 			if($place->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$message = new StdClass;
 				$message->type = 'error';
 				$message->content = '변경 권한이 없습니다.';
 			} else {
 				if(!empty($_POST)) {
-					$errors = $this->__check_for_place_form($_POST, $place);
+					if(isset($_FILES) && !empty($_FILES)) {
+						foreach($_FILES as $key=>$file) $_POST[$key] = $file;
+					}
+
+					if($place->attached == 'image') {
+						$this->load->model('m_image');						
+
+						$errors = $this->__check_for_image_form($_POST, $place);
+					} else {
+						$errors = $this->__check_for_place_form($_POST, $place);
+					}
+
 					if(!$errors) {
-						$this->m_place->update($id, $_POST);
+						if($place->attached == 'image') {						
+							$_POST['file'] = $_POST['image'];
+							unset($_POST['image']);
+							
+							$this->m_image->update($id, $_POST);
+						} else {
+							$this->m_place->update($id, $_POST);
+						}
 					
 						$message = new StdClass;
 						$message->type = 'success';
@@ -150,10 +235,16 @@ class Manage extends APP_Controller {
 				
 				$this->set('edit_mode', true);
 				
-				$this->set('place', $place);
-				$this->set('place_types', $this->m_place->get_types($this->site->id));
+				if($place->attached == 'image') {
+					$this->set('image', $place);
 				
-				$this->view('manage/add/place');
+					$this->view('manage/add/image');
+				} else {
+					$this->set('place', $place);
+					$this->set('place_types', $this->m_place->get_types($this->site->id));
+				
+					$this->view('manage/add/place');
+				}
 			}
 		} else {
 			$this->error('에러가 발생했습니다', '잘못된 페이지 주소입니다.');
@@ -162,7 +253,7 @@ class Manage extends APP_Controller {
 	
 	function change($type, $id, $value)
 	{
-		if(empty($this->user_data->i) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
+		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
 			return false;
 		}
 		
@@ -225,6 +316,51 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 	
+
+	private function __check_for_image_form($form, &$change_image = null)
+	{
+		$errors = array();
+
+		if(!isset($form['image']) || empty($form['image'])) {
+			$errors['image'] = '사진을 업로드해주세요';
+		} else {
+			if($change_image) $change_image->title = $form['title'];
+		}
+
+		if(isset($form['image']['type']) && !in_array($form['image']['type'],array('image/png','image/jpeg','image/gif'))) {
+			$errors['image'] = '허용하지 않는 사진 종류입니다. [허용 : png, jpeg, gif]';
+		}
+		
+		if(!isset($form['title']) || empty($form['title'])) {
+			$errors['title'] = '이름을 입력해주세요';
+		} else {
+			if($change_image) $change_image->title = $form['title'];
+		}
+		
+		if(!isset($form['address']) || empty($form['address'])) {
+			$errors['address'] = '주소를 입력해주세요';
+		} else {
+			if($change_image) $change_image->address = $form['address'];
+		}
+		
+		if(!isset($form['owner_name']) || empty($form['owner_name'])) {
+			$errors['owner_name'] = '등록자 이름을 입력해주세요';
+		} else {
+			if($change_image) $change_image->owner_name = $form['owner_name'];
+		}
+		
+		if(!isset($form['owner_email']) || empty($form['owner_email'])) {
+			$errors['owner_email'] = '등록자 이메일을 입력해주세요';
+		}else {
+			if($change_image) $change_image->owner_email = $form['owner_email'];
+		}
+		
+		if(isset($form['description']) && $change_image) $change_image->description = $form['description'];
+		
+		if(count($errors) == 0) return false;
+		return $errors;
+	}
+
 	private function __get_lists($site_id, $status, $page = 1)
 	{
 		$this->set('status', $status);

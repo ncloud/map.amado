@@ -46,27 +46,32 @@ class Page extends APP_Controller {
 			}
 			
 	        foreach($place_lists as $key => $place) {
-	          $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
+	          if($place->type_id) $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
 	          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
 	        	
 			  if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();
-			  $place_lists_by_type[$place->type_id][] = $place;
+			  if($place->type_id) $place_lists_by_type[$place->type_id][] = $place;
 			  
-	          $full_lat += $place->lat;
-	          $full_lng += $place->lng;
-	          $full_count ++;
 			  
-	          $count_by_type[$place->type_id]++;
+	          if($place->type_id) $count_by_type[$place->type_id]++;
+
+	          if($place->attached == 'image') {
+	          	$place_lists[$key]->image = site_url('files/uploads/'.$place->file);
+	          	$place_lists[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
+	          	$place_lists[$key]->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
+	          } else if($place->attached == 'no') {
+		        $full_lat += $place->lat;
+		        $full_lng += $place->lng;
+		        $full_count ++;
+	          }
+
+	          unset($place_lists[$key]->file);
 	        }
-					
+
 	        $this->set('place_lists', $place_lists);
 			$this->set('place_lists_by_type', $place_lists_by_type);
 			$this->set('count_by_type', $count_by_type);
 			
-			$image_lists  = $this->m_image->gets($this->site->id);
-			$this->set('image_lists', $image_lists);
-			
-	
 	        $default_lat = $full_lat / $full_count;
 	        $default_lng = $full_lng / $full_count;
 			$this->set('default_lat', $default_lat);

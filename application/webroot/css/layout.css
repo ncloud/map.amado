@@ -293,35 +293,36 @@ body {
 	
 	/* modal */
 	
-	#modal_add
+	.add_modal
 	{
 	}
-	#modal_add .modal-body
+	.add_modal .modal-body
 	{
-	  max-height: none;
+	  max-height: none !important;
 	}
-	#modal_add fieldset
+	.add_modal fieldset
 	{
-	  padding-top: 15px;
+	  padding-top: 15px !important;
 	}
-	#modal_add .control-label
+	.add_modal .control-label
 	{
-		width:120px;
+		width:120px !important;
 	}
-	#modal_add .controls 
+	.add_modal .controls 
 	{
-		margin-left:135px;
+		margin-left:135px !important;
 	}
-		#modal_add .help-block
+		.add_modal .help-block
 		{
-		  font-size: 8pt;
-		  color: #777;
-		  max-width: 275px;
+		  font-size: 8pt !important;
+		  color: #777 !important;
+		  max-width: 275px !important;
 		}
-	#modal_add .modal-footer
+
+	.add_modal .modal-footer
 	{
-	  text-align: left;
-	  padding-left:145px;
+	  text-align: left !important;
+	  padding-left:145px !important;
 	}
 	
 	
@@ -376,6 +377,8 @@ body {
 	  margin-top: 25px;
 	}
 	
+	/* basic */
+
 	/* context menu */
 	
 	.context_menu

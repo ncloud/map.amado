@@ -1,7 +1,9 @@
 	
-    
-    <?php echo isset($error) && !empty($error) ? $error : ''; ?>
-    
+  <?php echo isset($error) && !empty($error) ? $error : ''; ?>
+
+  <div class='notifications top-center'>
+  </div>
+
 	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
 	
     <!-- google map -->
@@ -44,7 +46,7 @@
             echo "<li class='category category_{$type->id}'>
                 <div class='category_item'>
                   <div class='category_toggle' onClick=\"toggle('{$type->id}')\" id='filter_{$type->id}'></div>
-                  <a href='#' onClick=\"toggleList('{$type->id}');\" class='category_info'><img src='./img/icons/{$type->id}.png' alt='' />{$type->name}<span class='total'> ({$markers_count})</span></a>
+                  <a href='#' onClick=\"toggleList('{$type->id}');\" class='category_info'><img src='".site_url('/img/icons/'.$type->id).".png' alt='' />{$type->name}<span class='total'> ({$markers_count})</span></a>
                 </div>
                 <ul class='list-items list-{$type->id}'>";
 			
@@ -82,80 +84,19 @@
     
     
     <!-- add something modal -->
-    <div class="modal hide" id="modal_add">
+    <div class="modal hide add_modal" id="modal_add">
     	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$place_types));?>
     </div>
     
     
     <!-- add image modal -->
-    <div class="modal hide" id="modal_image_add">
-      <form enctype="multipart/form-data" method="post" action="add_image.php" id="modal_image_addform" class="form-horizontal">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">×</button>
-          <h3>사진 추가하기</h3>
-        </div>
-        <div class="modal-body">
-          <div id="result"></div>
-          <fieldset>
-          <?php if($current_user->id) { ?>
-            <input type="hidden" id="add_image_owner_name" name="owner_name" value="관리자" />
-            <input type="hidden" id="add_image_owner_email" name="owner_email" value="owner@domain.com" />
-          <?php } else { ?>
-            <div class="control-group">
-              <label class="control-label" for="add_image_owner_name">신청자 이름</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="owner_name" id="add_image_owner_name" maxlength="100">
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_image_owner_email">신청자 이메일</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="owner_email" id="add_image_owner_email" maxlength="100">
-              </div>
-            </div>
-          <?php } ?>
-            <div class="control-group">
-              <label class="control-label" for="add_image_file">장소(공간) 사진</label>
-              <div class="controls">
-                <input type="file" class="input-xlarge" name="image" id="add_image_file" autocomplete="off">
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_image_title">장소(공간) 이름</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="title" id="add_image_title" maxlength="100" autocomplete="off">
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_image_address">장소(공간) 주소</label>
-              <div class="controls">
-                <input type="text" class="input-xlarge" name="address" id="add_image_address">
-                <p class="help-block">
-                  구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
-                </p>
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="add_image_description">장소(공간) 설명</label>
-              <div class="controls">
-                <textarea class="input-xlarge" id="add_image_description" name="description" maxlength="150"></textarea>
-                <p class="help-block">
-                  최대 150자 내외로 장소(공간)에 대한 설명을 입력해주세요.
-                </p>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">신청하기</button>
-          <a href="#" class="btn" data-dismiss="modal" style="float: right;">닫기</a>
-        </div>
-      </form>
+    <div class="modal hide add_modal" id="modal_image_add">     
+      <?php echo $this->view('/manage/add/image', array('modal_mode'=>true));?>
     </div>
 
 	<script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
     
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 	<script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.js');?>"></script>
 	<script type="text/javascript" src="<?php echo site_url('/js/plugin/label.js');?>"></script>
 	<script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>
@@ -180,13 +121,11 @@
         var images = new Array();
         <?php
             foreach($place_lists as $place) {
-              echo 
-               "markers[{$place->id}] = {title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', uri:'".$place->uri."', address:'".$place->address."'};"; 
-            }
-
-           // images
-            foreach($image_lists as $image) {
-             echo "images.push({title:'{$image->title}', type:'image', image:'./uploads/30x30_{$image->image}', original_image:'./uploads/{$image->image}', lat:'{$image->lat}', lng:'{$image->lng}'});";
+              if($place->attached == 'no') {
+                echo "markers[{$place->id}] = {title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', url:'{$place->url}', address:'{$place->address}'};"; 
+              } else if($place->attached == 'image') {
+                echo "images.push({title:'{$place->title}', type:'image', image:'{$place->image_small}', original_image:'{$place->image}', lat:'{$place->lat}', lng:'{$place->lng}'});";
+              }
             }
         ?>
       	
@@ -219,10 +158,10 @@
               
           var markerImage = new google.maps.MarkerImage(val.image, null, null, null, new google.maps.Size(30,30));
           var marker = gmap.addMarker({
-			  lat: val.lat,
-			  lng: val.lng,
-			  title: '',
-			  zIndex: 10 + i,
+      			  lat: val.lat,
+      			  lng: val.lng,
+      			  title: '',
+      			  zIndex: 10 + i,
               icon: markerImage,
               infoWindow: {
               	content: info
@@ -252,27 +191,27 @@
           var iconSize = null;
 
         // format marker URI for display and linking
-         var markerURI = val.uri;
-         if(markerURI.substr(0,7) != "http://") {
-        	markerURI = "http://" + markerURI; 
+         var markerURL = val.url;
+         if(markerURL.substr(0,7) != "http://") {
+        	markerURL = "http://" + markerURL; 
          } 
-         var markerURI_short = markerURI.replace("http://", "");
-         var markerURI_short = markerURI_short.replace("www.", "");
+         var markerURL_short = markerURL.replace("http://", "");
+         var markerURL_short = markerURL_short.replace("www.", "");
       
          var info = 
 	          "<div class='marker_title'>"+val.title+"</div>"
-	          + "<div class='marker_uri'><a target='_blank' href='"+markerURI+"'>"+markerURI_short+"</a></div>"
+	          + "<div class='marker_uri'><a target='_blank' href='"+markerURL+"'>"+markerURL_short+"</a></div>"
 	          + "<div class='marker_desc'>"+val.description+"</div>"
 	          + "<div class='marker_address'>"+val.address+"</div>";	         
 	             
           // build this marker
-          var markerImage = new google.maps.MarkerImage("./img/icons/"+val.icon+".png", null, null, null, iconSize);
+          var markerImage = new google.maps.MarkerImage("<?php echo site_url('/img/icons/');?>/"+val.icon+".png", null, null, null, iconSize);
           var marker = gmap.addMarker({
-			  type: val.type,
-			  lat: val.lat,
-			  lng: val.lng,
-			  title: '',
-			  zIndex: 10 + i,
+      			  type: val.type,
+      			  lat: val.lat,
+      			  lng: val.lng,
+      			  title: '',
+      			  zIndex: 10 + i,
               icon: markerImage,
               infoWindow: {
               	content: info
@@ -299,7 +238,6 @@
           label.bindTo('clickable', marker);
           label.bindTo('zIndex', marker);
         });
-        
         
         
         // context menu
@@ -389,7 +327,7 @@
       }
 
       function markerListMouseOver(type, marker_id) {
-		gmap.panTo(gmarkers[type + '_' + marker_id].getPosition());
+		    gmap.panTo(gmarkers[type + '_' + marker_id].getPosition());
 
         $("#marker"+marker_id).css("display", "inline");
       }
@@ -408,15 +346,15 @@
 	            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
 	            data.defaultLatLng = null;
 	           }
+
+              $form.find('.error').removeClass('error');
 	        
-	            $form.find( '#title' ).val("");
-	            $form.find( '#type' ).val("");
-	            $form.find( '#address' ).val(address);
-	            $form.find( '#uri' ).val("");
-	            $form.find( '#description' ).val("");
+	            $form.find( '[name=title]' ).val("");
+	            $form.find( '[name=type_id]' ).val("");
+	            $form.find( '[name=address]' ).val(address);
+	            $form.find( '[name=url]' ).val("");
+	            $form.find( '[name=description]' ).val("");
 	            
-	            $form.find("#result").html("").removeClass('alert alert-danger');              
-	        
 	            $form.find("p").show();
 	            $form.find("fieldset").show();
 	            $form.find(".btn-primary").show();
@@ -425,17 +363,33 @@
       $("#addform").ajaxForm({
       	dataType: 'json',
         success: function(data) {  
-            // if submission was successful, show info alert
+            $form = $("#addform");
+            $form.find('.error').removeClass('error');
+
             if(data.success) {
-            	// TODO: 성공알림 후 닫기
+               $('.top-center').notify({
+                  key: 'addform',
+                  message: { html: '<h3>장소를 추가했습니다.</h3>관리자의 승인 후 실제 지도에 입력됩니다.' },
+                  type:'success'
+                }).show();
+
+              $("#modal_add").modal('hide');
             } else {
             	if(typeof(data.content) == 'object') {
             		$.each(data.content, function(index, content) {
-            			$("#" + index).parents('.control-group').addClass('error');
+            			$form.find("[name=" + index + "]").parents('.control-group').addClass('error');
             		});
-	            // TODO: 에러 알림
+	               $('.top-center').notify({
+                    key: 'addform',
+                    message: { text: '모든 필수 입력항목을 입력해주세요.' },
+                    type:'error'
+                  }).show();
             	} else {
-	            // TODO: 에러 알림
+                 $('.top-center').notify({
+                    key: 'addform',
+                    message: { text: '모든 필수 입력항목을 입력해주세요.' },
+                    type:'error'
+                 }).show();
             	}
 	            
             }
@@ -443,10 +397,9 @@
       });
       
       
-      // add modal form submit
       $('#modal_image_add').on('show', function (event) {
 		       var $this = $(this);
-		       var $form = $("#modal_image_addform");
+		       var $form = $("#addform_image");
 		       var address = "";
 	        
 	           var data = $this.data();
@@ -455,34 +408,50 @@
 	            data.defaultLatLng = null;
 	           }
 	        
-	           $form.find( '#add_image_title' ).val("");
-	           $form.find( '#add_image_address' ).val(address);
-	           $form.find( '#add_image_description' ).val("");
+	           $form.find( '[name=title]' ).val("");
+	           $form.find( '[name=address]' ).val(address);
+	           $form.find( '[name=description]' ).val("");
 	            
-	           $form.find("#result").html("").removeClass('alert alert-danger');              
-	        
 	           $form.find("p").show();
 	           $form.find("fieldset").show();
 	           $form.find(".btn-primary").show();
       });
 
-      $("#modal_image_addform").ajaxForm({
+      $("#addform_image").ajaxForm({    
+            dataType: 'json',
             success:function(data) {
-                var content = $( data ).find( '#content' );
-                
-                // if submission was successful, show info alert
-                if(data == "success") {
-                  $("#modal_image_addform #result").html("We've received your submission and will review it shortly. Thanks!"); 
-                  $("#modal_image_addform #result").addClass("alert alert-info");
-                  $("#modal_image_addform p").css("display", "none");
-                  $("#modal_image_addform fieldset").css("display", "none");
-                  $("#modal_image_addform .btn-primary").css("display", "none");
-                  
-                // if submission failed, show error
+              console.log(data);
+
+              $form = $("#addform_image");
+              $form.find('.error').removeClass('error');
+
+              if(data.success) {
+                 $('.top-center').notify({
+                    key: 'addform',
+                    message: { html: '<h3>사진을 추가했습니다.</h3>관리자의 승인 후 실제 지도에 입력됩니다.' },
+                    type:'success'
+                  }).show();
+
+                $("#modal_image_add").modal('hide');
+              } else {
+                if(typeof(data.content) == 'object') {
+                  $.each(data.content, function(index, content) {
+                    $form.find("[name=" + index + "]").parents('.control-group').addClass('error');
+                  });
+                   $('.top-center').notify({
+                      key: 'addform',
+                      message: { text: '모든 필수 입력항목을 입력해주세요.' },
+                      type:'error'
+                    }).show();
                 } else {
-                  $("#modalimage__addform #result").html(data); 
-                  $("#modal_image_addform #result").addClass("alert alert-danger");
+                   $('.top-center').notify({
+                      key: 'addform',
+                      message: { text: '모든 필수 입력항목을 입력해주세요.' },
+                      type:'error'
+                   }).show();
                 }
+                
+              }
             }
       });
     </script>

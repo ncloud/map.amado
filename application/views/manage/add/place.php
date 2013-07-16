@@ -7,7 +7,7 @@
 
 <form id="addform" action="<?php echo site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
-  	 <?php if(isset($message) && !empty($message)) { ?>
+  	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
 	  	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	  	<?php
@@ -44,12 +44,12 @@
   <?php } ?>
   <fieldset>
     <div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
-      <label class="control-label" for="">등록자 이름 *</label>
+      <label class="control-label" for="place_owner_name">등록자 이름 *</label>
       <div class="controls">
       	<?php
       		if($current_user->id) {
       	?>
-      	<input type="hidden" id="owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
+      	<input type="hidden" id="place_owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
       	<div class="text"><?php echo $current_user->name;?></div>
 		<?php
 			} else {
@@ -61,26 +61,26 @@
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
-      <label class="control-label" for="">등록자 이메일 *</label>
+      <label class="control-label" for="place_owner_email">등록자 이메일 *</label>
       <div class="controls">
       	<?php
       		if($current_user->id) {
       	?>
-      	<input type="hidden" id="owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
+      	<input type="hidden" id="place_owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
       	<div class="text"><?php echo $current_user->email;?></div>
 		<?php
 			} else {
 		?>
-        <input id="owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
+        <input id="place_owner_email" type="text" class="span3" name="place_owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
         <?php
 			}
 		?>
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
-      <label class="control-label" for="">종류 *</label>
+      <label class="control-label" for="place_type_id">종류 *</label>
       <div class="controls">
-        <select id="type_id" class="span3" name="type_id">
+        <select id="place_type_id" class="span3" name="type_id">
         	<option value="">종류를 선택해주세요</option>
           <?php
           	foreach($place_types as $type) {
@@ -93,15 +93,15 @@
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-      <label class="control-label" for="">이름 *</label>
+      <label class="control-label" for="place_title">이름 *</label>
       <div class="controls">
-        <input type="text" id="title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
+        <input type="text" id="place_title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
-      <label class="control-label" for="">주소 *</label>
+      <label class="control-label" for="place_address">주소 *</label>
       <div class="controls">
-        <input type="text" id="address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
+        <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
         <?php
         	if(!$modal_mode) {
         ?>
@@ -115,18 +115,18 @@
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="">URL</label>
+      <label class="control-label" for="place_url">URL</label>
       <div class="controls">
-        <input type="text" id="url" class="span4" name="uri" value="<?php echo isset($place) ? $place->uri : ''?>" />
+        <input type="text" id="place_url" class="span4" name="url" value="<?php echo isset($place) ? $place->url : ''?>" />
         <p class="help-block">
           장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
         </p>
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="">설명</label>
+      <label class="control-label" for="place_description">설명</label>
       <div class="controls">
-        <textarea id="description" class="span4" name="description"><?php echo isset($place) ? $place->description : ''?></textarea>
+        <textarea id="place_description" class="span4" name="description"><?php echo isset($place) ? $place->description : ''?></textarea>
         <p class="help-block">
           최대 150자 내외로 장소에 대한 설명을 입력해주세요.
         </p>

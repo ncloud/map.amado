@@ -20,7 +20,7 @@ class M_Place extends CI_Model
 	
 	function gets($site_id)
 	{
-		return $this->db->from('places')->where('status','approved')->where('site_id', $site_id)->order_by('id DESC')->get()->result();
+		return $this->db->from('places')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.site_id', $site_id)->order_by('places.id DESC')->select('places.*, attaches.filename as file')->get()->result();
 	}
 	
 	function gets_all($site_id, $count, $index = 1)

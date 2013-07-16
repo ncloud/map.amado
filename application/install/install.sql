@@ -17,19 +17,11 @@ CREATE TABLE IF NOT EXISTS `sites` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `images` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `site_id` int(11) unsigned DEFAULT NULL,
-  `approved` enum('yes','no') NOT NULL DEFAULT 'no',
-  `image` varchar(255) DEFAULT NULL,
-  `title` varchar(100) NOT NULL,
-  `lat` double NOT NULL,
-  `lng` double NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `owner_name` varchar(100) NOT NULL,
-  `owner_email` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `site_id` (`site_id`)
+CREATE TABLE IF NOT EXISTS `attaches` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) unsigned DEFAULT NULL,
+  `filename` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `places` (
@@ -43,9 +35,10 @@ CREATE TABLE IF NOT EXISTS `places` (
   `lng` double NOT NULL,
   `address` varchar(200) NOT NULL,
   `address_is_position` enum('yes','no') NOT NULL DEFAULT 'no',
-  `uri` varchar(200) NOT NULL,
+  `url` varchar(200) NOT NULL,
   `description` varchar(255) NOT NULL,
   `sector` varchar(50) NOT NULL,
+  `attached` enum('image','file','no') NOT NULL DEFAULT 'no',
   `owner_name` varchar(100) NOT NULL,
   `owner_email` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),

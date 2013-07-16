@@ -11,7 +11,11 @@
 		<small>(<?php echo $paging->total_count;?>)</small>
   	
 	  	<div class="pull-right">
-			  <small><a href="<?php echo site_url($site->permalink.'/manage/add');?>">장소 추가</a></small>
+
+      <div class="btn-group">
+        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add');?>">장소 추가</a>
+        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add/image');?>">사진 추가</a>
+      </div>
 	  	</div>
   	</h4>
   </div>
@@ -20,6 +24,7 @@
   	<thead>
   		<th>#</th>
   		<th>인증</th>
+      <th></th>
   		<th>정보</th>
   		<th></th>
   	</thead>
@@ -40,7 +45,20 @@
 					case 'rejected': echo '<span class="label label-important">거부됨</span>'; break;
             		}
 				?>
-			</td>
+			</td>  
+      <td class="type">
+            <?php
+              if($place->attached == 'image') {
+            ?>
+              <i class="icon-picture"></i>
+            <?php
+              } else {
+            ?>
+              <i class="icon-map-marker"></i>
+            <?php
+              }
+            ?>
+      </td>
             <td class='info'>
                 <?php echo $place->title;?>
                 <?php
@@ -75,7 +93,7 @@
 		}
 		else {
 	?>
-		<tr><td colspan="4"><div class="text-center">목록의 내용이 비어있습니다.</div></td></tr>
+		<tr><td colspan="5"><div class="text-center">목록의 내용이 비어있습니다.</div></td></tr>
 	<?php
 		}
     ?>
