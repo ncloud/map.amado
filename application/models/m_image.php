@@ -23,10 +23,15 @@ class M_image extends CI_Model
 			return false;
 		}
 
-		$upload_dir = date('Ymd', mktime());
+		$upload_dir = date('Ymd', mktime());		
+
+		if(!is_dir(APPPATH.'/webroot/files/uploads/')) {
+			@mkdir(APPPATH.'/webroot/files/uploads/');			
+			@chmod(APPPATH.'/webroot/files/uploads/', 0777);
+		}
+
 		if(!is_dir(APPPATH.'/webroot/files/uploads/'.$upload_dir)) {
 			@mkdir(APPPATH.'/webroot/files/uploads/'.$upload_dir);			
-			@chmod(APPPATH.'/webroot/files/uploads/', 0777);
 			@chmod(APPPATH.'/webroot/files/uploads/'.$upload_dir, 0777);
 		}
 
