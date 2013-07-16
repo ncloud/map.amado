@@ -148,7 +148,7 @@
 		});
         
         zoomLevel = gmap.getZoom();
-        google.maps.event.addListener(map, 'zoom_changed', function() {
+        google.maps.event.addListener(gmap.map, 'zoom_changed', function() {
           zoomLevel = gmap.getZoom();
         });
         
@@ -156,7 +156,7 @@
           var info = "<div class='marker_title'>"+val.title+"</div>"
               + "<div class='marker_desc'><img src='"+val.original_image+"' alt='' /></div>";
               
-          var markerImage = new google.maps.MarkerImage(val.image, null, null, null, new google.maps.Size(30,30));
+          var markerImage = new google.maps.MarkerImage(val.image, null, null, new google.maps.Point(15,15), new google.maps.Size(30,30));
           var marker = gmap.addMarker({
       			  lat: val.lat,
       			  lng: val.lng,
@@ -166,18 +166,26 @@
               infoWindow: {
               	content: info
               },
-			  click: function(e) {
+      			  click: function(e) {
 
-			  },
-			  mouseover: function() {
-	              $("#marker"+i).show();//fadeIn('fast');
-	          },
-	          mouseout: function() { 
-	              $("#marker"+i).hide();//fadeOut('fast');
-	          }
-			});
-			
+      			  },
+      			  mouseover: function() {
+      	              $("#marker_image_"+i).show();//fadeIn('fast');
+      	          },
+  	          mouseout: function() { 
+  	              $("#marker_image_"+i).hide();//fadeOut('fast');
+  	          }
+      			});
+			   
           gmarkers['image_' + i] = marker;
+
+          var label = new Label({id: 'image_' + i, map:gmap.map, distance: {x:0, y:15}});
+          
+          label.bindTo('position', marker);
+          label.set("text", val.title);
+          label.bindTo('visible', marker);
+          label.bindTo('clickable', marker);
+          label.bindTo('zIndex', marker);
         });
           
         // add markers
@@ -216,21 +224,21 @@
               infoWindow: {
               	content: info
               },
-			  click: function(e) {
+      			  click: function(e) {
 
-			  },
-			  mouseover: function() {
-	              $("#marker"+i).show();//fadeIn('fast');
-	          },
-	          mouseout: function() { 
-	              $("#marker"+i).hide();//fadeOut('fast');
-	          }
-			});
+      			  },
+      			  mouseover: function() {
+      	              $("#marker_place_"+i).show();//fadeIn('fast');
+      	          },
+      	          mouseout: function() { 
+      	              $("#marker_place_"+i).hide();//fadeOut('fast');
+      	          }
+      			});
 
           gmarkers['place_' + i] = marker;
           
           // add marker label
-          var label = new Label({id: i, map:gmap.map});
+          var label = new Label({id: 'place_' + i, map:gmap.map});
           
           label.bindTo('position', marker);
           label.set("text", val.title);
@@ -343,13 +351,13 @@
 		       var address = "";
 	           var data = $this.data();
 	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-	            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
+	            address = data.defaultLatLng.jb + ", " + data.defaultLatLng.kb;
 	            data.defaultLatLng = null;
 	           }
 
               $form.find('.error').removeClass('error');
-	        
-	            $form.find( '[name=title]' ).val("");
+	            
+              $form.find( '[name=title]' ).val("");
 	            $form.find( '[name=type_id]' ).val("");
 	            $form.find( '[name=address]' ).val(address);
 	            $form.find( '[name=url]' ).val("");
@@ -369,7 +377,7 @@
             if(data.success) {
                $('.top-center').notify({
                   key: 'addform',
-                  message: { html: '<h3>장소를 추가했습니다.</h3>관리자의 승인 후 실제 지도에 입력됩니다.' },
+                  message: { html: '<h3>장소를 추가했습니다.</h3>' + (data.content.status == 'approved' ? '새로고침하시면 실제 입력된 모습을 보실 수 있습니다.' : '관리자의 승인 후 실제 지도에 입력됩니다.') },
                   type:'success'
                 }).show();
 
@@ -404,10 +412,11 @@
 	        
 	           var data = $this.data();
 	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-	            address = data.defaultLatLng.kb + ", " + data.defaultLatLng.jb;
+              address = data.defaultLatLng.jb + ", " + data.defaultLatLng.kb;
 	            data.defaultLatLng = null;
 	           }
-	        
+	           
+             $form.find( '[name=image]' ).val("");
 	           $form.find( '[name=title]' ).val("");
 	           $form.find( '[name=address]' ).val(address);
 	           $form.find( '[name=description]' ).val("");
@@ -428,7 +437,7 @@
               if(data.success) {
                  $('.top-center').notify({
                     key: 'addform',
-                    message: { html: '<h3>사진을 추가했습니다.</h3>관리자의 승인 후 실제 지도에 입력됩니다.' },
+                    message: { html: '<h3>사진을 추가했습니다.</h3>' + (data.content.status == 'approved' ? '새로고침하시면 실제 입력된 모습을 보실 수 있습니다.' : '관리자의 승인 후 실제 지도에 입력됩니다.') },
                     type:'success'
                   }).show();
 

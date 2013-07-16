@@ -85,8 +85,18 @@ class Manage extends APP_Controller {
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 
 						unset($_POST['image']);
+
+						if(isset($_POST['approved'])) {
+							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+								$_POST['status'] = 'approved';
+							}
+							unset($_POST['approved']);
+						}
 						
 						$image_id = $this->m_image->add($_POST);
+
+						$this->load->model('m_work');
+						$this->m_work->rebuild_geocode_for_places();	
 
 						if(!$this->input->is_ajax_request()) {
 							if($image_id) {
@@ -95,7 +105,7 @@ class Manage extends APP_Controller {
 						} else {
 							$message = new StdClass;
 							$message->type = 'success';
-							$message->content = $image_id;
+							$message->content = array('id'=>$image_id, 'status'=>isset($_POST['status']) ? $_POST['status'] : 'pending');
 						}
 					} else {
 						$message = new StdClass;
@@ -138,7 +148,17 @@ class Manage extends APP_Controller {
 						$_POST['site_id'] = $this->site->id;
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
+						if(isset($_POST['approved'])) {
+							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+								$_POST['status'] = 'approved';
+							}
+							unset($_POST['approved']);
+						}
+
 						$place_id = $this->m_place->add($_POST);
+						
+						$this->load->model('m_work');
+						$this->m_work->rebuild_geocode_for_places();
 
 						if(!$this->input->is_ajax_request()) {
 							if($place_id) {
@@ -147,7 +167,7 @@ class Manage extends APP_Controller {
 						} else {
 							$message = new StdClass;
 							$message->type = 'success';
-							$message->content = $place_id;
+							$message->content = array('id'=>$place_id, 'status'=>isset($_POST['status']) ? $_POST['status'] : 'pending');
 						}
 					} else {
 						$message = new StdClass;
@@ -174,6 +194,29 @@ class Manage extends APP_Controller {
 			break;		
 		}
 	}
+
+	function delete($id)
+	{
+		if(empty($this->site->id)) redirect('/');
+		if($place = $this->m_place->get($id)) {
+
+			if($place->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			 	// 에러
+			 	$this->error('에러가 발생했습니다', '삭제할 권한이 없습니다.');
+			} else {
+				// 삭제완료
+
+				if($place->attached == 'image') {
+					$this->load->model('m_image');
+					$this->m_image->delete($place->id);
+				} else {
+					$this->m_place->delete($place->id);
+				}
+
+				redirect($this->site->permalink.'/manage');
+			}
+		}
+	}
 	
 	function edit($id)
 	{
@@ -187,34 +230,58 @@ class Manage extends APP_Controller {
 				$message->type = 'error';
 				$message->content = '변경 권한이 없습니다.';
 			} else {
+				if($place->attached == 'image') {
+					$this->load->model('m_image');		
+
+					$place->file = $this->m_image->get_image($place->id);
+					if($place->file) {
+			          	$place->image = site_url('files/uploads/'.$place->file);
+			          	$place->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
+			          	$place->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
+			        }		
+				}
+
 				if(!empty($_POST)) {
 					if(isset($_FILES) && !empty($_FILES)) {
 						foreach($_FILES as $key=>$file) $_POST[$key] = $file;
 					}
 
 					if($place->attached == 'image') {
-						$this->load->model('m_image');						
-
-						$errors = $this->__check_for_image_form($_POST, $place);
+						$errors = $this->__check_for_image_form($_POST, $place, true);
 					} else {
 						$errors = $this->__check_for_place_form($_POST, $place);
 					}
 
 					if(!$errors) {
-						if($place->attached == 'image') {						
-							$_POST['file'] = $_POST['image'];
-							unset($_POST['image']);
-							
+						if(isset($_POST['approved'])) {
+							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+								$_POST['status'] = 'approved';
+							}
+							unset($_POST['approved']);
+						}
+
+						if($place->attached == 'image') {										
 							$this->m_image->update($id, $_POST);
 						} else {
 							$this->m_place->update($id, $_POST);
 						}
 					
+						$this->load->model('m_work');
+						$this->m_work->rebuild_geocode_for_places();
+						
 						$message = new StdClass;
 						$message->type = 'success';
 						$message->content = '변경사항을 저장했습니다.';
-					
-						$place = $this->m_place->get($id);
+						
+						if($place->attached == 'image')
+							$place = $this->m_image->get($id);
+							if($place->file) {
+					          	$place->image = site_url('files/uploads/'.$place->file);
+					          	$place->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
+					          	$place->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
+					        }		
+						else
+							$place = $this->m_place->get($id);
 					} else {
 						$message = new StdClass;
 						$message->type = 'error';
@@ -265,6 +332,9 @@ class Manage extends APP_Controller {
 					$data = array();
 					$data['status'] = $value;
 					$this->m_place->update($id, $data);
+					
+					$this->load->model('m_work');
+					$this->m_work->rebuild_geocode_for_places();
 					
 					redirect($redirect);
 				}
@@ -317,18 +387,20 @@ class Manage extends APP_Controller {
 	}
 	
 
-	private function __check_for_image_form($form, &$change_image = null)
+	private function __check_for_image_form($form, &$change_image = null, $edit_mode = false)
 	{
 		$errors = array();
 
-		if(!isset($form['image']) || empty($form['image'])) {
-			$errors['image'] = '사진을 업로드해주세요';
-		} else {
-			if($change_image) $change_image->title = $form['title'];
-		}
+		if(!$edit_mode) {
+			if(!isset($form['image']) || empty($form['image'])) {
+				$errors['image'] = '사진을 업로드해주세요';
+			} else {
+				if($change_image) $change_image->title = $form['title'];
+			}
 
-		if(isset($form['image']['type']) && !in_array($form['image']['type'],array('image/png','image/jpeg','image/gif'))) {
-			$errors['image'] = '허용하지 않는 사진 종류입니다. [허용 : png, jpeg, gif]';
+			if(isset($form['image']['type']) && !in_array($form['image']['type'],array('image/png','image/jpeg','image/gif'))) {
+				$errors['image'] = '허용하지 않는 사진 종류입니다. [허용 : png, jpeg, gif]';
+			}
 		}
 		
 		if(!isset($form['title']) || empty($form['title'])) {

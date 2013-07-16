@@ -61,6 +61,14 @@ INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`) VALUES
 	  ('4', '1', '4', '식당/맛집'), 
 	  ('5', '1', '5', '카페'), 
 	  ('6', '1', '6', '스팟');
+
+CREATE TABLE IF NOT EXISTS `course_targets` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(11) unsigned DEFAULT NULL,
+  `target_id` int(11) unsigned DEFAULT NULL,
+  `order_index` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	  
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

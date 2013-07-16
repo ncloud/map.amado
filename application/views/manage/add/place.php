@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/edit/'.$place->id) :  site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -101,7 +101,7 @@
     <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
       <label class="control-label" for="place_address">주소 *</label>
       <div class="controls">
-        <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
+         <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
         <?php
         	if(!$modal_mode) {
         ?>
@@ -131,7 +131,25 @@
           최대 150자 내외로 장소에 대한 설명을 입력해주세요.
         </p>
       </div>
+    </div>    
+  <?php
+    if(($edit_mode && $place->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
+        (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
+  ?>
+    <div class="control-group">
+      <label class="control-label" for="place_approved">바로인증</label>
+      <div class="controls">
+          <label class="checkbox">
+            <input id="place_approved" type="checkbox" name="approved" /> 지금 인증하기
+          </label>
+          <p class="help-block">
+          관리자는 인증절차 없이 바로 지도에 입력할 수 있습니다.
+        </p>
+      </div>
     </div>
+  <?php
+    }
+  ?>
   </fieldset>
   <?php if($modal_mode) { ?>
   </div>
@@ -156,7 +174,7 @@
   <?php		
   	} else {
   ?>
-      <a href="<?php echo site_url($site->id.'/manage');?>" class="btn">취소</a>
+      <a href="<?php echo site_url($site->permalink.'/manage');?>" class="btn">취소</a>
   <?php
 	}
   ?>
@@ -198,13 +216,31 @@
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
 <script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.js');?>"></script>
 <script type="text/javascript">
-	var gmap = null;
+	var gmap = null,
+      searched = false;
+
+  $('#address_for_search').focus(function() {
+    var save_this = $(this);
+    window.setTimeout (function(){ 
+       save_this.select(); 
+    },100);  
+  });
+
 	$("#myModal").on('shown', function() {
 		gmap = new GMaps({
 		  div: '#map',  
 		  zoom: 18,
 		  <?php if(isset($place->lat)) { ?> lat: <?php echo $place->lat;?>, <?php } ?>
 		  <?php if(isset($place->lng)) { ?> lng: <?php echo $place->lng;?>, <?php } ?>
+      center_changed: function() {
+        var center = gmap.getCenter();
+        console.log(searched);
+        if(searched) {
+          searched = false;
+        } else {
+          $('#address_for_search').val(center.jb + ', ' + center.kb);
+        }
+      }
 		});
 	})
 	
@@ -212,7 +248,9 @@
 		GMaps.geocode({
 		  address: $('#address_for_search').val(),
 		  callback: function(results, status) {
-		    if (status == 'OK') {
+		    if (status == 'OK') {          
+          searched = true;
+
 		      var latlng = results[0].geometry.location;
 		      gmap.setCenter(latlng.lat(), latlng.lng());
 		    }
@@ -221,10 +259,11 @@
 	}
 	
 	function selectMapPosition()
-	{
-		var center = gmap.getCenter();
+	{    
+    var address = $('#address_for_search').val();
+    var center = gmap.getCenter();
 
-		$("#address").val(center.jb + ', ' + center.kb);
+    $("#place_address").val(address ? address : (center.jb + ', ' + center.kb));
 		$("#myModal").modal('hide');
 	}
 </script>

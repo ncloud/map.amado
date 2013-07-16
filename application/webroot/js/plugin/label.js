@@ -6,7 +6,7 @@ function Label(opt_options) {
   // Label specific
   var span = this.span_ = document.createElement('span');
   span.className = "marker_label";
-  span.setAttribute("id", "marker"+this.id);
+  span.setAttribute("id", "marker_"+this.id);
 
   var div = this.div_ = document.createElement('div');
   div.appendChild(span);
@@ -52,10 +52,11 @@ Label.prototype.onRemove = function() {
 Label.prototype.draw = function() {
   var projection = this.getProjection();
   var position = projection.fromLatLngToDivPixel(this.get('position'));
+  var distance = typeof(this.distance) == 'undefined' ? {x:0, y:0} : this.distance;
 
   var div = this.div_;
-  div.style.left = position.x + 'px';
-  div.style.top = position.y + 'px';
+  div.style.left = (position.x + distance.x) + 'px';
+  div.style.top = (position.y + distance.y) + 'px';
 
   var visible = this.get('visible');
   div.style.display = visible ? 'block' : 'none';

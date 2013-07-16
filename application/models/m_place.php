@@ -15,7 +15,7 @@ class M_Place extends CI_Model
 	
 	function get($id)
 	{
-		return $this->db->from('places')->where('id', $id)->get()->row();
+		return $this->db->from('places')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, attaches.filename as file')->get()->row();
 	}
 	
 	function gets($site_id)
@@ -92,7 +92,10 @@ class M_Place extends CI_Model
 	}
 	
 	function add($data) {
-		if(isset($data['address']) && !isset($data['address_is_position'])) {
+		$data['lat'] = 0;
+		$data['lng'] = 0;
+
+		if(isset($data['address']) && (!isset($data['address_is_position']) || $data['address_is_position'] == 'yes')) {
 			$cuts = explode(',',$data['address']);
 			
 			if(count($cuts) == 2) {
@@ -111,10 +114,10 @@ class M_Place extends CI_Model
 	}
 	
 	function update($id, $data) {
-		if(!isset($data['lat'])) $data['lat'] = 0;
-		if(!isset($data['lng'])) $data['lng'] = 0;
+		$data['lat'] = 0;
+		$data['lng'] = 0;
 		
-		if(isset($data['address']) && !isset($data['address_is_position'])) {
+		if(isset($data['address']) && (!isset($data['address_is_position']) || $data['address_is_position'] == 'yes')) {
 			$cuts = explode(',',$data['address']);
 			
 			if(count($cuts) == 2) {
@@ -127,5 +130,12 @@ class M_Place extends CI_Model
 		
 		$this->db->where('id', $id);
 		return $this->db->update('places', $data);
+	}
+
+	function delete($id) {
+		// course deletes
+		$this->db->delete('course_targets', array('target_id'=>$id));
+
+		return $this->db->delete('places', array('id'=>$id));
 	}
 }

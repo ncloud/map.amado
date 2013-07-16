@@ -8,7 +8,7 @@ class M_work extends CI_Model
     }
     
     function rebuild_geocode_for_places() {
-	  $result = $this->db->from('places')->where('lat',0)->where('lng', 0)->get()->result();
+	  $result = $this->db->from('places')->where('status','approved')->where('lat',0)->where('lng', 0)->get()->result();
 	
 	  $delay = 0;
 	  $base_url = 'http://maps.googleapis.com/maps/api/geocode/xml';

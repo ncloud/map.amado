@@ -296,27 +296,32 @@ body {
 	.add_modal
 	{
 	}
+
 	.add_modal .modal-body
 	{
 	  max-height: none !important;
 	}
+	
 	.add_modal fieldset
 	{
 	  padding-top: 15px !important;
 	}
+	
 	.add_modal .control-label
 	{
 		width:120px !important;
 	}
+	
 	.add_modal .controls 
 	{
 		margin-left:135px !important;
 	}
+	
 		.add_modal .help-block
 		{
 		  font-size: 8pt !important;
 		  color: #777 !important;
-		  max-width: 275px !important;
+		  max-width: 300px !important;
 		}
 
 	.add_modal .modal-footer
