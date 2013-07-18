@@ -214,7 +214,7 @@ class Manage extends APP_Controller {
 		}
 	}
 
-	function delete($id)
+	function place_delete($id)
 	{
 		if(empty($this->site->id)) redirect('/');
 		if($place = $this->m_place->get($id)) {
@@ -237,7 +237,7 @@ class Manage extends APP_Controller {
 		}
 	}
 	
-	function edit($id)
+	function place_edit($id)
 	{
 		if(empty($this->site->id)) redirect('/');
 		
@@ -337,7 +337,7 @@ class Manage extends APP_Controller {
 		}
 	}
 	
-	function change($type, $id, $value)
+	function place_change($type, $id, $value)
 	{
 		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
 			return false;

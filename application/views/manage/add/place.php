@@ -177,6 +177,11 @@
       <a href="<?php echo site_url($site->permalink.'/manage');?>" class="btn">취소</a>
   <?php
 	}
+   if($edit_mode) {
+  ?>
+      <a href="<?php echo site_url($site->permalink.'/manage/place/delete/'.$place->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
+  <?php    
+    }
   ?>
   </div>
 </form>

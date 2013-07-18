@@ -176,7 +176,7 @@
   }
     if($edit_mode) {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage/delete/'.$image->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
+      <a href="<?php echo site_url($site->permalink.'/manage/place/delete/'.$image->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
   <?php    
     }
   ?>
