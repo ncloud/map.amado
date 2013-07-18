@@ -33,8 +33,8 @@
 	        <li<?php echo $menu == "all" ? ' class="active"' : "";?>>
 	          <a href="<?php echo site_url($site->permalink."/manage/list/all");?>">장소</a>
 	        </li>
-	        <li>
-	        	<a href="#">코스</a>
+	        <li<?php echo $menu == "course" ? ' class="active"' : "";?>>
+	        	<a href="<?php echo site_url($site->permalink."/manage/course");?>">코스</a>
 	        </li>
 	        <li class="<?php echo in_array($menu, array('approved','pending','rejected')) ? 'active ' : '';?>dropdown">
 	        	<a href="<?php echo site_url($site->permalink."/manage/list/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>

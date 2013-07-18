@@ -44,7 +44,7 @@
 					case 'pending': echo '<span class="label">대기중</span>'; break;
 					case 'rejected': echo '<span class="label label-important">거부됨</span>'; break;
             		}
-				?>
+				      ?>
 			</td>  
       <td class="type">
             <?php
@@ -59,36 +59,36 @@
               }
             ?>
       </td>
-            <td class='info'>
-                <?php echo $place->title;?>
-                <?php
-                	if(!empty($place->uri)) {
-                ?>
-                <a href='<?php echo $place->uri;?>' target='_blank'>
-                	<span class='url'>
-                		<?php echo $place->uri;?>
-                	</span>
-              	</a>
-              	<?php
-					}
-				?>
-            </td>
-            <td class='buttons'>
-            	<div class="btn-group">
-	              <a class="btn btn-<?php echo $place->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>				 
-				  <ul class="dropdown-menu">
-				     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
-				     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
-				     <li class="divider"></li>
-				     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
-				  </ul>
-				</div>
-				<div class="btn-group">
-					<a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/edit/'.$place->id);?>">편집</a>
-				</div>
-            </td>
-          </tr>
-    <?php
+      <td class='info'>
+          <?php echo $place->title;?>
+          <?php
+          	if(!empty($place->uri)) {
+          ?>
+          <a href='<?php echo $place->uri;?>' target='_blank'>
+          	<span class='url'>
+          		<?php echo $place->uri;?>
+          	</span>
+        	</a>
+        	<?php
+		}
+	?>
+      </td>
+      <td class='buttons'>
+      	<div class="btn-group">
+          <a class="btn btn-<?php echo $place->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>				 
+	  <ul class="dropdown-menu">
+	     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
+	     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
+	     <li class="divider"></li>
+	     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
+	  </ul>
+	</div>
+	<div class="btn-group">
+		<a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/edit/'.$place->id);?>">편집</a>
+	</div>
+      </td>
+    </tr>
+  <?php
       }
 		}
 		else {

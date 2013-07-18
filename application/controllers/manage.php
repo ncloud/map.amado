@@ -7,6 +7,7 @@ class Manage extends APP_Controller {
 		$this->layout->setLayout('layouts/manage');
 		
 		$this->load->model('m_place');
+		$this->load->model('m_course');
 		
 		if($this->site->id && !$this->input->is_ajax_request()) {
 			$total_approved = $this->m_place->get_count_by_approved($this->site->id);
@@ -18,6 +19,10 @@ class Manage extends APP_Controller {
 			$this->set('total_rejected', $total_rejected);
 			$this->set('total_pending', $total_pending);
 			$this->set('total_all', $total_all);
+			
+			$total_course_all = $this->m_course->get_count($this->site->id);
+
+			$this->set('total_course_all', $total_course_all);
 		}
     }
 	
@@ -37,6 +42,20 @@ class Manage extends APP_Controller {
 		} else {
 			$this->__get_lists($this->site->id, 'all', $page);
 			$this->view('manage/index');
+		}
+	}
+
+	function course($id = null, $page = 1) {		
+		if(empty($this->site->id)) redirect('/manage');
+		
+		$this->set('menu', 'course');
+
+		if($id) {
+
+		} else {
+			$this->__get_course_lists($this->site->id, $page);
+
+			$this->view('manage/course/index');
 		}
 	}
 	
@@ -268,7 +287,7 @@ class Manage extends APP_Controller {
 					
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
-						
+
 						$message = new StdClass;
 						$message->type = 'success';
 						$message->content = '변경사항을 저장했습니다.';
@@ -431,6 +450,29 @@ class Manage extends APP_Controller {
 		
 		if(count($errors) == 0) return false;
 		return $errors;
+	}
+
+	private function __get_course_lists($site_id, $page = 1) {
+		$paging = new StdClass;
+		$paging->page = $page;
+		$paging->per_page = 15;
+
+		$courses = $this->m_course->gets_all($site_id, $paging->per_page, $page);
+		$this->set('courses', $courses);
+
+		$paging->total_count = $this->get('total_course_all');
+
+		$paging->max = floor($paging->total_count / $paging->per_page);
+		if($paging->total_count % $paging->per_page > 0) $paging->max ++;
+		
+		$paging->start = floor($page / 10) * 10;
+		$paging->end = $paging->start + 10;
+		if($paging->end > $paging->max) {
+			$paging->end = $paging->max;
+		}
+		if($paging->start == 0) $paging->start = 1;
+
+		$this->set('paging', $paging);
 	}
 
 	private function __get_lists($site_id, $status, $page = 1)
