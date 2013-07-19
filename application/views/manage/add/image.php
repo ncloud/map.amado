@@ -5,7 +5,7 @@
   $errors = array();
 ?>
 
-<form id="addform_image" enctype="multipart/form-data" method="post" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/edit/'.$image->id) : site_url($site->permalink.'/manage/add/image');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>">
+<form id="addform_image" enctype="multipart/form-data" method="post" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/image/edit/'.$image->id) : site_url($site->permalink.'/manage/add/image');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">
     <?php if(isset($message) && !empty($message)) { ?>
     <div class="alert alert-<?php echo $message->type;?>">

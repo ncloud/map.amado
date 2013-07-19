@@ -77,14 +77,14 @@
       	<div class="btn-group">
           <a class="btn btn-<?php echo $place->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>				 
 	  <ul class="dropdown-menu">
-	     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/place/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
-	     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/place/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
+	     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
+	     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
 	     <li class="divider"></li>
-	     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/place/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
+	     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
 	  </ul>
 	</div>
 	<div class="btn-group">
-		<a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/place/edit/'.$place->id);?>">편집</a>
+		<a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/edit/'.$place->id);?>">편집</a>
 	</div>
       </td>
     </tr>

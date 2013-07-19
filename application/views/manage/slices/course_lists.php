@@ -4,7 +4,7 @@
       <div class="pull-right">
 
       <div class="btn-group">
-        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add');?>">코스 추가</a>
+        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add/course');?>">코스 추가</a>
       </div>
       </div>
     </h4>
@@ -53,10 +53,10 @@
         <div class="btn-group">
           <a class="btn btn-<?php echo $course->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>         
     <ul class="dropdown-menu">
-       <li<?php echo $course->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$course->id.'/approved');?>">인증하기</a></li>
-       <li<?php echo $course->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$course->id.'/rejected');?>">거부하기</a></li>
+       <li<?php echo $course->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/approved');?>">인증하기</a></li>
+       <li<?php echo $course->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/rejected');?>">거부하기</a></li>
        <li class="divider"></li>
-       <li<?php echo $course->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/change/status/'.$course->id.'/pending');?>">대기하기</a></li>
+       <li<?php echo $course->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/pending');?>">대기하기</a></li>
     </ul>
   </div>
   <div class="btn-group">

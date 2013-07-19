@@ -76,7 +76,8 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `user_id` int(11) unsigned DEFAULT NULL,
   `status` enum('approved','rejected','pending') DEFAULT 'pending',
   `permalink` varchar(128) DEFAULT NULL,
-  `title` varchar(128) DEFAULT NULL,
+  `title` varchar(128) DEFAULT NULL,  
+  `description` text DEFAULT NULL,
   PRIMARY KEY (`id`),  
   UNIQUE KEY `permalink` (`permalink`),
   KEY `site_id` (`site_id`)
@@ -147,8 +148,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `name`, `display_name`, `emai
 INSERT INTO `sites` (`id`, `user_id`, `permalink`, `name`) VALUES 
 	  ('1', '1', 'basic', '기본');
 
-/* INSERT INTO `courses` (`site_id`, `user_id`, `permalink`, `title`) VALUES 
-    ('1', '1', 'basic', '기본'); */
+/* INSERT INTO `courses` (`site_id`, `user_id`, `title`) VALUES 
+    ('1', '1', '기본'); */
 
 INSERT INTO `role_users` (`site_id`, `user_id`, `role_id`) VALUES 
 	  (null, '1', '3');

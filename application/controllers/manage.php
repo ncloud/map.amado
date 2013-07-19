@@ -44,20 +44,6 @@ class Manage extends APP_Controller {
 			$this->view('manage/index');
 		}
 	}
-
-	function course($id = null, $page = 1) {		
-		if(empty($this->site->id)) redirect('/manage');
-		
-		$this->set('menu', 'course');
-
-		if($id) {
-
-		} else {
-			$this->__get_course_lists($this->site->id, $page);
-
-			$this->view('manage/course/index');
-		}
-	}
 	
 	function lists($status, $page = 1)
 	{
@@ -363,7 +349,85 @@ class Manage extends APP_Controller {
 		redirect($redirect);
 		return false;
 	}
+
+	function course($id = null, $page = 1) {		
+		if(empty($this->site->id)) redirect('/manage');
+		
+		$this->set('menu', 'course');
+
+		if($id) {
+
+		} else {
+			$this->__get_course_lists($this->site->id, $page);
+
+			$this->view('manage/course/index');
+		}
+	}
 	
+	function course_edit($id) {
+		if(empty($this->site->id)) redirect('/manage');
+		
+		$this->set('menu', 'course');
+
+		if($course = $this->m_course->get($id)) {
+			$message = null;
+
+			if($course->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = '변경 권한이 없습니다.';
+			} else {
+				if(!empty($_POST)) {
+					$errors = $this->__check_for_course_form($_POST, $course, true);
+
+					if(!$errors) {
+						if(isset($_POST['approved'])) {
+							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+								$_POST['status'] = 'approved';
+							}
+							unset($_POST['approved']);
+						}
+
+						$this->m_course->update($id, $_POST);
+
+						$message = new StdClass;
+						$message->type = 'success';
+						$message->content = '변경사항을 저장했습니다.';
+						
+						$course = $this->m_course->get($id);
+					} else {
+						$message = new StdClass;
+						$message->type = 'error';
+						$message->content = $errors;
+					}
+				}
+			}
+			
+			if($this->input->is_ajax_request()) {
+				$output = new StdClass;
+				$output->success = $message->type == 'successs' ? true : false;
+				$output->content = $message->content;
+				
+				$this->layout->setLayout('layouts/empty');
+				echo json_encode($output);	 
+			} else {
+				$this->set('message', $message);
+				
+				$this->set('edit_mode', true);
+				
+				$this->set('course', $course);
+			
+				$this->view('manage/add/course');
+			}
+		} else {
+			$this->error('에러가 발생했습니다', '잘못된 페이지 주소입니다.');
+		}	
+	}
+
+	function course_change($type, $id, $value) {
+
+	}
+		
 	private function __check_for_place_form($form, &$change_place = null)
 	{
 		$errors = array();
@@ -447,6 +511,20 @@ class Manage extends APP_Controller {
 		}
 		
 		if(isset($form['description']) && $change_image) $change_image->description = $form['description'];
+		
+		if(count($errors) == 0) return false;
+		return $errors;
+	}
+
+	private function __check_for_course_form($form, &$change_course = null, $edit_mode = false) 
+	{
+		$errors = array();
+
+		if(!isset($form['title']) || empty($form['title'])) {
+			$errors['title'] = '이름을 입력해주세요';
+		} else {
+			if($change_course) $change_course->title = $form['title'];
+		}
 		
 		if(count($errors) == 0) return false;
 		return $errors;

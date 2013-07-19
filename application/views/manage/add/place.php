@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/edit/'.$place->id) :  site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/place/edit/'.$place->id) :  site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">

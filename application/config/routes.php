@@ -54,6 +54,7 @@ $route['join/do']                               	 = 'user/join';
  * site by permalink
  */
 $route['(:any)/manage/place/edit/(:num)']			 		= 'manage/place_edit/site:$1/$2';
+$route['(:any)/manage/image/edit/(:num)']			 		= 'manage/place_edit/site:$1/$2';
 $route['(:any)/manage/place/delete/(:num)']			 		= 'manage/place_delete/site:$1/$2';
 $route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change/site:$1/$2/$3/$4';
 

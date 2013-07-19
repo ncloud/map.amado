@@ -10,7 +10,7 @@ class M_Course extends CI_Model
 
 	function get($id)
 	{
-		return $this->db->from('courses')->where('id', $$id)->get()->result();
+		return $this->db->from('courses')->where('id', $id)->get()->row();
 	}
 	
 	function gets($site_id)
@@ -39,5 +39,29 @@ class M_Course extends CI_Model
 		$result = $this->db->from('courses')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return false;
+	}
+	
+	function add($data) {
+		if($this->db->insert('courses', $data)) {
+			return $this->db->insert_id();
+		}
+		
+		return false;
+	}
+	
+	function update($id, $data) {
+		$this->db->where('id', $id);
+		return $this->db->update('courses', $data);
+	}
+
+	function delete($id) {
+		// course deletes
+		$this->db->delete('course_targets', array('course_id'=>$id));
+
+		return $this->db->delete('courses', array('id'=>$id));
+	}
+
+	function delete_target($id) {
+		return $this->db->delete('course_targets', array('id'=>$id));		
 	}
 }
