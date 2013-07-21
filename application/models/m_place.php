@@ -23,6 +23,17 @@ class M_Place extends CI_Model
 		return $this->db->from('places')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.site_id', $site_id)->order_by('places.id DESC')->select('places.*, attaches.filename as file')->get()->result();
 	}
 	
+	function gets_by_ids($ids)
+	{
+		$result = $this->db->from('places')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where_in('places.id', $ids)->order_by('places.id DESC')->select('places.*, attaches.filename as file')->get()->result();
+		if($result) {
+			$output = array();
+			foreach($result as $item) $output[$item->id] = $item;
+			return $output;
+		}
+		return false;
+	}
+	
 	function gets_all($site_id, $count, $index = 1)
 	{
         if($index > 1) {

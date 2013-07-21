@@ -393,12 +393,6 @@ class Manage extends APP_Controller {
 						$this->m_course->update($id, $_POST);
 						$this->m_course->update_targets($id, $course_targets);
 
-
-						// array to object
-						foreach($course_targets as $key => $course_target) {
-							$course_targets[$key] = (object)$course_target;
-						}
-
 						$message = new StdClass;
 						$message->type = 'success';
 						$message->content = '변경사항을 저장했습니다.';
@@ -411,7 +405,14 @@ class Manage extends APP_Controller {
 					}
 				}
 			}
-			
+
+			if(count($course_targets)) {
+				// array to object
+				foreach($course_targets as $key => $course_target) {
+					$course_targets[$key] = (object)$course_target;
+				}
+			}
+
 			if($this->input->is_ajax_request()) {
 				$output = new StdClass;
 				$output->success = $message->type == 'successs' ? true : false;
@@ -423,7 +424,21 @@ class Manage extends APP_Controller {
 				$this->set('message', $message);
 				
 				$this->set('edit_mode', true);
-				
+
+				// address get
+				$place_ids = array();
+				foreach($course_targets as $course_target) $place_ids[] = $course_target->target_id;
+
+				$places = $this->m_place->gets_by_ids($place_ids);			
+
+				foreach($course_targets as $key => $course_target) {
+					if($course_target->target_id) {
+						$course_targets[$key]->address = $places[$course_target->target_id]->address;
+					} else {
+						$course_targets[$key]->address = '';
+					}
+				}
+
 				$this->set('course', $course);
 				$this->set('course_targets', $course_targets);
 			
@@ -457,7 +472,7 @@ class Manage extends APP_Controller {
 		return false;
 	}
 		
-	private function __check_for_place_form($form, &$change_place = null)
+	private function __check_for_place_form(&$form, &$change_place = null)
 	{
 		$errors = array();
 		
@@ -499,7 +514,7 @@ class Manage extends APP_Controller {
 	}
 	
 
-	private function __check_for_image_form($form, &$change_image = null, $edit_mode = false)
+	private function __check_for_image_form(&$form, &$change_image = null, $edit_mode = false)
 	{
 		$errors = array();
 
@@ -545,16 +560,16 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 
-	private function __check_for_course_form($form, &$change_course = null, &$change_course_targets = null, $edit_mode = false) 
+	private function __check_for_course_form(&$form, &$change_course = null, &$change_course_targets = null, $edit_mode = false) 
 	{
 		$errors = array();
 
 		if(!isset($form['title']) || empty($form['title'])) {
 			$errors['title'] = '이름을 입력해주세요';
+			$change_course->title = $form['title'];
 		} else {
 			if($change_course) $change_course->title = $form['title'];
 		}
-
 
 		$targets = array();
 
@@ -564,6 +579,8 @@ class Manage extends APP_Controller {
 				if(count($new_key) == 2) {
 					if(!isset($targets[$new_key[0]])) $targets[$new_key[0]] = array();
 					$targets[$new_key[0]][$new_key[1]] = $item;
+
+					unset($form[$key]);
 				}
 			}
 		}

@@ -179,8 +179,8 @@
       this.$base = $(base);
 
       self.add = function(title, place_id, address) {
-          if(typeof(place_id) == 'undefined') place_id = '';
-          if(typeof(address) == 'undefined') address = '등록이 필요한 장소입니다';
+          if(typeof(place_id) == 'undefined' || !place_id) place_id = '';
+          if(typeof(address) == 'undefined' || !address) address = '등록이 필요한 장소입니다';
 
           var now = this.$base.find('li.course').length + 1;
 
@@ -235,7 +235,7 @@
                 var place_id = null,
                     place_address = null;
 
-                if(typeof(map_lists[title]) != 'undfined') {
+                if(typeof(map_lists[title]) != 'undefined') {
                   place_id = map_lists[title].id;
                   place_address = map_lists[title].address;
                 }
@@ -325,8 +325,9 @@
    <?php 
     foreach($course_targets as $course_target) {
    ?>
-      Course.add('<?php echo $course_target->title;?>', '<?php echo $course_target->target_id;?>');
+      Course.add('<?php echo $course_target->title;?>', '<?php echo $course_target->target_id;?>', '<?php echo $course_target->address;?>');
    <?php
     }
    ?>
 </script>
+
