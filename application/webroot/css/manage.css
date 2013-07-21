@@ -2,15 +2,33 @@ body { padding-top:40px; }
 body.error { background:#f5f5f5; }
 
 /* ui */
-
 	.help-block
 	{
 	  font-size: 8pt;
 	  color: #777;
 	  margin-top:10px;
 	}
-	
-	
+
+/* plugin */
+	body.dragging, body.dragging * {
+	  cursor: move !important;
+	}
+
+	.sortable li.dragged {
+	  position: absolute;
+	  opacity: 0.5;
+	  border: 1px solid #ccc;
+	  z-index: 2000;
+	}
+
+	.sortable li.placeholder {
+		border: 1px dashed #bbb;
+		background: #f8f8f8;
+		height: 30px;
+	}
+
+/* layout */
+
 /* list */
 	table tr td.num { width:20px; }
 	table tr td.type { width:10px; text-align:center; }
@@ -21,3 +39,29 @@ body.error { background:#f5f5f5; }
 /* modal */
 	.modal-footer .input-append { margin-bottom:0; }
 	.modal-footer form { margin-bottom:0; }
+
+/* course */
+	.course_list { margin-bottom:20px; }
+		.course_list .control-label { cursor:default;}
+		
+		.course_list li.control-group {
+			margin-bottom:0;
+			padding-top:10px;
+			padding-bottom:10px;
+			cursor:move;
+		}
+
+		.course_list li.control-group:hover {
+			background:#f4f4f4;
+		}
+
+		.course_list li .close {  margin-right:20px; }
+		.course_list li.dragged .close { display:none; }
+
+		.course_list li .information {
+			clear:left;
+			color:#999;
+			font-size:11px;
+
+		}
+	.course_list li.empty_course { color:#999; }

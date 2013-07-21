@@ -371,14 +371,16 @@ class Manage extends APP_Controller {
 
 		if($course = $this->m_course->get($id)) {
 			$message = null;
+			$course_targets = $this->m_course->gets_targets($id);
 
 			if($course->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$message = new StdClass;
 				$message->type = 'error';
 				$message->content = '변경 권한이 없습니다.';
-			} else {
+			} else {					
+
 				if(!empty($_POST)) {
-					$errors = $this->__check_for_course_form($_POST, $course, true);
+					$errors = $this->__check_for_course_form($_POST, $course, $course_targets, true);
 
 					if(!$errors) {
 						if(isset($_POST['approved'])) {
@@ -389,6 +391,13 @@ class Manage extends APP_Controller {
 						}
 
 						$this->m_course->update($id, $_POST);
+						$this->m_course->update_targets($id, $course_targets);
+
+
+						// array to object
+						foreach($course_targets as $key => $course_target) {
+							$course_targets[$key] = (object)$course_target;
+						}
 
 						$message = new StdClass;
 						$message->type = 'success';
@@ -416,6 +425,7 @@ class Manage extends APP_Controller {
 				$this->set('edit_mode', true);
 				
 				$this->set('course', $course);
+				$this->set('course_targets', $course_targets);
 			
 				$this->view('manage/add/course');
 			}
@@ -425,7 +435,26 @@ class Manage extends APP_Controller {
 	}
 
 	function course_change($type, $id, $value) {
-
+		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
+			return false;
+		}
+		
+		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
+		
+		switch($type) {
+			case 'status':
+				if(in_array($value, array('approved','rejected','pending')) && $course = $this->m_course->get($id)) {
+					$data = array();
+					$data['status'] = $value;
+					$this->m_course->update($id, $data);
+										
+					redirect($redirect);
+				}
+			break;
+		}
+		
+		redirect($redirect);
+		return false;
 	}
 		
 	private function __check_for_place_form($form, &$change_place = null)
@@ -516,7 +545,7 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 
-	private function __check_for_course_form($form, &$change_course = null, $edit_mode = false) 
+	private function __check_for_course_form($form, &$change_course = null, &$change_course_targets = null, $edit_mode = false) 
 	{
 		$errors = array();
 
@@ -525,6 +554,34 @@ class Manage extends APP_Controller {
 		} else {
 			if($change_course) $change_course->title = $form['title'];
 		}
+
+
+		$targets = array();
+
+		foreach($form as $key=>$item) {
+			if(substr($key,0,6) == 'course') {
+				$new_key = explode('_', substr($key,6));
+				if(count($new_key) == 2) {
+					if(!isset($targets[$new_key[0]])) $targets[$new_key[0]] = array();
+					$targets[$new_key[0]][$new_key[1]] = $item;
+				}
+			}
+		}
+
+		$change_course_targets = array();
+		$order = 1;
+
+		foreach($targets as $target) {
+			if(!empty($target['title'])) {
+				$target_data = array();
+				$target_data['course_id'] = isset($change_course->id) ? $change_course->id : null;
+				$target_data['target_id'] = !empty($target['id']) ? $target['id'] : null;
+				$target_data['title'] = $target['title'];
+				$target_data['order_index'] = $order++;
+
+				$change_course_targets[] = $target_data;			
+			}
+ 		}
 		
 		if(count($errors) == 0) return false;
 		return $errors;

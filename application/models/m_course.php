@@ -48,10 +48,28 @@ class M_Course extends CI_Model
 		
 		return false;
 	}
+
+	function add_targets($datas) {
+		return $this->db->insert_batch('course_targets', $datas);
+	}
 	
 	function update($id, $data) {
 		$this->db->where('id', $id);
 		return $this->db->update('courses', $data);
+	}
+
+	function update_targets($id, $targets) {
+		$this->delete_targets_by_course_id($id);
+
+		if(count($targets)) {				
+			foreach($targets as $key=>$target) {
+				$targets[$key]['course_id'] = $id;
+			}
+
+			$this->add_targets($targets);
+		}
+
+		return true;
 	}
 
 	function delete($id) {
@@ -63,5 +81,9 @@ class M_Course extends CI_Model
 
 	function delete_target($id) {
 		return $this->db->delete('course_targets', array('id'=>$id));		
+	}
+
+	function delete_targets_by_course_id($id) {
+		return $this->db->delete('course_targets', array('course_id'=>$id));		
 	}
 }
