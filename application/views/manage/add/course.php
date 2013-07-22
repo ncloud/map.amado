@@ -180,7 +180,7 @@
 
       self.add = function(title, place_id, address) {
           if(typeof(place_id) == 'undefined' || !place_id) place_id = '';
-          if(typeof(address) == 'undefined' || !address) address = '등록이 필요한 장소입니다';
+          if(typeof(address) == 'undefined' || !address) address = '<a href="#">등록</a>이 필요한 장소입니다';
 
           var now = this.$base.find('li.course').length + 1;
 
