@@ -497,6 +497,8 @@ class Manage extends APP_Controller {
 
 				$this->set('course', $course);
 				$this->set('course_targets', $course_targets);
+
+				$this->set('place_lists', $this->m_place->gets($this->site->id));
 			
 				$this->view('manage/add/course');
 			}

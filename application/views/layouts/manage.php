@@ -8,6 +8,7 @@
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap.js");?>"></script>	
+	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>	
 
 	<script type="text/javascript">
 		var service = {url: "<?php echo site_url('/');?>"};

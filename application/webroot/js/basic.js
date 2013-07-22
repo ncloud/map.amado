@@ -6,6 +6,45 @@
 	  	callback();
 	  }, ms);
 	};
+
+	function sliceText(text) {
+		var font_cho = Array(
+		'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ',
+		'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ',
+		'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ' );
+
+		var font_jung = Array(
+		'ㅏ', 'ㅐ', 'ㅑ', 'ㅒ', 'ㅓ',
+		'ㅔ', 'ㅕ', 'ㅖ', 'ㅗ', 'ㅘ', 'ㅙ',
+		'ㅚ', 'ㅛ', 'ㅜ', 'ㅝ', 'ㅞ', 'ㅟ',
+		'ㅠ', 'ㅡ', 'ㅢ', 'ㅣ' );
+
+		var font_jong = Array(
+		'', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ',
+		'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ', 'ㄿ', 'ㅀ', 'ㅁ',
+		'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ' );
+
+		var completeCode = text.charCodeAt(0);
+		var uniValue = completeCode - 0xAC00;
+
+		var jong = uniValue % 28;
+		var jung = ( ( uniValue - jong ) / 28 ) % 21;
+		var cho = parseInt (( ( uniValue - jong ) / 28 ) / 21);
+
+		if(cho < 0) {
+			if($.inArray(text, font_cho)) return text;
+		} else {
+			return font_cho[cho] + font_jung[jung] + font_jong[jong];
+		}
+	}
+
+	function sliceTexts(text) {
+		var result = '';
+		for(var i=0;i<text.length;i++) {
+			result += sliceText(text[i]);
+		}
+		return result;
+	}
     
     var numberFormat = function(number, decimals, dec_point, thousands_sep) {
 	     number = (number + '').replace(/[^0-9+\-Ee.]/g, '');

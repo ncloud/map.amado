@@ -211,7 +211,6 @@
         var $addWindow = self.$base.find('.add_window');
         var $addWindowInput = null;
         var typeahead = null;
-        var map_lists = null;
 
         if($addWindow.length == 0) {
            $addWindow = $(
@@ -263,14 +262,31 @@
             return result;
          });
 
+         var sources = new Array();
+         var slice_texts = new Array();        
+         var map_lists = new Array();
+
+         <?php 
+               foreach($place_lists as $place) { 
+                  if($place->attached != 'no') continue;
+          ?>
+
+            sources.push("<?php echo $place->title;?>");
+            slice_texts["<?php echo $place->title;?>"] = "<?php echo slice_texts($place->title);?>";
+            map_lists["<?php echo $place->title;?>"] = <?php echo json_encode($place);?>;
+            
+         <?php } ?>
+
          typeahead = $addWindowInput.typeahead({
               matcher: function (item) {
-                return true;
+                var slice_text = slice_texts[item];
+                var course_slice_text = sliceTexts(this.query);
+                return slice_text.indexOf(course_slice_text) >= 0;
               },
               updater: function (item) {
                 return item
               },
-              source: function (query, process) {
+              source: sources/*function (query, process) {
                   return $.post("<?php echo site_url('/ajax/places/'.$site->id);?>", { query: query }, function (data) {
                       if(data.success) { 
                         map_lists = new Array();   
@@ -288,7 +304,7 @@
                   }, "json");
                   var datas = new Array();
 
-              }
+              }*/
           });
         
         $addWindowInput.focus();
