@@ -120,11 +120,13 @@
         var markers = new Array();
         var images = new Array();
         <?php
-            foreach($place_lists as $place) {
-              if($place->attached == 'no') {
-                echo "markers[{$place->id}] = {title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', url:'{$place->url}', address:'{$place->address}'};"; 
-              } else if($place->attached == 'image') {
-                echo "images.push({title:'{$place->title}', type:'image', image:'{$place->image_small}', original_image:'{$place->image}', lat:'{$place->lat}', lng:'{$place->lng}'});";
+            if($place_lists) {
+              foreach($place_lists as $place) {
+                if($place->attached == 'no') {
+                  echo "markers[{$place->id}] = {title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', url:'{$place->url}', address:'{$place->address}'};"; 
+                } else if($place->attached == 'image') {
+                  echo "images.push({title:'{$place->title}', type:'image', image:'{$place->image_small}', original_image:'{$place->image}', lat:'{$place->lat}', lng:'{$place->lng}'});";
+                }
               }
             }
         ?>

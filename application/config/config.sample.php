@@ -1,9 +1,10 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config['app_version'] = '0.1';
-$config['dev_mode'] = true;
+$config['dev_mode'] = false;
 
 // facebook
+$config['facebook_use'] = false;
 $config['facebook_appid'] = '';
 $config['facebook_secret'] = '';
 

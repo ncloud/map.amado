@@ -27,17 +27,20 @@ class APP_Controller extends CI_Controller {
 		}
 		
         // Redirect... http://beta.example.com -> http://www.example.com
+        /*
         if(!$this->input->is_cli_request()) {
             if($_SERVER['HTTP_HOST'] != str_replace(array('http://','/'),'',$this->config->item('base_url'))) {
                 redirect($this->config->item('base_url') . substr($_SERVER['REQUEST_URI'],1));
             }   
         }
-        
+        */
+
 	    $this->data = array();
-		
+
 		$this->site = new StdClass;
 		if(isset($this->uri->rsegments[3]) && strpos($this->uri->rsegments[3], 'site:') !== false) {
 			$site_value = substr($this->uri->rsegments[3], 5);
+
 			if(is_numeric($site_value)) {
 				$this->site = $this->m_site->get($site_value);
 			} else {
@@ -94,7 +97,7 @@ class APP_Controller extends CI_Controller {
 			$this->set('current_user', $this->user_data);
         } else {
         }
-		
+
 		if($this->site->id) {
 			$this->load->model('m_role');
 			
@@ -114,6 +117,7 @@ class APP_Controller extends CI_Controller {
 			}
 			else
 			{
+			//	if($this->debug) $this->output->enable_profiler(TRUE);
 				$this->set('now', '');
 			}
 		}

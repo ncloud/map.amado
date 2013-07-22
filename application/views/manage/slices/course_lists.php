@@ -19,7 +19,7 @@
     </thead>
     <tbody>
   <?php
-      if(count($courses)) {
+      if($courses) {
       foreach($courses as $course) {
   ?>      
           <tr>

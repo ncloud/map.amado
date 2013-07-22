@@ -15,7 +15,8 @@ class M_image extends CI_Model
 	
 	function get($id)
 	{
-		return $this->db->from('places')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, attaches.filename as file')->get()->row();
+		$result = $this->db->from('places')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, attaches.filename as file')->get();
+		return !$result ? false : $result->row();
 	}
 
 	function get_image($parent_id) {

@@ -11,6 +11,10 @@ define('ONE_YEAR', 60*60*24*365);
 define('FACEBOOK_VENDOR', 1);
 define('TWITTER_VENDOR', 2);
 
+/* DEFAULT */
+define('DEFAULT_LAT','37.5935645');
+define('DEFAULT_LNG','127.0010451');
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

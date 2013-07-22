@@ -7,7 +7,11 @@
 	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/manage.css");?>" />    
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap.js");?>"></script>
+	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap.js");?>"></script>	
+
+	<script type="text/javascript">
+		var service = {url: "<?php echo site_url('/');?>"};
+	</script>
 </head>
 <body>    
 	

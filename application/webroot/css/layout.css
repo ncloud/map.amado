@@ -72,6 +72,12 @@ body {
 		text-decoration:none;
 	}
 
+	.menu .header a.tools {
+		position:absolute;
+		top:0;
+		right:10px;
+	}
+
 	.menu .buttons
 	{
 	  line-height: 60px;
@@ -208,7 +214,7 @@ body {
 		}
 		.list .category .category_toggle
 		{
-		  background-image: url("/img/icons/eye.png");
+		  background-image: url("../img/icons/eye.png");
 		  background-position: center center;
 		  background-repeat: no-repeat;
 		  width: 30px;

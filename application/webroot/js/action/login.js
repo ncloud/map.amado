@@ -4,7 +4,7 @@ var Login = function() {
 
 		$.ajax({
 			type:'POST',
-			url:'/login/do', 
+			url:service.url + '/login/do', 
 			data:input_data,
 			dataType:'json',
 			success:function(data) {
@@ -18,7 +18,7 @@ var Login = function() {
 
 		$.ajax({
 			type:'POST',
-			url:'/join/do', 
+			url: service.url + '/join/do', 
 			data:input_data,
 			dataType:'json',
 			success:function(data) {
@@ -37,7 +37,7 @@ var Login = function() {
 		  /*	if (response.scope == null) {
 		     	FB.logout();
 		    } else {*/
-				window.location = '/login/facebook/?redirect_uri=' + encodeURIComponent(redirect_uri);
+				window.location = service.url + '/login/facebook/?redirect_uri=' + encodeURIComponent(redirect_uri);
 		  //  }
 		  } else {
 			// user cancelled login

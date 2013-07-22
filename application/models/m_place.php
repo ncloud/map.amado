@@ -78,28 +78,28 @@ class M_Place extends CI_Model
 	{
 		$result = $this->db->from('places')->where('status','approved')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
-		return false;
+		return 0;
 	}
 	
 	function get_count_by_rejected($site_id)
 	{
 		$result = $this->db->from('places')->where('status','rejected')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
 		if($result) return $result->count;
-		return false;
+		return 0;
 	}
 	
 	function get_count_by_pending($site_id)
 	{
 		$result = $this->db->from('places')->where('status','pending')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
-		return false;
+		return 0;
 	}
 	
 	function get_count($site_id)
 	{
 		$result = $this->db->from('places')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
-		return false;
+		return 0;
 	}
 	
 	function add($data) {

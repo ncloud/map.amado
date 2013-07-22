@@ -30,7 +30,7 @@
   	</thead>
   	<tbody>
     <?php
-    	if(count($places)) {
+    	if($places) {
       foreach($places as $place) {
 	?>		  
           <tr>

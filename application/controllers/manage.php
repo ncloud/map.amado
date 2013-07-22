@@ -35,7 +35,7 @@ class Manage extends APP_Controller {
 	function index($page = 1)
 	{
 		if(empty($this->user_data->id)) {
-			redirect('/login');
+			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
 		}
 		
 		if(empty($this->site->id)) {
@@ -50,7 +50,7 @@ class Manage extends APP_Controller {
 		if(empty($this->site->id)) redirect('/manage');
 		
 		if(empty($this->user_data->id)) {
-			redirect('/login');
+			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
 		}
 		
 		$this->__get_lists($this->site->id, $status, $page);
@@ -70,8 +70,8 @@ class Manage extends APP_Controller {
 				$default_image->description = '';
 				$default_image->address = '';
 				$default_image->address_is_position = 'no';
-				$default_image->lat = '37.5935645';
-				$default_image->lng = '127.0010451';
+				$default_image->lat = DEFAULT_LAT;
+				$default_image->lng = DEFAULT_LNG;
 				$default_image->attached = 'no';
 				$default_image->owner_name = '';
 				$default_image->owner_email = '';
@@ -196,7 +196,61 @@ class Manage extends APP_Controller {
 					
 					$this->view('manage/add/place');
 				}
-			break;		
+			break;
+			case 'course':
+				$default_course = new StdClass;				
+				$default_course->permalink = '';
+				$default_course->title = '';
+				$default_course->description = '';
+
+				$default_course_targes = array();
+				
+				if(!empty($_POST)) {
+					$errors = $this->__check_for_course_form($_POST, $default_course, $default_course_targes);
+					if(!$errors) {
+						$_POST['site_id'] = $this->site->id;
+						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
+						
+						if(isset($_POST['approved'])) {
+							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+								$_POST['status'] = 'approved';
+							}
+							unset($_POST['approved']);
+						}
+
+						$course_id = $this->m_course->add($_POST);
+
+						if(!$this->input->is_ajax_request()) {
+							if($course_id) {
+								redirect($this->site->permalink.'/manage/course');
+							}
+						} else {
+							$message = new StdClass;
+							$message->type = 'success';
+							$message->content = array('id'=>$course_id, 'status'=>isset($_POST['status']) ? $_POST['status'] : 'pending');
+						}
+					} else {
+						$message = new StdClass;
+						$message->type = 'error';
+						$message->content = $errors;
+					}
+				}
+
+				if($this->input->is_ajax_request()) {
+					$output = new StdClass;
+					$output->success = $message->type == 'success' ? true : false;
+					$output->content = $message->content;
+					
+					$this->layout->setLayout('layouts/empty');
+					echo json_encode($output);	
+				} else {
+					$this->set('message', $message);
+					
+					$this->set('course', $default_course);
+					
+					$this->view('manage/add/course');
+				}
+			break;
 		}
 	}
 
@@ -426,16 +480,18 @@ class Manage extends APP_Controller {
 				$this->set('edit_mode', true);
 
 				// address get
-				$place_ids = array();
-				foreach($course_targets as $course_target) $place_ids[] = $course_target->target_id;
+				if($course_targets) {
+					$place_ids = array();
+					foreach($course_targets as $course_target) $place_ids[] = $course_target->target_id;
 
-				$places = $this->m_place->gets_by_ids($place_ids);			
+					$places = $this->m_place->gets_by_ids($place_ids);			
 
-				foreach($course_targets as $key => $course_target) {
-					if($course_target->target_id) {
-						$course_targets[$key]->address = $places[$course_target->target_id]->address;
-					} else {
-						$course_targets[$key]->address = '';
+					foreach($course_targets as $key => $course_target) {
+						if($course_target->target_id) {
+							$course_targets[$key]->address = $places[$course_target->target_id]->address;
+						} else {
+							$course_targets[$key]->address = '';
+						}
 					}
 				}
 

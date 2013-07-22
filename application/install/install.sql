@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `places` (
   `site_id` int(11) unsigned DEFAULT NULL,
   `type_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
-  `approved` enum('yes','no') NOT NULL DEFAULT 'no',
+  `status` enum('pending','rejected','approved') NOT NULL DEFAULT 'pending',
   `title` varchar(100) NOT NULL,
   `lat` double NOT NULL,
   `lng` double NOT NULL,
@@ -65,7 +65,8 @@ INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`) VALUES
 CREATE TABLE IF NOT EXISTS `course_targets` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `course_id` int(11) unsigned DEFAULT NULL,
-  `target_id` int(11) unsigned DEFAULT NULL,
+  `target_id` int(11) unsigned DEFAULT NULL,  
+  `title` varchar(255) DEFAULT NULL,
   `order_index` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

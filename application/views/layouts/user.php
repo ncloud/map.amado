@@ -25,6 +25,10 @@
 	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>
 	<script type="text/javascript" src="<?php echo site_url("/js/action/login.js");?>"></script>
 	
+	<script type="text/javascript">
+		var service = {url: "<?php echo site_url('/');?>"};
+	</script>
+	        
 	<?php echo $styles_for_layout;?>
 	<?php echo $scripts_for_layout;?>
 </head>

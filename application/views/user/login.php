@@ -12,14 +12,19 @@
 	
 	<div class="input_option_wrap">    
 	    <div class="alternative_wrap">
-	        <a href="<?php echo $join_mode ? site_url('/login') : site_url('/join');?>" onclick="toggle_login_mode(); return false;" class="button <?php echo $join_mode ? 'login_button' : 'join_button';?>"><span><?php echo $join_mode ? '이미 회원이세요? 지금 <strong>로그인</strong>하세요' : '처음이세요? 지금 <strong>가입</strong>하세요';?></span></a>
+	        <a href="<?php echo $join_mode ? site_url('/login') : site_url('/join');?>" onclick="toggle_login_mode(); return false;" class="button <?php echo $join_mode ? 'login_button' : 'join_button';?>"><span><?php echo $join_mode ? '이미 회원이세요? 지금 로그인하세요' : '처음이세요? 지금 가입하세요';?></span></a>
 	    </div>
-	        
+    <?php
+        if($this->config->item('facebook_use')) {
+    ?>    
 	    <div class="social_wrap">                
 	    	<div class="or">또는</div>
 	    	
 	        <a href="#" class="facebook_button have_title" onclick="login.facebook(); return false;"><span><?php echo $join_mode ? '페이스북으로 가입하세요' : '페이스북으로 로그인하세요';?></span></a>
 	    </div>
+    <?php
+        }
+    ?>
 	</div>    
   </form>
 

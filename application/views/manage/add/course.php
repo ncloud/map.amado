@@ -80,6 +80,9 @@
       </div>
     </div>
 
+  <?php
+    }
+  ?>
     <div class="page-header">
       <h4>코스 목록</h4>
     </div>
@@ -97,10 +100,8 @@
           <a class="btn" href="#" onclick="Course.addWindow(); return false;">장소 추가</a>
         </div>
       </div>
-  <?php
-    }
-  ?>
   </fieldset>
+
   <?php if($modal_mode) { ?>
   </div>
   <?php } ?>
@@ -142,6 +143,7 @@
     var adjustment;
     $("ul.sortable").sortable({
       pullPlaceholder: false,
+      itemSelector: 'li.course',
       // animation on drop
       // set item relative to cursor position
       onDragStart: function ($item, container, _super) {
