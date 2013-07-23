@@ -53,6 +53,9 @@
       <label class="control-label" for="course_permalink">고유값</label>
       <div class="controls">
         <input type="text" id="course_permalink" class="span4" name="permalink" value="<?php echo isset($course) ? $course->permalink : ''?>" />
+        <p class="help-block">
+          고유값은 코스에 쉽게 접근할 수 있는 고유주소에 사용됩니다. (예: example.com/<?php echo $site->permalink;?>/course/고유값)
+        </p>
       </div>
     </div>
     <div class="control-group">
@@ -340,12 +343,13 @@
   }   
 
   var Course = new Course('#course_list');
-   <?php 
+<?php 
     foreach($course_targets as $course_target) {
-   ?>
-      Course.add('<?php echo $course_target->title;?>', '<?php echo $course_target->target_id;?>', '<?php echo $course_target->address;?>');
-   <?php
-    }
-   ?>
+?>
+  Course.add('<?php echo $course_target->title;?>', '<?php echo $course_target->target_id;?>', '<?php echo $course_target->address;?>');
+<?php
+  }
+?>
+  Course.checkCourse();
 </script>
 

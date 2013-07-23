@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS `places` (
   `address_is_position` enum('yes','no') NOT NULL DEFAULT 'no',
   `url` varchar(200) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `sector` varchar(50) NOT NULL,
   `attached` enum('image','file','no') NOT NULL DEFAULT 'no',
   `owner_name` varchar(100) NOT NULL,
   `owner_email` varchar(100) NOT NULL,

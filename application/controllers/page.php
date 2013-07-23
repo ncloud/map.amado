@@ -16,16 +16,46 @@ class Page extends APP_Controller {
 		if(!$this->site->id) {
 			
 		} else {
-			$course_lists = $this->m_course->gets($this->site->id);
-			
 			$course_mode = false;
-			
-			if(!empty($course_lists) && !empty($course_targets)) {
+
+			$full_lat = 0;
+	        $full_lng = 0;
+	        $full_count = 0;
+
+			$course_lists = $this->m_course->gets($this->site->id);
+			if(!empty($course_lists)) {
+				$course_index = 1;
+				foreach($course_lists as $key => $course) {					
+					$course_lists[$key]->course_index = $course_index ++;
+
+					$course_lists[$key]->color = '#0099ff';
+					$course_lists[$key]->icon = 1;
+					$course_lists[$key]->targets = $this->m_course->gets_targets($course->id, true);
+					foreach($course_lists[$key]->targets as $target) {
+						if($target->place_id && $target->place_lat && $target->place_lng) {
+				        	$full_lat += $target->place_lat;
+				        	$full_lng += $target->place_lng;
+				        	$full_count ++;
+				        }
+					}
+				}
+
 				$course_mode = true;
 			}
-			
+
 			$this->set('course_mode', $course_mode);
-				
+			$this->set('course_lists', $course_lists);
+
+			$course_default = new StdClass;
+			if($full_count) {
+	        	$course_default->lat = $full_lat / $full_count;
+	        	$course_default->lng = $full_lng / $full_count;
+	        } else {
+	        	$course_default->lat = DEFAULT_LAT;
+	        	$course_default->lng = DEFAULT_LNG;
+	        }
+			$this->set('course_default', $course_default);
+
 				
 			$place_types = $this->m_place->get_types($this->site->id);
 			$this->set('place_types', $place_types);
@@ -55,7 +85,6 @@ class Page extends APP_Controller {
 				  if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();
 				  if($place->type_id) $place_lists_by_type[$place->type_id][] = $place;
 				  
-				  
 		          if($place->type_id) $count_by_type[$place->type_id]++;
 
 		          if($place->attached == 'image') {
@@ -76,15 +105,16 @@ class Page extends APP_Controller {
 			$this->set('place_lists_by_type', $place_lists_by_type);
 			$this->set('count_by_type', $count_by_type);
 			
+
+			$category_default = new StdClass;
 			if($full_count) {
-	        	$default_lat = $full_lat / $full_count;
-	        	$default_lng = $full_lng / $full_count;
+	        	$category_default->lat = $full_lat / $full_count;
+	        	$category_default->lng = $full_lng / $full_count;
 	        } else {
-	        	$default_lat = DEFAULT_LAT;
-	        	$default_lng = DEFAULT_LNG;
+	        	$category_default->lat = DEFAULT_LAT;
+	        	$category_default->lng = DEFAULT_LNG;
 	        }
-			$this->set('default_lat', $default_lat);
-			$this->set('default_lng', $default_lng);
+			$this->set('category_default', $category_default);
 			
 	    	$this->view('index');
 	    }

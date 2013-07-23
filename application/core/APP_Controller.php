@@ -128,7 +128,7 @@ class APP_Controller extends CI_Controller {
             $this->set('mobile_mode', $this->detect_mobile());
         }
 		
-		$this->layout->setTitle('Title');
+		$this->layout->setTitle(TITLE);
     }
 
     protected function check_and_redirect_page()

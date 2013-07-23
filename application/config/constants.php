@@ -15,6 +15,8 @@ define('TWITTER_VENDOR', 2);
 define('DEFAULT_LAT','37.5935645');
 define('DEFAULT_LNG','127.0010451');
 
+define('TITLE', '아마도.지도');
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

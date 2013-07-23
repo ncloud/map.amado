@@ -220,6 +220,9 @@ class Manage extends APP_Controller {
 
 						$course_id = $this->m_course->add($_POST);
 
+						if($course_id) 
+							$this->m_course->update_targets($course_id, $default_course_targes);
+
 						if(!$this->input->is_ajax_request()) {
 							if($course_id) {
 								redirect($this->site->permalink.'/manage/course');
@@ -236,6 +239,13 @@ class Manage extends APP_Controller {
 					}
 				}
 
+				if(count($default_course_targes)) {
+					// array to object
+					foreach($default_course_targes as $key => $course_target) {
+						$default_course_targes[$key] = (object)$course_target;
+					}
+				}
+
 				if($this->input->is_ajax_request()) {
 					$output = new StdClass;
 					$output->success = $message->type == 'success' ? true : false;
@@ -244,10 +254,28 @@ class Manage extends APP_Controller {
 					$this->layout->setLayout('layouts/empty');
 					echo json_encode($output);	
 				} else {
+					// address get
+					if($default_course_targes) {
+						$place_ids = array();
+						foreach($default_course_targes as $course_target) $place_ids[] = $course_target->target_id;
+
+						$places = $this->m_place->gets_by_ids($place_ids);			
+
+						foreach($default_course_targes as $key => $course_target) {
+							if($course_target->target_id) {
+								$default_course_targes[$key]->address = $places[$course_target->target_id]->address;
+							} else {
+								$default_course_targes[$key]->address = '';
+							}
+						}
+					}
+
 					$this->set('message', $message);
 					
 					$this->set('course', $default_course);
-					
+					$this->set('course_targets', $default_course_targes);
+					$this->set('place_lists', $this->m_place->gets($this->site->id));
+
 					$this->view('manage/add/course');
 				}
 			break;
@@ -624,9 +652,17 @@ class Manage extends APP_Controller {
 
 		if(!isset($form['title']) || empty($form['title'])) {
 			$errors['title'] = '이름을 입력해주세요';
-			$change_course->title = $form['title'];
 		} else {
 			if($change_course) $change_course->title = $form['title'];
+		}
+
+		if(isset($form['permalink']) && !empty($form['permalink'])) {
+			if($this->m_course->check_permalink($this->site->id, $form['permalink'])) {
+				$errors['permalink'] = '고유값이 중복되었습니다.';
+				if($change_course) $change_course->permalink = $form['permalink'];
+			} else {
+				if($change_course) $change_course->permalink = $form['permalink'];
+			}
 		}
 
 		$targets = array();

@@ -5,12 +5,12 @@ function Label(opt_options) {
 
   // Label specific
   var span = this.span_ = document.createElement('span');
-  span.className = "marker_label";
-  span.setAttribute("id", "marker_"+this.id);
+  span.className = typeof(opt_options.className) == 'undefined' ? "marker_label" : opt_options.className;
+  span.setAttribute("id", "label_"+this.id);
 
   var div = this.div_ = document.createElement('div');
   div.appendChild(span);
-  div.style.cssText = 'position: absolute; display: none';
+  div.style.cssText = typeof(opt_options.defaultStyle) == 'undefined' ? 'position: absolute; display: none' : opt_options.defaultStyle;
 };
 
 Label.prototype = new google.maps.OverlayView;
@@ -53,6 +53,7 @@ Label.prototype.draw = function() {
   var projection = this.getProjection();
   var position = projection.fromLatLngToDivPixel(this.get('position'));
   var distance = typeof(this.distance) == 'undefined' ? {x:0, y:0} : this.distance;
+  var add_zindex = typeof(this.add_zindex) == 'undefined' ? 0 : this.add_zindex;
 
   var div = this.div_;
   div.style.left = (position.x + distance.x) + 'px';
@@ -65,7 +66,7 @@ Label.prototype.draw = function() {
   this.span_.style.cursor = clickable ? 'pointer' : '';
 
   var zIndex = this.get('zIndex');
-  div.style.zIndex = zIndex;
+  div.style.zIndex = zIndex + add_zindex;
 
   this.span_.innerHTML = this.get('text').toString();
 };
