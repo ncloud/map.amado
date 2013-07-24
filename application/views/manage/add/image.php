@@ -237,7 +237,6 @@
       <?php if(isset($place->lng)) { ?> lng: <?php echo $place->lng;?>, <?php } ?>
       center_changed: function() {
         var center = gmap.getCenter();
-        console.log(searched);
         if(searched) {
           searched = false;
         } else {
