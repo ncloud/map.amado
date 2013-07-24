@@ -79,7 +79,7 @@
   <?php if($paging->max > 1) { ?>
   <div class="pagination pagination-centered">
     <ul>
-        <li<?echo $paging->page == 1 ? ' class="disabled"' : '';?>>
+        <li<?php echo $paging->page == 1 ? ' class="disabled"' : '';?>>
           <a href="<?php echo $paging->page == 1 ? '#' : site_url($site->permalink.'/manage/list/'.$status.'/'.($paging->page-1));?>">&larr;</a>
         </li>
       <?php
@@ -87,7 +87,7 @@
       ?>
         <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/list/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
-        <li<?echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
+        <li<?php echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
           <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($site->permalink.'/manage/list/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
         </li>
     </ul>
