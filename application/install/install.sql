@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `title` varchar(128) DEFAULT NULL,  
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`),  
-  UNIQUE KEY `permalink` (`permalink`),
   KEY `site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	  
