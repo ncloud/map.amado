@@ -93,7 +93,7 @@
 		}
 		else {
 	?>
-		<tr><td colspan="5"><div class="text-center">목록의 내용이 비어있습니다.</div></td></tr>
+		<tr><td colspan="5"><div class="text-center">장소가 비어있습니다.</div></td></tr>
 	<?php
 		}
     ?>

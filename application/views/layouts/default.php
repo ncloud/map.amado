@@ -36,8 +36,8 @@
 
 	<script type="text/javascript">
 		var service = {
-						url: "<?php echo site_url('/');?>"
-					};
+			url: "<?php echo site_url('/');?>"
+		};
 	</script>
 	        
 <?php echo $styles_for_layout;?>

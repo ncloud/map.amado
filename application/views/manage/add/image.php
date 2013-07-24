@@ -43,12 +43,12 @@
   <div class="modal-body">
   <?php } ?>
     <fieldset><div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
-      <label class="control-label" for="owner_name">등록자 이름 *</label>
+      <label class="control-label" for="image_owner_name">등록자 이름 *</label>
       <div class="controls">
         <?php
           if($current_user->id) {
         ?>
-        <input type="hidden" id="owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
+        <input type="hidden" id="image_owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
         <div class="text"><?php echo $current_user->name;?></div>
     <?php
       } else {
@@ -60,12 +60,12 @@
       </div>
     </div>
     <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
-      <label class="control-label" for="place_owner_email">등록자 이메일 *</label>
+      <label class="control-label" for="image_owner_email">등록자 이메일 *</label>
       <div class="controls">
         <?php
           if($current_user->id) {
         ?>
-        <input type="hidden" id="place_owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
+        <input type="hidden" id="image_owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
         <div class="text"><?php echo $current_user->email;?></div>
     <?php
       } else {

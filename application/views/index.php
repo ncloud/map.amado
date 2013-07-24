@@ -14,6 +14,7 @@
 	  
 	  <div class="header" id="header">
 	  	<a class="site" href="<?php echo site_url('/'.$site->permalink);?>"><?php echo $site->name;?></a>
+      <a class="btn tool" href="<?php echo site_url('/'.$site->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
 	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -99,7 +100,7 @@
         <h3>이 지도는?</h3>
       </div>
       <div class="modal-body">
-       asdflkjsdfl kjsadlkf jalskdj flksadjf lksjda lkjl
+      
       </div>
       <div class="modal-footer">
         <a href="#" class="btn" data-dismiss="modal" style="float: right;">Close</a>
@@ -441,6 +442,73 @@
                     break;
             }
         });
+
+        $.each(gcourses, function(index, data) {
+            var gcourse = gcourses[index];
+            if(gcourse.length) {
+              var course = gcourse[0];
+              $.getJSON('<?php echo site_url('/ajax/weather/');?>/' + course.lat + '/' + course.lng, function(data) {
+                  var $weather = $(".course_" + index + " .info");
+                  var level = 1;
+                  var weather = data.temp[0].wfKor[0];
+
+                  if(data.temp[0].temp >= 16 && data.temp[0].temp < 26) {
+                    if(data.temp[0].wfEn == 'Clear') {
+                      level = 1;
+                    } else if($.inArray(data.temp[0].wfEn, ['Cloudy', 'Little Cloudy'])) {
+                      level = 2
+                    } else if($.inArray(data.temp[0].wfEn, ['Mostly Cloudy'])) {
+                      level = 3;
+                    } else {
+                      level = 4;
+                    }
+                  } else {
+                    if(data.temp[0].wfEn == 'Clear') {
+                      level = 3;
+                    } else if($.inArray(data.temp[0].wfEn, ['Cloudy', 'Little Cloudy'])) {
+                      level = 4;
+                    } else if($.inArray(data.temp[0].wfEn, ['Mostly Cloudy'])) {
+                      level = 5;
+                    } else {
+                      level = 6;
+                    }
+                  }
+
+                  var color = '';
+                  var title = '';
+                  switch(level) {
+                    case 1:
+                      color = '#518471';
+                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                    case 2:
+                      color = '#7F9974';
+                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                    case 3:
+                      color = '#B0B572';
+                      title = '그럭저럭 산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                    case 4:
+                      color = '#e1b24b';
+                      title = '산책은 다음에 하시는걸 추천해요. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                    case 5:
+                      color = '#E34C41';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                    case 6:
+                      color = '#E34C41';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                    break;
+                  }
+
+                  $weather.css('border-left', '6px solid ' + color);
+                  $weather.parents('li.course').tooltip({title:title, html:true, placement:'left'});
+              });
+            }
+        });
+
       } 
       
       function resizeList() {
@@ -472,6 +540,13 @@
 	        }
 	      );
         $("#filter_"+type+"_"+type_id).addClass("inactive");
+
+        if(type == 'course') {
+          $.each(gpaths, function(i, val) {
+            if(i == 'path_'+type_id)
+              gpaths[i].setVisible(false);
+          });
+        }
       }
 
       function show(type, type_id) {
@@ -482,6 +557,13 @@
         });
         
         $("#filter_"+type+"_"+type_id).removeClass("inactive");
+
+        if(type == 'course') {
+          $.each(gpaths, function(i, val) {
+            if(i == 'path_'+type_id)
+              gpaths[i].setVisible(true);
+          });
+        }
       }
       
       function toggleList(key, type_id) {
@@ -556,6 +638,8 @@
       }
 
       function centerMap(menu) {
+          if(Object.keys(gmarkers).length == 0) return false;
+
           for(var i in gmarkers) {
             if(gmarkers[i].type != menu) continue;
 
@@ -594,7 +678,7 @@
           var zoomLvl = Math.floor(8 - Math.log(1.6446 * dist / Math.sqrt(2 * (mapdisplay * mapdisplay))) / Math.log (2));
 
           gmap.setCenter(centerLat, centerLng);
-          gmap.setZoom(zoomLvl + 1);
+          gmap.setZoom(zoomLvl);
       }
       
       // add modal form submit
@@ -652,7 +736,6 @@
                     type:'error'
                  }).show();
             	}
-	            
             }
           }
       });

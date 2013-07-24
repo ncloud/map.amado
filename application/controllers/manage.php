@@ -39,6 +39,10 @@ class Manage extends APP_Controller {
 		}
 		
 		if(empty($this->site->id)) {
+			$sites = $this->m_site->gets_all();
+			if($sites && count($sites) == 1) {
+				redirect('/'.$sites[0]->permalink.'/manage');
+			}
 		} else {
 			$this->__get_lists($this->site->id, 'all', $page);
 			$this->view('manage/index');

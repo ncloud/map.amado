@@ -5306,14 +5306,10 @@ input[type="submit"].btn.btn-mini {
   display: block;
   font-size: 11px;
   line-height: 1.4;
-  opacity: 0;
-  filter: alpha(opacity=0);
   visibility: visible;
 }
 
 .tooltip.in {
-  opacity: 0.8;
-  filter: alpha(opacity=80);
 }
 
 .tooltip.top {

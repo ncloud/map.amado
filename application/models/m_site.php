@@ -17,4 +17,9 @@ class M_Site extends CI_Model
 	{
 		return $this->db->from('sites')->where('permalink', $permalink)->get()->row();
 	}
+
+	function gets_all()
+	{
+		return $this->db->from('sites')->get()->result();
+	}
 }

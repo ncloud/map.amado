@@ -71,7 +71,7 @@
 		<?php
 			} else {
 		?>
-        <input id="place_owner_email" type="text" class="span3" name="place_owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
+        <input id="place_owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
         <?php
 			}
 		?>

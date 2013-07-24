@@ -14,7 +14,10 @@ class Page extends APP_Controller {
 		$this->load->helper('parse');
 		
 		if(!$this->site->id) {
-			
+			$sites = $this->m_site->gets_all();
+			if($sites && count($sites) == 1) {
+				redirect('/'.$sites[0]->permalink);
+			}
 		} else {
 			$course_mode = false;
 

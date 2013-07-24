@@ -57,6 +57,7 @@
 	        </li>
 	      </ul>
 	      <ul class="nav pull-right">
+	        <li><a href="<?php echo site_url('/'.$site->permalink);?>">사이트 보기</a></li>
 	        <li><a href="<?php echo site_url('/logout');?>">로그아웃</a></li>
 	      </ul>
 	    </div>

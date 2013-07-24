@@ -72,10 +72,10 @@ body {
 		text-decoration:none;
 	}
 
-	.menu .header a.tools {
+	.menu .header a.tool {
 		position:absolute;
-		top:0;
-		right:10px;
+		top:7px;
+		right:6px;
 	}
 
 	.menu .buttons
