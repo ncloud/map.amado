@@ -413,7 +413,9 @@ body {
 		text-align: center;
 		display: block;
 		color: #fff;
-		font-size: 9px; }
+		font-size: 9px; 
+		line-height:18px;
+	}
 
 	.map_overlay {
 		display: none;
