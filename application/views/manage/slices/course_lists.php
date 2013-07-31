@@ -1,5 +1,13 @@
   <div class="page-header">
-    <h4>코스 <small>(<?php echo $paging->total_count;?>)</small>
+    <h4>
+    <?php
+      switch($status) {
+      case 'all': echo '전체 코스'; break;
+      case 'approved': echo '인증 코스'; break;
+      case 'pending': echo '대기 코스'; break;
+      case 'rejected': echo '거부 코스'; break;
+    }
+  ?> <small>(<?php echo $paging->total_count;?>)</small>
     
       <div class="pull-right">
 

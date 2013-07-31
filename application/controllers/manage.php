@@ -10,18 +10,24 @@ class Manage extends APP_Controller {
 		$this->load->model('m_course');
 		
 		if($this->site->id && !$this->input->is_ajax_request()) {
-			$total_approved = $this->m_place->get_count_by_approved($this->site->id);
-			$total_rejected = $this->m_place->get_count_by_rejected($this->site->id);
-			$total_pending = $this->m_place->get_count_by_pending($this->site->id);
-			$total_all = $this->m_place->get_count($this->site->id);
+			$total_place_approved = $this->m_place->get_count_by_approved($this->site->id);
+			$total_place_rejected = $this->m_place->get_count_by_rejected($this->site->id);
+			$total_place_pending = $this->m_place->get_count_by_pending($this->site->id);
+			$total_place_all = $this->m_place->get_count($this->site->id);
 			
-			$this->set('total_approved', $total_approved);
-			$this->set('total_rejected', $total_rejected);
-			$this->set('total_pending', $total_pending);
-			$this->set('total_all', $total_all);
-			
+			$this->set('total_place_approved', $total_place_approved);
+			$this->set('total_place_rejected', $total_place_rejected);
+			$this->set('total_place_pending', $total_place_pending);
+			$this->set('total_place_all', $total_place_all);
+
+			$total_course_approved = $this->m_course->get_count_by_approved($this->site->id);
+			$total_course_rejected = $this->m_course->get_count_by_rejected($this->site->id);
+			$total_course_pending = $this->m_course->get_count_by_pending($this->site->id);
 			$total_course_all = $this->m_course->get_count($this->site->id);
 
+			$this->set('total_course_approved', $total_course_approved);
+			$this->set('total_course_rejected', $total_course_rejected);
+			$this->set('total_course_pending', $total_course_pending);
 			$this->set('total_course_all', $total_course_all);
 		}
     }
@@ -44,12 +50,12 @@ class Manage extends APP_Controller {
 				redirect('/'.$sites[0]->permalink.'/manage');
 			}
 		} else {
-			$this->__get_lists($this->site->id, 'all', $page);
+			$this->__get_place_lists($this->site->id, 'all', $page);
 			$this->view('manage/index');
 		}
 	}
 	
-	function lists($status, $page = 1)
+	function lists($type, $status, $page = 1)
 	{
 		if(empty($this->site->id)) redirect('/manage');
 		
@@ -57,9 +63,13 @@ class Manage extends APP_Controller {
 			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
 		}
 		
-		$this->__get_lists($this->site->id, $status, $page);
-
-		$this->view('manage/list');
+		if($type == 'place') {
+			$this->__get_place_lists($this->site->id, $status, $page);
+			$this->view('manage/list');
+		} else if($type == 'course') {
+			$this->__get_course_lists($this->site->id, $status, $page);
+			$this->view('manage/course/list');
+		}
 	}
 	
 	function add($type = 'place') {
@@ -444,9 +454,24 @@ class Manage extends APP_Controller {
 		if($id) {
 
 		} else {
-			$this->__get_course_lists($this->site->id, $page);
+			$this->__get_course_lists($this->site->id, 'all', $page);
 
 			$this->view('manage/course/index');
+		}
+	}
+	
+	function place($id = null, $page = 1)
+	{
+		if(empty($this->site->id)) redirect('/manage');
+		
+		$this->set('menu', 'place');
+		
+		if($id) {
+
+		} else {
+			$this->__get_place_lists($this->site->id, 'all', $page);
+
+			$this->view('manage/index');
 		}
 	}
 	
@@ -702,12 +727,25 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 
-	private function __get_course_lists($site_id, $page = 1) {
+	private function __get_course_lists($site_id, $status, $page = 1) {
+		$this->set('status', $status);
+		$this->set('menu', 'course_' . $status);
+
 		$paging = new StdClass;
 		$paging->page = $page;
 		$paging->per_page = 15;
 
-		$courses = $this->m_course->gets_all($site_id, $paging->per_page, $page);
+		switch($status) {
+			case 'all':
+				$paging->total_count = $this->get('total_course_all');
+				$courses = $this->m_course->gets_all($site_id, $paging->per_page, $page);
+			break;			
+			default:
+				$paging->total_count = $this->get('total_course_' . $status);
+				$courses = $this->m_course->gets_by_status($site_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
+			break;
+		}
+
 		$this->set('courses', $courses);
 
 		$paging->total_count = $this->get('total_course_all');
@@ -725,10 +763,10 @@ class Manage extends APP_Controller {
 		$this->set('paging', $paging);
 	}
 
-	private function __get_lists($site_id, $status, $page = 1)
+	private function __get_place_lists($site_id, $status, $page = 1)
 	{
 		$this->set('status', $status);
-		$this->set('menu', $status);
+		$this->set('menu', 'place_' . $status);
 		
 		$paging = new StdClass;
 		$paging->page = $page;
@@ -736,11 +774,11 @@ class Manage extends APP_Controller {
 
 		switch($status) {
 			case 'all':
-				$paging->total_count = $this->get('total_all');
+				$paging->total_count = $this->get('total_place_all');
 				$places = $this->m_place->gets_all($site_id, $paging->per_page, ($page-1)*$paging->per_page);
 			break;			
 			default:
-				$paging->total_count = $this->get('total_' . $status);
+				$paging->total_count = $this->get('total_place_' . $status);
 				$places = $this->m_place->gets_by_status($site_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
 			break;
 		}

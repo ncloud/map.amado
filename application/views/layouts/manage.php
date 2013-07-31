@@ -4,6 +4,8 @@
 	<meta charset="utf-8">
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-responsive.css");?>" rel="stylesheet" />
+	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-custom.css");?>" rel="stylesheet" />
+
 	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/manage.css");?>" />    
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -28,32 +30,50 @@
 			$menu_title = '';
 			
 			switch($menu) {
-				case 'approved': $menu_title = '인증'; break;
-				case 'pending': $menu_title = '대기'; break;
-				case 'rejected': $menu_title = '거부'; break;
-				case 'all': default: $menu_title = '전체'; break;
+				case 'place_approved':
+				case 'course_approved': $menu_title = '인증'; break;
+				case 'place_pending': 
+				case 'course_pending': $menu_title = '대기'; break;
+				case 'place_rejected':
+				case 'course_rejected': $menu_title = '거부'; break;
+				case 'place_all':
+				case 'course_all': default: $menu_title = '전체'; break;
 			} 
 	      ?>
 	      <ul class="nav">
 	        <li<?php echo $menu == "all" ? ' class="active"' : "";?>>
-	          <a href="<?php echo site_url($site->permalink."/manage/list/all");?>">장소</a>
+	          <a href="<?php echo site_url($site->permalink."/manage/place");?>">장소</a>
 	        </li>
 	        <li<?php echo $menu == "course" ? ' class="active"' : "";?>>
 	        	<a href="<?php echo site_url($site->permalink."/manage/course");?>">코스</a>
 	        </li>
-	        <li class="<?php echo in_array($menu, array('approved','pending','rejected')) ? 'active ' : '';?>dropdown">
-	        	<a href="<?php echo site_url($site->permalink."/manage/list/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
+	        <li class="<?php echo in_array($menu, array('place_approved','place_pending','place_rejected','course_approved','course_pending','course_rejected')) ? 'active ' : '';?>dropdown">
+	        	<a href="<?php echo site_url($site->permalink."/manage/list/place/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
 	        	<ul class="dropdown-menu">
-	                <li<?php echo $menu == "approved" ? ' class="active"' : "";?>>
-		              <a href="<?php echo site_url($site->permalink."/manage/list/approved");?>">인증 장소 <span class="badge pull-right"><?php echo $total_approved;?></span></a>
+	                <li<?php echo $menu == "place_approved" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/place/approved");?>">인증 장소 <span class="badge pull-right"><?php echo $total_place_approved;?></span></a>
 		            </li>
-		            <li<?php echo $menu == "pending" ? ' class="active"' : "";?>>
-		              <a href="<?php echo site_url($site->permalink."/manage/list/pending");?>">대기 장소 <span class="badge pull-right"><?php echo $total_pending;?></span></a>
+		            <li<?php echo $menu == "place_pending" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/place/pending");?>">대기 장소 <span class="badge pull-right"><?php echo $total_place_pending;?></span></a>
 		            </li>
-		            <li<?php echo $menu == "rejected" ? ' class="active"' : "";?>>
-		              <a href="<?php echo site_url($site->permalink."/manage/list/rejected");?>">거부 장소 <span class="badge pull-right"><?php echo $total_rejected;?></span></a>
+		            <li<?php echo $menu == "place_rejected" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/place/rejected");?>">거부 장소 <span class="badge pull-right"><?php echo $total_place_rejected;?></span></a>
+		            </li>
+		            <li class="divider"></li>
+	                <li<?php echo $menu == "course_approved" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/course/approved");?>">인증 코스 <span class="badge pull-right"><?php echo $total_course_approved;?></span></a>
+		            </li>
+		            <li<?php echo $menu == "course_pending" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/course/pending");?>">대기 코스 <span class="badge pull-right"><?php echo $total_course_pending;?></span></a>
+		            </li>
+		            <li<?php echo $menu == "course_rejected" ? ' class="active"' : "";?>>
+		              <a href="<?php echo site_url($site->permalink."/manage/list/course/rejected");?>">거부 코스 <span class="badge pull-right"><?php echo $total_course_rejected;?></span></a>
 		            </li>
 	            </ul>
+	        </li>
+	        <li class="divider-vertical"></li>
+	        <li class="">
+	        	<a href="<?php echo site_url($site->permalink.'/manage/type');?>">형태</a>
 	        </li>
 	      </ul>
 	      <ul class="nav pull-right">

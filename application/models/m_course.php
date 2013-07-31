@@ -38,6 +38,41 @@ class M_Course extends CI_Model
 		return $this->db->get()->result();
 	}
 	
+	function gets_by_status($site_id, $status, $count, $index = 1)
+	{
+		$this->db->where('status', $status);
+		
+        if($index > 1) {
+            $this->db->limit($count, ($index - 1));
+        } else {
+            $this->db->limit($count);
+        }
+		
+		return $this->db->from('courses')->where('site_id', $site_id)->order_by('id DESC')->get()->result();		
+	}
+	
+	
+	function get_count_by_approved($site_id)
+	{
+		$result = $this->db->from('courses')->where('status','approved')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
+		if($result) return $result->count;
+		return 0;
+	}
+	
+	function get_count_by_rejected($site_id)
+	{
+		$result = $this->db->from('courses')->where('status','rejected')->where('site_id', $site_id)->select('count(*) as count')->order_by('id DESC')->get()->row();
+		if($result) return $result->count;
+		return 0;
+	}
+	
+	function get_count_by_pending($site_id)
+	{
+		$result = $this->db->from('courses')->where('status','pending')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
+		if($result) return $result->count;
+		return 0;
+	}
+	
 	function get_count($site_id)
 	{
 		$result = $this->db->from('courses')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
