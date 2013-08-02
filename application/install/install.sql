@@ -45,21 +45,22 @@ CREATE TABLE IF NOT EXISTS `places` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `place_types` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `site_id` int(11) unsigned DEFAULT NULL,
   `icon_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(32) NOT NULL,
+  `order_index` tinyint(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `site_id` (`site_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`) VALUES 
-	  ('1', '1', '1', '역사/유적'),
-	  ('2', '1', '2', '미술/전시'),
-	  ('3', '1', '3', '문화'), 
-	  ('4', '1', '4', '식당/맛집'), 
-	  ('5', '1', '5', '카페'), 
-	  ('6', '1', '6', '스팟');
+INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`, `order_index`) VALUES 
+	  ('1', '1', '1', '역사/유적', '1'),
+	  ('2', '1', '2', '미술/전시', '2'),
+	  ('3', '1', '3', '문화', '3'), 
+	  ('4', '1', '4', '식당/맛집', '4'), 
+	  ('5', '1', '5', '카페', '5'), 
+	  ('6', '1', '6', '스팟', '6');
 
 CREATE TABLE IF NOT EXISTS `course_targets` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

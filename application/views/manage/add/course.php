@@ -42,68 +42,68 @@
   <?php if($modal_mode) { ?>
   <div class="modal-body"> 
   <?php } ?>
-  <fieldset>
-    <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-      <label class="control-label" for="course_title">이름 *</label>
-      <div class="controls">
-        <input type="text" id="course_title" class="span4" name="title" value="<?php echo isset($course) ? $course->title : ''?>" />
-      </div>
-    </div>
-    <div class="control-group<?php echo isset($errors['permalink']) ? ' error' : '';?>">
-      <label class="control-label" for="course_permalink">고유값</label>
-      <div class="controls">
-        <input type="text" id="course_permalink" class="span4" name="permalink" value="<?php echo isset($course) ? $course->permalink : ''?>" />
-        <p class="help-block">
-          고유값은 코스에 쉽게 접근할 수 있는 고유주소에 사용됩니다. (예: example.com/<?php echo $site->permalink;?>/course/고유값)
-        </p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="course_description">설명</label>
-      <div class="controls">
-        <textarea id="course_description" class="span4" name="description"><?php echo isset($course) ? $course->description : ''?></textarea>
-        <p class="help-block">
-          최대 150자 내외로 코스에 대한 설명을 입력해주세요.
-        </p>
-      </div>
-    </div>    
-  <?php
-    if(($edit_mode && $course->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
-        (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
-  ?>
-    <div class="control-group">
-      <label class="control-label" for="course_approved">바로인증</label>
-      <div class="controls">
-          <label class="checkbox">
-            <input id="course_approved" type="checkbox" name="approved" /> 지금 인증하기
-          </label>
-          <p class="help-block">
-          관리자는 인증절차 없이 바로 코스를 입력할 수 있습니다.
-        </p>
-      </div>
-    </div>
-
-  <?php
-    }
-  ?>
-    <div class="page-header">
-      <h4>코스 목록</h4>
-    </div>
-    
-    <ul id="course_list" class="course_list sortable unstyled">
-      <li class="empty_course hide control-group">
+    <fieldset>
+      <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
+        <label class="control-label" for="course_title">이름 *</label>
         <div class="controls">
-          코스가 비어 있습니다.
-        </div>
-      </li>
-    </ul>
-
-      <div class="course_tool buttons control-group">
-        <div class="controls empty">
-          <a class="btn" href="#" onclick="Course.addWindow(); return false;">장소 추가</a>
+          <input type="text" id="course_title" class="span4" name="title" value="<?php echo isset($course) ? $course->title : ''?>" />
         </div>
       </div>
-  </fieldset>
+      <div class="control-group<?php echo isset($errors['permalink']) ? ' error' : '';?>">
+        <label class="control-label" for="course_permalink">고유값</label>
+        <div class="controls">
+          <input type="text" id="course_permalink" class="span4" name="permalink" value="<?php echo isset($course) ? $course->permalink : ''?>" />
+          <p class="help-block">
+            고유값은 코스에 쉽게 접근할 수 있는 고유주소에 사용됩니다. (예: example.com/<?php echo $site->permalink;?>/course/고유값)
+          </p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="course_description">설명</label>
+        <div class="controls">
+          <textarea id="course_description" class="span4" name="description"><?php echo isset($course) ? $course->description : ''?></textarea>
+          <p class="help-block">
+            최대 150자 내외로 코스에 대한 설명을 입력해주세요.
+          </p>
+        </div>
+      </div>    
+    <?php
+      if(($edit_mode && $course->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
+          (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
+    ?>
+      <div class="control-group">
+        <label class="control-label" for="course_approved">바로인증</label>
+        <div class="controls">
+            <label class="checkbox">
+              <input id="course_approved" type="checkbox" name="approved" /> 지금 인증하기
+            </label>
+            <p class="help-block">
+            관리자는 인증절차 없이 바로 코스를 입력할 수 있습니다.
+          </p>
+        </div>
+      </div>
+
+    <?php
+      }
+    ?>
+      <div class="page-header">
+        <h4>코스 목록</h4>
+      </div>
+      
+      <ul id="course_list" class="course_list sortable unstyled">
+        <li class="empty_course hide control-group">
+          <div class="controls">
+            코스가 비어 있습니다.
+          </div>
+        </li>
+      </ul>
+
+        <div class="course_tool buttons control-group">
+          <div class="controls empty">
+            <a class="btn" href="#" onclick="Course.addWindow(); return false;">장소 추가</a>
+          </div>
+        </div>
+    </fieldset>
 
   <?php if($modal_mode) { ?>
   </div>
@@ -239,13 +239,15 @@
                 var place_id = null,
                     place_address = null;
 
-                if(typeof(map_lists[title]) != 'undefined') {
-                  place_id = map_lists[title].id;
-                  place_address = map_lists[title].address;
-                }
+                if(title != '') {
+                  if(typeof(map_lists[title]) != 'undefined') {
+                    place_id = map_lists[title].id;
+                    place_address = map_lists[title].address;
+                  }
 
-                self.add(title, place_id, place_address);
-                $addWindowInput.blur();
+                  self.add(title, place_id, place_address);
+                  $addWindowInput.blur();
+                }
               }
 
             }

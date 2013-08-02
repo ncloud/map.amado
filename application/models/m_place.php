@@ -59,17 +59,10 @@ class M_Place extends CI_Model
 	}
 	
 	
-	function gets_by_type($site_id, $type)
+	function gets_by_type($site_id, $type_id)
 	{
 		$this->db->from('places')->where('site_id', $site_id)->order_by('id DESC');
-		
-		switch($type) {
-			case 'approved':
-			case 'rejected':
-			case 'pending':				
-				$this->db->where('status', $type);
-				break;
-		}	
+		$this->db->where('status', $type_id);
 		
 		return $this->get()->result();	
 	}
@@ -100,6 +93,11 @@ class M_Place extends CI_Model
 		$result = $this->db->from('places')->where('site_id', $site_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return 0;
+	}
+
+	function gets_type($site_id)
+	{
+		return $this->db->from('place_types')->where('site_id', $site_id)->order_by('order_index ASC')->get()->result();
 	}
 	
 	function add($data) {

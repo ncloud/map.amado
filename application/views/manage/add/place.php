@@ -42,115 +42,115 @@
   <?php if($modal_mode) { ?>
   <div class="modal-body"> 
   <?php } ?>
-  <fieldset>
-    <div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
-      <label class="control-label" for="place_owner_name">등록자 이름 *</label>
-      <div class="controls">
-      	<?php
-      		if($current_user->id) {
-      	?>
-      	<input type="hidden" id="place_owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
-      	<div class="text"><?php echo $current_user->name;?></div>
-		<?php
-			} else {
-		?>
-		<input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo isset($place) ? $place->owner_name : ''?>" />
-		<?php
-			}
-		?>
+    <fieldset>
+      <div class="control-group<?php echo isset($errors['owner_name']) ? ' error' : '';?>">
+        <label class="control-label" for="place_owner_name">등록자 이름 *</label>
+        <div class="controls">
+        	<?php
+        		if($current_user->id) {
+        	?>
+        	<input type="hidden" id="place_owner_name" name="owner_name" value="<?php echo $current_user->name;?>" />
+        	<div class="text"><?php echo $current_user->name;?></div>
+  		<?php
+  			} else {
+  		?>
+  		<input id="owner_name" type="text" class="span3" name="owner_name" value="<?php echo isset($place) ? $place->owner_name : ''?>" />
+  		<?php
+  			}
+  		?>
+        </div>
       </div>
-    </div>
-    <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
-      <label class="control-label" for="place_owner_email">등록자 이메일 *</label>
-      <div class="controls">
-      	<?php
-      		if($current_user->id) {
-      	?>
-      	<input type="hidden" id="place_owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
-      	<div class="text"><?php echo $current_user->email;?></div>
-		<?php
-			} else {
-		?>
-        <input id="place_owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
-        <?php
-			}
-		?>
-      </div>
-    </div>
-    <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
-      <label class="control-label" for="place_type_id">종류 *</label>
-      <div class="controls">
-        <select id="place_type_id" class="span3" name="type_id">
-        	<option value="">종류를 선택해주세요</option>
+      <div class="control-group<?php echo isset($errors['owner_email']) ? ' error' : '';?>">
+        <label class="control-label" for="place_owner_email">등록자 이메일 *</label>
+        <div class="controls">
+        	<?php
+        		if($current_user->id) {
+        	?>
+        	<input type="hidden" id="place_owner_email" name="owner_email" value="<?php echo $current_user->email;?>" />
+        	<div class="text"><?php echo $current_user->email;?></div>
+  		<?php
+  			} else {
+  		?>
+          <input id="place_owner_email" type="text" class="span3" name="owner_email" value="<?php echo isset($place) ? $place->owner_email : ''?>" />
           <?php
-          	foreach($place_types as $type) {
+  			}
+  		?>
+        </div>
+      </div>
+      <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
+        <label class="control-label" for="place_type_id">종류 *</label>
+        <div class="controls">
+          <select id="place_type_id" class="span3" name="type_id">
+          	<option value="">종류를 선택해주세요</option>
+            <?php
+            	foreach($place_types as $type) {
+            ?>
+            	<option value="<?php echo $type->id;?>"<?php if(isset($place) && $place->type_id == $type->id) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
+            <?php
+            	}
+  		  ?>
+          </select>
+        </div>
+      </div>
+      <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
+        <label class="control-label" for="place_title">이름 *</label>
+        <div class="controls">
+          <input type="text" id="place_title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
+        </div>
+      </div>
+      <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
+        <label class="control-label" for="place_address">주소 *</label>
+        <div class="controls">
+           <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
+          <?php
+          	if(!$modal_mode) {
           ?>
-          	<option value="<?php echo $type->id;?>"<?php if(isset($place) && $place->type_id == $type->id) {?> selected="selected"<?php } ?>><?php echo $type->name;?></option>
+          <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
           <?php
-          	}
-		  ?>
-        </select>
-      </div>
-    </div>
-    <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-      <label class="control-label" for="place_title">이름 *</label>
-      <div class="controls">
-        <input type="text" id="place_title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
-      </div>
-    </div>
-    <div class="control-group<?php echo isset($errors['address']) ? ' error' : '';?>">
-      <label class="control-label" for="place_address">주소 *</label>
-      <div class="controls">
-         <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
-        <?php
-        	if(!$modal_mode) {
-        ?>
-        <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
-        <?php
-			}
-		?>
-        <p class="help-block">
-          구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
-        </p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="place_url">URL</label>
-      <div class="controls">
-        <input type="text" id="place_url" class="span4" name="url" value="<?php echo isset($place) ? $place->url : ''?>" />
-        <p class="help-block">
-          장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
-        </p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="place_description">설명</label>
-      <div class="controls">
-        <textarea id="place_description" class="span4" name="description"><?php echo isset($place) ? $place->description : ''?></textarea>
-        <p class="help-block">
-          최대 150자 내외로 장소에 대한 설명을 입력해주세요.
-        </p>
-      </div>
-    </div>    
-  <?php
-    if(($edit_mode && $place->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
-        (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
-  ?>
-    <div class="control-group">
-      <label class="control-label" for="place_approved">바로인증</label>
-      <div class="controls">
-          <label class="checkbox">
-            <input id="place_approved" type="checkbox" name="approved" /> 지금 인증하기
-          </label>
+  			}
+  		?>
           <p class="help-block">
-          관리자는 인증절차 없이 바로 지도에 입력할 수 있습니다.
-        </p>
+            구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
+          </p>
+        </div>
       </div>
-    </div>
-  <?php
-    }
-  ?>
-  </fieldset>
+      <div class="control-group">
+        <label class="control-label" for="place_url">URL</label>
+        <div class="controls">
+          <input type="text" id="place_url" class="span4" name="url" value="<?php echo isset($place) ? $place->url : ''?>" />
+          <p class="help-block">
+            장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
+          </p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="place_description">설명</label>
+        <div class="controls">
+          <textarea id="place_description" class="span4" name="description"><?php echo isset($place) ? $place->description : ''?></textarea>
+          <p class="help-block">
+            최대 150자 내외로 장소에 대한 설명을 입력해주세요.
+          </p>
+        </div>
+      </div>    
+    <?php
+      if(($edit_mode && $place->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
+          (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
+    ?>
+      <div class="control-group">
+        <label class="control-label" for="place_approved">바로인증</label>
+        <div class="controls">
+            <label class="checkbox">
+              <input id="place_approved" type="checkbox" name="approved" /> 지금 인증하기
+            </label>
+            <p class="help-block">
+            관리자는 인증절차 없이 바로 지도에 입력할 수 있습니다.
+          </p>
+        </div>
+      </div>
+    <?php
+      }
+    ?>
+    </fieldset>
   <?php if($modal_mode) { ?>
   </div>
   <?php } ?>

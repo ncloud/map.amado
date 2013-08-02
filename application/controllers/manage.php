@@ -299,6 +299,7 @@ class Manage extends APP_Controller {
 	function place_delete($id)
 	{
 		if(empty($this->site->id)) redirect('/');
+
 		if($place = $this->m_place->get($id)) {
 
 			if($place->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
@@ -316,6 +317,21 @@ class Manage extends APP_Controller {
 
 				redirect($this->site->permalink.'/manage');
 			}
+		}
+	}
+	
+	function place($id = null, $page = 1)
+	{
+		if(empty($this->site->id)) redirect('/manage');
+		
+		$this->set('menu', 'place');
+		
+		if($id) {
+
+		} else {
+			$this->__get_place_lists($this->site->id, 'all', $page);
+
+			$this->view('manage/index');
 		}
 	}
 	
@@ -460,21 +476,6 @@ class Manage extends APP_Controller {
 		}
 	}
 	
-	function place($id = null, $page = 1)
-	{
-		if(empty($this->site->id)) redirect('/manage');
-		
-		$this->set('menu', 'place');
-		
-		if($id) {
-
-		} else {
-			$this->__get_place_lists($this->site->id, 'all', $page);
-
-			$this->view('manage/index');
-		}
-	}
-	
 	function course_edit($id) {
 		if(empty($this->site->id)) redirect('/manage');
 		
@@ -585,6 +586,18 @@ class Manage extends APP_Controller {
 		
 		redirect($redirect);
 		return false;
+	}
+
+	function type()
+	{		
+		if(empty($this->site->id)) redirect('/');
+
+		$this->set('menu', 'type');
+
+		$types = $this->m_place->gets_type($this->site->id);
+		$this->set('types', $types);
+
+		$this->view('manage/add/type');
 	}
 		
 	private function __check_for_place_form(&$form, &$change_place = null)
