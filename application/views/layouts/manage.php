@@ -73,7 +73,7 @@
 	        </li>
 	        <li class="divider-vertical"></li>
 	        <li<?php echo $menu == 'type' ? ' class="active"' : '';?>>
-	        	<a href="<?php echo site_url($site->permalink.'/manage/type');?>">종류</a>
+	        	<a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
 	        </li>
 	      </ul>
 	      <ul class="nav pull-right">

@@ -147,4 +147,12 @@ class M_Place extends CI_Model
 
 		return $this->db->delete('places', array('id'=>$id));
 	}
+
+	function insert_place_types($datas) {
+		$this->db->insert_batch('place_types', $datas, true);
+	}
+
+	function update_place_types($datas) {
+		$this->db->update_batch('place_types', $datas, 'id');
+	}
 }

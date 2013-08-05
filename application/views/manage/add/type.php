@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo site_url($site->permalink.'/manage/type/'.$site->id);?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -27,7 +27,7 @@
   <?php		
   	} 
   ?>
-  	<h3>종류 편집</h3>
+  	<h3>분류 편집</h3>
   </div>
   <?php if($modal_mode) { ?>
   <div class="modal-body"> 
@@ -36,14 +36,14 @@
 		<ul id="type_list" class="type_list sortable unstyled">
 	        <li class="empty_course hide control-group">
 	          <div class="controls">
-	            종류가 비어 있습니다.
+	            분류가 비어 있습니다.
 	          </div>
 	        </li>
 		</ul>
 
         <div class="course_tool buttons control-group">
           <div class="controls empty">
-            <a class="btn" href="#" onclick="Type.addWindow(); return false;">종류 추가</a>
+            <a class="btn" href="#" onclick="Type.addWindow(); return false;">분류 추가</a>
           </div>
         </div>
 
@@ -107,14 +107,21 @@
   var Type = function(base) {
       var self = this;
       var index = 1;
+      var names = [];
 
       this.$base = $(base);
 
       self.add = function(name, icon_id, id) {
+      	  if(name == '') return false;
+
           if(typeof(icon_id) == 'undefined' || !icon_id) icon_id = '1';
           if(typeof(id) == 'undefined' || !id) id = '';
 
-          var now = this.$base.find('li.type').length + 1;
+          // name check
+          if($.inArray(name, names) >= 0) { return false; }
+
+          var $types = this.$base.find('li.type');
+          var now = $types.length + 1;
 
           var $item  = $(
 
@@ -122,7 +129,8 @@
           '  <label class="control-label">' + now + '</label>' +
           '  <div class="controls">' +
           '    <input type="hidden" name="type' + index + '_name" class="name" value="' + (name) + '" />' +
-          '    <input type="hidden" name="type' + index + '_icon_id" class="id" value="' + (icon_id) + '" />' +
+          '    <input type="hidden" name="type' + index + '_icon_id" class="icon_id" value="' + (icon_id) + '" />' +
+          '    <input type="hidden" name="type' + index + '_id" class="icon_id" value="' + (id) + '" />' +
           '    <input type="hidden" name="type' + index + '_order" class="order" value="' + (now) + '" />' +
           '    <div class="text">' + name + '</div>' +
           '    <a href="#" class="close" data-dismiss="alert" onclick="Type.deleteType(' + index + '); return false;">&times;</a>' +
@@ -133,7 +141,10 @@
 
           this.$base.append($item);
 
+          names.push(name);
           index ++;
+
+          return true;
       }
 
       self.addWindow = function() {
@@ -160,9 +171,12 @@
               $addWindowInput.blur();
             } else if(event.keyCode == 13) { // return
                 var name = $addWindowInput.val();
-                if(type != '') {
-	            	self.add(name);
-	            	$addWindowInput.blur();
+                if(name != '') {
+	            	if(self.add(name)) {
+	            		$addWindowInput.blur();
+	            	} else {
+	                    $addWindowInput.select();
+	                }
 	            }
             }
          }).blur(function(event) {
@@ -187,7 +201,7 @@
       self.rebuildTypeNumber = function() {
         self.$base.find('.type').each(function(index, data) {
             $(this).find('.control-label').text(index+1);
-            $(this).find('input.order').text(index+1);
+            $(this).find('input.order').val(index+1);
         });
       }
 

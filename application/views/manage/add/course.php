@@ -184,6 +184,8 @@
       this.$base = $(base);
 
       self.add = function(title, place_id, address) {
+          if(title == '') return false;
+
           if(typeof(place_id) == 'undefined' || !place_id) place_id = '';
           if(typeof(address) == 'undefined' || !address) address = '<a href="#">등록</a>이 필요한 장소입니다';
 
@@ -208,6 +210,8 @@
           this.$base.append($item);
 
           index ++;
+
+          return true;
       }
 
       self.addWindow = function() {
@@ -245,8 +249,11 @@
                     place_address = map_lists[title].address;
                   }
 
-                  self.add(title, place_id, place_address);
-                  $addWindowInput.blur();
+                  if(self.add(title, place_id, place_address)) {
+                    $addWindowInput.blur();
+                  } else {
+                    $addWindowInput.select();
+                  }
                 }
               }
 
@@ -318,7 +325,7 @@
       self.rebuildCourseNumber = function() {
         self.$base.find('.course').each(function(index, data) {
             $(this).find('.control-label').text(index+1);
-            $(this).find('input.order').text(index+1);
+            $(this).find('input.order').val(index+1);
         });
       }
 

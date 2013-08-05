@@ -592,7 +592,66 @@ class Manage extends APP_Controller {
 	{		
 		if(empty($this->site->id)) redirect('/');
 
-		$this->set('menu', 'type');
+		$this->set('menu', 'type');			
+
+		$message = null;
+
+		if(!empty($_POST)) { // edit mode 
+
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = '변경 권한이 없습니다.';
+			} else {
+				$types = array();
+				foreach($_POST as $key => $data) {
+					$key_cuts = explode('_', $key, 2);
+					if(count($key_cuts) == 2 && substr($key_cuts[0],0,4) == 'type') {
+						if(!isset($types[$key_cuts[0]])) {
+							$types[$key_cuts[0]] = array();
+						}
+
+						$types[$key_cuts[0]][$key_cuts[1]] = $data;
+					}
+				}
+
+				if(count($types)) {
+					$update_datas = array();
+					$insert_datas = array();
+
+					foreach($types as $type_data) {
+						if(isset($type_data['id']) && !empty($type_data['id'])) {
+							$update_data = array();
+							$update_data['id'] = $type_data['id'];
+							$update_data['icon_id'] = $type_data['icon_id'];
+							$update_data['name'] = $type_data['name'];
+							$update_data['order_index'] = $type_data['order'];
+
+							$update_datas[] = $update_data;
+						} else {
+							$insert_data = array();
+							$insert_data['site_id'] = $this->site->id;
+							$insert_data['icon_id'] = $type_data['icon_id'];
+							$insert_data['name'] = $type_data['name'];
+							$insert_data['order_index'] = $type_data['order'];
+
+							$insert_datas[] = $insert_data;
+						}
+					}
+
+					if(count($update_datas)) $this->m_place->update_place_types($update_datas);
+					if(count($insert_datas)) $this->m_place->insert_place_types($insert_datas);
+				}
+				
+				$message = new StdClass;
+				$message->type = 'success';
+				$message->content = '변경사항을 저장했습니다.';
+
+			}
+
+		}
+
+		$this->set('message', $message);
 
 		$types = $this->m_place->gets_type($this->site->id);
 		$this->set('types', $types);
@@ -611,7 +670,7 @@ class Manage extends APP_Controller {
 		}
 		
 		if(!isset($form['type_id']) || empty($form['type_id'])) {
-			$errors['type_id'] = '종류를 선택해주세요';
+			$errors['type_id'] = '류를 선택해주세요';
 		} else {
 			if($change_place) $change_place->type_id = $form['type_id'];
 		}

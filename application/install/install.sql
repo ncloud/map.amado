@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS `place_types` (
   `name` varchar(32) NOT NULL,
   `order_index` tinyint(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `site_id` (`site_id`)
+  KEY `site_id` (`site_id`),
+  UNIQUE KEY `site_id` (`site_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`, `order_index`) VALUES 
