@@ -1,9 +1,6 @@
 	
   <?php echo isset($error) && !empty($error) ? $error : ''; ?>
 
-  <div class='notifications top-center'>
-  </div>
-
 	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
 	
     <!-- google map -->
@@ -442,7 +439,7 @@
                     break;
             }
         });
-
+        
         $.each(gcourses, function(index, data) {
             var gcourse = gcourses[index];
             if(gcourse.length) {
@@ -644,8 +641,8 @@
             if(gmarkers[i].type != menu) continue;
 
             var position = gmarkers[i].getPosition();
-            var this_lat = position.jb || null;
-            var this_lng = position.kb || null;
+            var this_lat = position.lat() || null;
+            var this_lng = position.lng() || null;
 
             if((this_lat && !isNaN(this_lat)) && (this_lng && !isNaN(this_lng))) {
                 var minLat = minLat || this_lat;
@@ -659,6 +656,7 @@
                 maxLng = Math.max(maxLng, this_lng);
               }
             }
+
 
             var centerLat = minLat + ((maxLat - minLat) / 2);
             var centerLng = minLng + ((maxLng - minLng) / 2);
@@ -688,7 +686,7 @@
 		       var address = "";
 	           var data = $this.data();
 	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-	            address = data.defaultLatLng.jb + ", " + data.defaultLatLng.kb;
+	            address = data.defaultLatLng.lat() + ", " + data.defaultLatLng.lng();
 	            data.defaultLatLng = null;
 	           }
 
@@ -748,7 +746,7 @@
 	        
 	           var data = $this.data();
 	           if(typeof(data.defaultLatLng) != 'undefined' && data.defaultLatLng) {
-              address = data.defaultLatLng.jb + ", " + data.defaultLatLng.kb;
+              address = data.defaultLatLng.lat() + ", " + data.defaultLatLng.lng();
 	            data.defaultLatLng = null;
 	           }
 	           

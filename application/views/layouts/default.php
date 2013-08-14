@@ -20,11 +20,7 @@
     
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
-	
-    <!-- Notify CSS -->
-    <link href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
-
-    <!-- Custom Styles -->
+    <link type="text/css" href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap.js");?>"></script>
@@ -43,7 +39,9 @@
 <?php echo $styles_for_layout;?>
 <?php echo $scripts_for_layout;?>
 </head>
-<body>      
+<body>    
+	<div class='notifications top-center'></div>
+    
     <div id="content">
         <?php echo $content_for_layout;?>
     </div>

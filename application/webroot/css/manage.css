@@ -29,6 +29,9 @@ body.error { background:#f5f5f5; }
 
 /* layout */
 
+/* bootstrap */
+	.sidebar-nav { padding:4px 0; margin-top:20px; }
+
 /* list */
 	table tr td.num { width:20px; }
 	table tr td.type { width:10px; text-align:center; }
@@ -67,3 +70,19 @@ body.error { background:#f5f5f5; }
 
 		}
 	.course_list li.empty_course { color:#999; }
+
+/* type */
+	.type_list {}
+		.type_list .type { position:relative; border:1px solid #eee; border-radius:4px; margin-bottom:10px; background:#f9f9f9; padding:10px; }
+
+/* responsive */
+@media (max-width: 979px) {
+  /* Remove any padding from the body */
+  body {
+    padding-top: 0;
+  }
+
+  .navbar-fixed-top { 
+  	margin-bottom: 0;
+  }
+ }

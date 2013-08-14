@@ -656,7 +656,7 @@ class Manage extends APP_Controller {
 		$types = $this->m_place->gets_type($this->site->id);
 		$this->set('types', $types);
 
-		$this->view('manage/add/type');
+		$this->view('manage/setting/type');
 	}
 		
 	private function __check_for_place_form(&$form, &$change_place = null)
