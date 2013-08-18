@@ -86,8 +86,12 @@
 		            </ul>
 		        </li>
 		        <li class="divider-vertical"></li>
-		        <li<?php echo $menu == 'type' ? ' class="active"' : '';?>>
-		        	<a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
+		        <li class="<?php echo $menu == 'type' ? ' active' : '';?> dropdown">
+		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
+
+		        	<ul class="dropdown-menu">
+		        		<li><a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
+		        	</ul>
 		        </li>
 		      </ul>
 		      <ul class="nav pull-right">

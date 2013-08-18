@@ -381,7 +381,7 @@
         for(var i=1;i<paths.length;i++) {
             var path = paths[i];
             var gpath = gmap.drawPolyline({
-              path: path.data,
+              path: tpath.data,
               strokeColor: path.color,
               strokeOpacity: 0.9,
               strokeWeight: 4
@@ -393,11 +393,11 @@
         overlay = gmap.drawOverlay({
           lat: <?php echo $category_default->lat;?>,
           lng: <?php echo $category_default->lng;?>,
-          content: '<div class="map_overlay"></div>',
+          content: '<p class="map_overlay"></p>',
           verticalAlign: 'middle',
           horizontalAlign: 'center',
         });
-          
+
         centerMap('<?php echo $course_mode ? 'course' : 'category';?>');
         
         // context menu
@@ -448,23 +448,24 @@
                   var $weather = $(".course_" + index + " .info");
                   var level = 1;
                   var weather = data.temp[0].wfKor[0];
+                  var temp = data.temp[0].temp[0];
 
-                  if(data.temp[0].temp >= 16 && data.temp[0].temp < 26) {
-                    if(data.temp[0].wfEn == 'Clear') {
+                  if(data.temp[0].temp[0] >= 16 && data.temp[0].temp[0] < 26) {
+                    if(data.temp[0].wfEn[0] == 'Clear') {
                       level = 1;
-                    } else if($.inArray(data.temp[0].wfEn, ['Cloudy', 'Little Cloudy'])) {
+                    } else if($.inArray(data.temp[0].wfEn[0], ['Cloudy', 'Little Cloudy'])) {
                       level = 2
-                    } else if($.inArray(data.temp[0].wfEn, ['Mostly Cloudy'])) {
+                    } else if($.inArray(data.temp[0].wfEn[0], ['Mostly Cloudy'])) {
                       level = 3;
                     } else {
                       level = 4;
                     }
                   } else {
-                    if(data.temp[0].wfEn == 'Clear') {
+                    if(data.temp[0].wfEn[0] == 'Clear') {
                       level = 3;
-                    } else if($.inArray(data.temp[0].wfEn, ['Cloudy', 'Little Cloudy'])) {
+                    } else if($.inArray(data.temp[0].wfEn[0], ['Cloudy', 'Little Cloudy'])) {
                       level = 4;
-                    } else if($.inArray(data.temp[0].wfEn, ['Mostly Cloudy'])) {
+                    } else if($.inArray(data.temp[0].wfEn[0], ['Mostly Cloudy'])) {
                       level = 5;
                     } else {
                       level = 6;
@@ -476,27 +477,27 @@
                   switch(level) {
                     case 1:
                       color = '#518471';
-                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '산책하기 좋은 코스입니다. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 2:
                       color = '#7F9974';
-                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 3:
                       color = '#B0B572';
-                      title = '그럭저럭 산책하기 좋은 코스입니다. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '그럭저럭 산책하기 좋은 코스입니다. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 4:
                       color = '#e1b24b';
-                      title = '산책은 다음에 하시는걸 추천해요. <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시는걸 추천해요. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 5:
                       color = '#E34C41';
-                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 6:
                       color = '#E34C41';
-                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 날씨는 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                   }
 

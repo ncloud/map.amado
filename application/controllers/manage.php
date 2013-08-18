@@ -597,7 +597,6 @@ class Manage extends APP_Controller {
 		$message = null;
 
 		if(!empty($_POST)) { // edit mode 
-
 			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$message = new StdClass;
 				$message->type = 'error';
@@ -646,17 +645,25 @@ class Manage extends APP_Controller {
 				$message = new StdClass;
 				$message->type = 'success';
 				$message->content = '변경사항을 저장했습니다.';
-
 			}
 
 		}
 
-		$this->set('message', $message);
+		if($this->input->is_ajax_request()) {
+			$this->layout->setLayout('layouts/empty');
 
-		$types = $this->m_place->gets_type($this->site->id);
-		$this->set('types', $types);
+			$output = new StdClass;
+			$output->success = $message->type == 'success';
+			$output->message = $message->content;
+			echo json_encode($output);
+		} else {
+			$this->set('message', $message);
 
-		$this->view('manage/setting/type');
+			$types = $this->m_place->gets_type($this->site->id);
+			$this->set('types', $types);
+
+			$this->view('manage/setting/type');
+		}
 	}
 		
 	private function __check_for_place_form(&$form, &$change_place = null)

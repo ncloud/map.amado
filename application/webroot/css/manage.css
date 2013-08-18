@@ -73,7 +73,11 @@ body.error { background:#f5f5f5; }
 
 /* type */
 	.type_list {}
-		.type_list .type { position:relative; border:1px solid #eee; border-radius:4px; margin-bottom:10px; background:#f9f9f9; padding:10px; }
+		.type_list .type { cursor:move; position:relative; border:1px solid #eee.type_list .type; border-radius:4px; margin-bottom:10px; background:#f9f9f9; padding:10px; }
+		.type_list .type:hover { background:#eee; }
+
+			.type_list .type .btn-group { float:right; }
+		 	.type_list .type .text { padding-top:3px; }
 
 /* responsive */
 @media (max-width: 979px) {

@@ -7,7 +7,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post" onsubmit="Type.onSave(this); return false;">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -43,27 +43,13 @@
   	        </li>
   		</ul>
 
-        <div class="type_tool buttons">
-            <a class="btn" href="#" onclick="Type.addWindow(); return false;">분류 추가</a>
-        </div>
+      <hr />
+
+      <div class="type_tool buttons">
+        <a class="btn" href="#" onclick="Type.addWindow(); return false;">분류 추가</a>
+      </div>
 
 	  </fieldset>
-  <?php if($modal_mode) { ?>
-  </div>
-  <?php } ?>
-  <div class="<?php echo $modal_mode ? 'modal-footer' : 'form-actions';?>">
- 	<button type="submit" class="btn btn-primary">변경사항 저장</button>
-  <?php
-  	if($modal_mode) {
-  ?>
-      <a href="#" class="btn" data-dismiss="modal">취소</a>
-  <?php		
-  	} else {
-  ?>
-      <a href="<?php echo site_url($site->permalink.'/manage');?>" class="btn">취소</a>
-  <?php
-	}
-  ?>
   </div>
 </form>
 
@@ -92,6 +78,7 @@
         $("body").removeClass("dragging");
 
         Type.rebuildTypeNumber();
+        Type.save();
       },
       onDrag: function ($item, position) {
         $item.css({
@@ -121,10 +108,9 @@
           if($.inArray(name, names) >= 0) { 
              $('.top-center').notify({
                 key: 'addform',
-                message: { text: '모든 필수 입력항목을 입력해주세요.' },
+                message: { text: '이미 존재하는 분류명입니다. 다른 분류명을 입력해주세요.' },
                 type:'error'
               }).show();
-
             return false; 
           }
 
@@ -139,7 +125,16 @@
           '    <input type="hidden" name="type' + index + '_id" class="icon_id" value="' + (id) + '" />' +
           '    <input type="hidden" name="type' + index + '_order" class="order" value="' + (now) + '" />' +
           '    <div class="text">' + name + '</div>' +
-          '    <a href="#" class="close" data-dismiss="alert" onclick="Type.deleteType(' + index + '); return false;">&times;</a>' +
+          '    <div class="btn-group">' + 
+          '        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
+          '          <span class="caret"></span>' + 
+          '        </a>' + 
+          '        <ul class="dropdown-menu pull-right">' + 
+          '           <li><a href="#">변경</a></li>' +
+          '           <li class="divider"></li>' +
+          '           <li><a href="#" data-dismiss="alert" onclick="Type.deleteType(' + index + '); return false;">삭제</a></li>' + 
+          '        </ul>' + 
+          '      </div>' + 
           '    <div class="clearfix"></div>' +
           '</li>'
 
@@ -227,9 +222,44 @@
       }
 
       self.deleteType = function(type_id) {
-        this.$base.find('#type' + type_id).remove();
+        if(confirm('분류를 삭제하시겠습니까? 해당 분류를 사용하는 장소는 모두 분류없음으로 자동 변경됩니다.')) {
+          this.$base.find('#type' + type_id).remove();
+          this.checkType();
+        }
+      }
 
-        this.checkType();
+      self.onSave = function(form) {
+        var $form = $(form);
+        var datas = new Array();
+        $form.find('input').each(function(index, input) {
+          var $input = $(input);
+          datas.push($input.attr('name') + '=' + encodeURIComponent($input.val()));
+        });
+
+        $.ajax({
+          dataType: "json",
+          type: "POST", 
+          url: '<?php echo site_url($site->permalink.'/manage/type/');?>',
+          data: datas.join('&'),
+          success: function(data) {
+            if(data.success) {
+             /*$('.top-center').notify({
+                key: 'addform',
+                message: { text: '수정했습니다' },
+                type:'success'
+              }).show(); */
+            } else {
+
+            }
+          }
+        });
+        return false;
+      }
+
+      self.save = function() {
+        var $form = $("#addform");
+        $form.submit();
+
       }
   }   
 
