@@ -8,11 +8,6 @@ class M_Place extends CI_Model
         parent::__construct();    
     }
 	
-	function get_types($site_id)
-	{
-		return $this->db->from('place_types')->where('site_id', $site_id)->get()->result();
-	}
-	
 	function get($id)
 	{
 		return $this->db->from('places')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, attaches.filename as file')->get()->row();
@@ -148,11 +143,44 @@ class M_Place extends CI_Model
 		return $this->db->delete('places', array('id'=>$id));
 	}
 
+	// Type
+	function add_type($data) {
+		if($this->db->insert('place_types', $data)) {
+			return $this->db->insert_id();
+		}
+
+		return false;
+	}
+
 	function insert_place_types($datas) {
 		$this->db->insert_batch('place_types', $datas, true);
 	}
 
 	function update_place_types($datas) {
 		$this->db->update_batch('place_types', $datas, 'id');
+	}
+
+	function get_types($site_id)
+	{
+		return $this->db->from('place_types')->where('site_id', $site_id)->get()->result();
+	}
+
+	function get_max_type_id($site_id)
+	{
+		$result = $this->db->from('place_types')->where('site_id', $site_id)->select('max(order_index) as max_id')->limit(1)->get()->row();
+		if($result) {
+			return $result->max_id;
+		} else {
+			return 0;
+		}
+	}
+
+	function get_exist_type_by_name($site_id, $name)
+	{
+		if($this->db->from('place_types')->where('site_id', $site_id)->where('name', $name)->get()->row()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

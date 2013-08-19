@@ -65,6 +65,9 @@ $route['(:any)/manage/list']						 = 'manage/lists/site:$1';
 $route['(:any)/manage/list/(:any)']					 = 'manage/lists/site:$1/$2';
 $route['(:any)/manage/list/(:any)/(:num)']			 = 'manage/lists/site:$1/$2/$3';
 
+$route['(:any)/manage/type/add/(:any)/(:num)']       = 'manage/type_add/site:$1/$2/$3';
+$route['(:any)/manage/type/add/(:any)']				 = 'manage/type_add/site:$1/$2';
+
 $route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/site:$1/$4/$5/$6';
 $route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/site:$1/$4/$5';
 $route['(:any)/(:any)/(:any)/(:any)']				 = '$2/$3/site:$1/$4';

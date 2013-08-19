@@ -589,7 +589,7 @@ class Manage extends APP_Controller {
 	}
 
 	function type()
-	{		
+	{
 		if(empty($this->site->id)) redirect('/');
 
 		$this->set('menu', 'type');			
@@ -664,6 +664,45 @@ class Manage extends APP_Controller {
 
 			$this->view('manage/setting/type');
 		}
+	}
+
+	function type_add($name, $icon_id = false) {
+		if(empty($this->site->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/empty');
+
+		$output = new StdClass;
+		$output->success = false;
+
+		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			$output->success = false;			
+			$output->message = '추가 권한이 없습니다.';		
+		} else {
+			if(empty($name)) {
+				$output->success = false;			
+				$output->message = '필수 항목이 없습니다. (이름)';	
+			} else {
+				$this->load->model('m_place');
+
+				if($this->m_place->get_exist_type_by_name($this->site->id, $name)) {
+					$output->success = false;			
+					$output->message = '이미 이름이 존재합니다.';
+				} else {
+					$data = new StdClass;
+					$data->site_id = $this->site->id;
+					$data->icon_id = ($icon_id === false || !is_numeric($icon_id)) ? 0 : $icon_id;
+					$data->name = $name;
+					$data->order_index = $this->m_place->get_max_type_id($this->site->id) + 1;
+
+					if($data->id = $this->m_place->add_type($data)) {
+						$output->success = true;
+						$output->content = $data;
+					}
+				}
+			}
+		}
+
+		echo json_encode($output);
 	}
 		
 	private function __check_for_place_form(&$form, &$change_place = null)

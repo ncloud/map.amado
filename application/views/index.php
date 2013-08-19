@@ -381,7 +381,7 @@
         for(var i=1;i<paths.length;i++) {
             var path = paths[i];
             var gpath = gmap.drawPolyline({
-              path: tpath.data,
+              path: path.data,
               strokeColor: path.color,
               strokeOpacity: 0.9,
               strokeWeight: 4

@@ -106,5 +106,7 @@
     <div id="content" class="container">
         <?php echo $content_for_layout;?>
     </div>
+
+    <footer class="footer"></footer>
 </body>
 </html>
