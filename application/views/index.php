@@ -68,7 +68,7 @@
             echo "<li class='category category_{$type->id}'>
                 <div class='item'>
                   <div class='toggle' onClick=\"toggle('category', '{$type->id}'); return false;\" id='filter_category_{$type->id}'></div>
-                  <a href='#' onClick=\"toggleList('category','{$type->id}'); return false;\" class='info'><img src='".site_url('/img/icons/'.$type->id).".png' alt='' />{$type->name} <span class='total'>({$markers_count})</span></a>
+                  <a href='#' onClick=\"toggleList('category','{$type->id}'); return false;\" class='info'><img src='".site_url('/img/icons/'.$type->icon_id).".png' alt='' />{$type->name} <span class='total'>({$markers_count})</span></a>
                 </div>
                 <ul class='list-items list_category_{$type->id}'>";
 			
@@ -477,27 +477,27 @@
                   switch(level) {
                     case 1:
                       color = '#518471';
-                      title = '산책하기 좋은 코스입니다. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '지금은 산책하기 좋은 코스입니다. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 2:
                       color = '#7F9974';
-                      title = '산책하기 좋은 코스입니다. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '지금은 산책하기 좋은 코스입니다. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 3:
                       color = '#B0B572';
-                      title = '그럭저럭 산책하기 좋은 코스입니다. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '지금은 그럭저럭 산책하기 좋은 코스입니다. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 4:
                       color = '#e1b24b';
-                      title = '산책은 다음에 하시는걸 추천해요. <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시는걸 추천해요. <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 5:
                       color = '#E34C41';
-                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                     case 6:
                       color = '#E34C41';
-                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스의 현재 ' + temp + '도이고 ' + weather + '입니다.';
+                      title = '산책은 다음에 하시면 어떨까요? <br /> 이 코스는 현재 ' + temp + '도이고 ' + weather + '입니다.';
                     break;
                   }
 

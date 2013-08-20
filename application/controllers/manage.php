@@ -62,7 +62,7 @@ class Manage extends APP_Controller {
 		if(empty($this->user_data->id)) {
 			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
 		}
-		
+
 		if($type == 'place') {
 			$this->__get_place_lists($this->site->id, $status, $page);
 			$this->view('manage/list');
@@ -660,12 +660,28 @@ class Manage extends APP_Controller {
 			$this->set('message', $message);
 
 			$types = $this->m_place->gets_type($this->site->id);
+			
+			$types_counts = array();
+			$result = $this->m_place->get_types_count($this->site->id);
+			foreach($result as $item) {
+				$types_counts[$item->type_id] = $item->count;
+			}
+
+			foreach($types as $key => $type) {
+				if(isset($types_counts[$type->id])) {
+					$types[$key]->count = $types_counts[$type->id];
+				} else {
+					$types[$key]->count = 0;
+				}
+			}
+
 			$this->set('types', $types);
 
 			$this->view('manage/setting/type');
 		}
 	}
 
+	// AJAX Only
 	function type_add($name, $icon_id = false) {
 		if(empty($this->site->id)) redirect('/');
 		
@@ -678,6 +694,7 @@ class Manage extends APP_Controller {
 			$output->success = false;			
 			$output->message = '추가 권한이 없습니다.';		
 		} else {
+			$name = urldecode($name);
 			if(empty($name)) {
 				$output->success = false;			
 				$output->message = '필수 항목이 없습니다. (이름)';	
@@ -698,6 +715,92 @@ class Manage extends APP_Controller {
 						$output->success = true;
 						$output->content = $data;
 					}
+				}
+			}
+		}
+
+		echo json_encode($output);
+	}
+
+	// AJAX ONLY
+	function type_edit($id) {
+		if(empty($this->site->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/empty');
+
+		$output = new StdClass;
+		$output->success = false;
+
+		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			$output->success = false;			
+			$output->message = '삭제 권한이 없습니다.';		
+		} else {
+			$datas = array();
+			$check_names = array('name');
+			if(isset($_POST) && !empty($_POST)) {
+				foreach($_POST as $key => $data) {
+					if(in_array($key, $check_names)) {
+						$datas[$key] = urldecode($data);
+					}
+				}
+			}
+
+			if(empty($id)) {
+				$output->success = false;			
+				$output->message = '필수 항목이 없습니다. (ID)';	
+			} else {
+				$this->load->model('m_place');
+
+				if($type = $this->m_place->get_type($id)) {
+					if($type->site_id == $this->site->id) {
+						if(count($datas)) {
+							$this->m_place->update_type($id, $datas);
+						}
+
+						$output->success = true;
+					} else {
+						$output->success = false;
+						$output->message = '잘못된 접근입니다.';
+					}
+				} else { // 없는 TYPE
+					$output->success = false;
+					$output->message = '잘못된 접근입니다.';
+				}
+			}
+		}
+
+		echo json_encode($output);
+	}
+	// AJAX Only
+	function type_delete($id) {
+		if(empty($this->site->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/empty');
+
+		$output = new StdClass;
+		$output->success = false;
+
+		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			$output->success = false;			
+			$output->message = '삭제 권한이 없습니다.';		
+		} else {
+			if(empty($id)) {
+				$output->success = false;			
+				$output->message = '필수 항목이 없습니다. (ID)';	
+			} else {
+				$this->load->model('m_place');
+
+				if($type = $this->m_place->get_type($id)) {
+					if($type->site_id == $this->site->id) {
+						$this->m_place->delete_type($id);
+						$output->success = true;
+					} else {
+						$output->success = false;
+						$output->message = '잘못된 접근입니다.';
+					}
+				} else { // 없는 TYPE
+					$output->success = false;
+					$output->message = '잘못된 접근입니다.';
 				}
 			}
 		}

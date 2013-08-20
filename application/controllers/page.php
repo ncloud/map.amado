@@ -75,6 +75,15 @@ class Page extends APP_Controller {
 			
 			$place_types_by_id = array();
 			$count_by_type = array();
+			
+			// 분류없음
+			$notype = new StdClass;
+			$notype->icon_id = 1;
+			$notype->name = '분류없음';
+
+			$count_by_type[0] = 0;
+			$place_types_by_id[0] = $notype;
+
 			foreach($place_types as $place_type) {
 				$count_by_type[$place_type->id] = 0;
 				$place_types_by_id[$place_type->id] = $place_type;
@@ -82,7 +91,7 @@ class Page extends APP_Controller {
 			
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
-		          if($place->type_id) $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
+		          $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
 		          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
 		        	
 				  if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();

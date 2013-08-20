@@ -88,15 +88,15 @@
   <div class="pagination pagination-centered">
     <ul>
         <li<?php echo $paging->page == 1 ? ' class="disabled"' : '';?>>
-          <a href="<?php echo $paging->page == 1 ? '#' : site_url($site->permalink.'/manage/list/'.$status.'/'.($paging->page-1));?>">&larr;</a>
+          <a href="<?php echo $paging->page == 1 ? '#' : site_url($site->permalink.'/manage/list/course/'.$status.'/'.($paging->page-1));?>">&larr;</a>
         </li>
       <?php
         for($page = $paging->start; $page <= $paging->end ; $page++) {
       ?>
-        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/list/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
+        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/list/course/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
         <li<?php echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
-          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($site->permalink.'/manage/list/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
+          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($site->permalink.'/manage/list/course/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
         </li>
     </ul>
   </div>

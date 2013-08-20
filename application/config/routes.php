@@ -61,12 +61,13 @@ $route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change
 $route['(:any)/manage/course/edit/(:num)']			 		= 'manage/course_edit/site:$1/$2';
 $route['(:any)/manage/course/change/(:any)/(:num)/(:any)']	= 'manage/course_change/site:$1/$2/$3/$4';
 
-$route['(:any)/manage/list']						 = 'manage/lists/site:$1';
 $route['(:any)/manage/list/(:any)']					 = 'manage/lists/site:$1/$2';
-$route['(:any)/manage/list/(:any)/(:num)']			 = 'manage/lists/site:$1/$2/$3';
+$route['(:any)/manage/list']						 = 'manage/lists/site:$1';
 
 $route['(:any)/manage/type/add/(:any)/(:num)']       = 'manage/type_add/site:$1/$2/$3';
 $route['(:any)/manage/type/add/(:any)']				 = 'manage/type_add/site:$1/$2';
+$route['(:any)/manage/type/delete/(:num)']		     = 'manage/type_delete/site:$1/$2';
+$route['(:any)/manage/type/edit/(:num)']		     = 'manage/type_edit/site:$1/$2';
 
 $route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/site:$1/$4/$5/$6';
 $route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/site:$1/$4/$5';

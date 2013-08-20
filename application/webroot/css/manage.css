@@ -29,9 +29,15 @@ body.error { background:#f5f5f5; }
 
 /* layout */
 	.footer { padding-bottom:30px; }
+
 /* bootstrap */
 	.sidebar-nav { padding:4px 0; margin-top:20px; }
 
+  	.modal {}
+    	.modal form { margin-bottom:0; }
+    	.modal form .modal-body { padding-top:30px; }
+			.modal form .modal-body .control-label { width:50px; }
+			.modal form .modal-body .controls { margin-left:70px; }
 /* list */
 	table tr td.num { width:20px; }
 	table tr td.type { width:10px; text-align:center; }

@@ -160,9 +160,31 @@ class M_Place extends CI_Model
 		$this->db->update_batch('place_types', $datas, 'id');
 	}
 
+	function get_type($id) {
+		return $this->db->from('place_types')->where('id', $id)->get()->row();
+	}
+
 	function get_types($site_id)
 	{
 		return $this->db->from('place_types')->where('site_id', $site_id)->get()->result();
+	}
+
+	function get_types_count($site_id) {
+		return $this->db->from('places')->where('site_id', $site_id)->group_by('type_id')->select('type_id, COUNT(type_id) as count')->get()->result();
+	}
+
+	function delete_type($id) {
+		$this->db->delete('place_types', array('id'=>$id));
+
+		// 삭제한 분류를 사용하는 장소들 자동으로 분류없음으로...
+		$this->db->update('places', array('type_id'=>0), array('type_id' => $id));
+
+		return true;
+	}
+
+	function update_type($id, $data) {
+		$this->db->update('place_types', $data, array('id' => $id));
+		return true;
 	}
 
 	function get_max_type_id($site_id)

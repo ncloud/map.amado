@@ -60,6 +60,66 @@
       </div>
   </div>
 
+<?php
+  echo $this->view('/manage/slices/setting_footer');
+?>
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editForm" class="form-horizontal" action="<?php echo site_url($site->permalink.'/manage/type/edit');?>" method="post" onsubmit="Type.doEditType(); return false;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">분류 변경</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="type_id" value="" />
+          <input type="hidden" name="type_index" value="" />
+          
+          <div class="control-group">
+            <label class="control-label" for="typeName">이름</label>
+            <div class="controls">
+              <input type="text" id="typeName" name="name" />
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+          <input type="submit" class="btn btn-primary" value="변경" />
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="deleteForm" action="<?php echo site_url($site->permalink.'/manage/type/delete');?>" method="post" onsubmit="Type.doDeleteType(); return false;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">분류 삭제</h4>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="type_id" value="" />
+          <input type="hidden" name="type_index" value="" />
+          <p>
+            삭제된 분류는 다시 복구할 수 없고, 분류에 해당하는 장소들은 자동으로 "분류없음"으로 변경됩니다.
+            삭제하시겠습니까?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+          <input type="submit" class="btn btn-danger" value="삭제" />
+        </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.sortable.js');?>"></script>
 <script type="text/javascript">
   $(function  () {
@@ -110,11 +170,13 @@
       this.$addWindowInput = this.$addWindow.find('input[type=text]');
       this.$buttons = this.$tools.find('.buttons');
 
-      self.add = function(name, icon_id, id) {
-      	  if(name == '') return false;
+
+      self.add = function(name, icon_id, id, count) {
+          if(name == '') return false;
 
           if(typeof(icon_id) == 'undefined' || !icon_id) icon_id = '1';
           if(typeof(id) == 'undefined' || !id) id = '';
+          if(typeof(count) == 'undefined' || !count) count = '0';
 
           // name check
           if($.inArray(name, names) >= 0) { 
@@ -135,15 +197,15 @@
           '    <input type="hidden" name="type' + index + '_id" class="id" value="' + (id) + '" />' +
           '    <input type="hidden" name="type' + index + '_icon_id" class="icon_id" value="' + (icon_id) + '" />' +
           '    <input type="hidden" name="type' + index + '_order" class="order" value="' + (now) + '" />' +
-          '    <div class="text">' + name + '</div>' +
+          '    <div class="text"><span class="name">' + name + '<span> <span class="badge">' + (count) + '</span></div>' +
           '    <div class="btn-group">' + 
           '        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
           '          <span class="caret"></span>' + 
           '        </a>' + 
           '        <ul class="dropdown-menu pull-right">' + 
-          '           <li><a data-toggle="modal" href="#myModal">변경</a></li>' +
+          '           <li><a data-toggle="modal" href="#editModal" onclick="Type.setEditTypeModal(' + index + ');">변경</a></li>' +
           '           <li class="divider"></li>' +
-          '           <li><a data-toggle="modal" href="#deleteModal" onclick="Type.setDeleteModal(' + index + ');">삭제</a></li>' + 
+          '           <li><a data-toggle="modal" href="#deleteModal" onclick="Type.setDeleteTypeModal(' + index + ');">삭제</a></li>' + 
           '        </ul>' + 
           '      </div>' + 
           '    <div class="clearfix"></div>' +
@@ -252,6 +314,7 @@
         $form.submit();
       }
 
+      // 추가한 분류만 저장하도록...
       self.saveForAdd = function($item) {
         // 값이 공백일때만 저장함..
         if($item.find('input.id').val() == '') {
@@ -269,17 +332,82 @@
         }
       }
 
-      self.setDeleteModal = function(index) {
-        $("#deleteModal").find('input[name=type_id]').val(index);
+      self.setDeleteTypeModal = function(type_index) {
+        var $deleteModal = $("#deleteModal");
+
+        var type_id = $("#type" + type_index).find('input.id').val();
+
+        $deleteModal.find('input[name=type_index]').val(type_index);
+        $deleteModal.find('input[name=type_id]').val(type_id);
       }
 
-      self.doDelete = function() {
-        var $modal = $("#deleteModal");
+      self.doDeleteType = function() {
+        var $deleteModal = $("#deleteModal");
+        
+        var type_id = $deleteModal.find('input[name=type_id]').val();
+        var type_index = $deleteModal.find('input[name=type_index]').val();
 
-        var index = $modal.find('input[name=type_id]').val();
+        $deleteModal.modal("hide");        
+        $("#type" + type_index).fadeOut();
 
-        $("#deleteModal").modal("hide");        
-        $("#type" + index).fadeOut();
+        $.ajax({
+          dataType: "json",
+          url: '<?php echo site_url($site->permalink.'/manage/type/delete/');?>/' + type_id,
+          success: function(data) {
+            console.log(data);
+            if(data.success) {
+              
+            }
+          }
+        });
+      }
+
+      self.setEditTypeModal = function(type_index) {
+        var $editModal = $("#editModal");
+
+        var type_id = $("#type" + type_index).find('input.id').val();
+        var type_name = $("#type" + type_index).find('input.name').val();
+
+        $editModal.find('input[name=type_index]').val(type_index);
+        $editModal.find('input[name=type_id]').val(type_id);
+
+        $editModal.find('input[name=name]').val(type_name);
+      }
+
+      self.doEditType = function() {        
+        var $editModal = $("#editModal");
+
+        var type_id = $editModal.find('input[name=type_id]').val();
+        var type_index = $editModal.find('input[name=type_index]').val();
+        var type_name = $editModal.find('input[name=name]').val();
+
+        $editModal.modal("hide");    
+
+        var $type = $("#type" + type_index);
+        $type.find('input.name').val(type_name);    
+        $type.find('div.text span.name').text(type_name);    
+
+        var $form = $editModal.find('form');
+        var datas = new Array();
+        var not_save_names = ['type_id', 'type_index'];
+
+        $form.find('input').each(function(index, input) {
+          var $input = $(input);
+          var name = $input.attr('name');
+          if(name && $.inArray(name, not_save_names) == -1) {
+            datas.push(name + '=' + encodeURIComponent($input.val()));
+          }
+        });
+
+        $.ajax({
+          dataType: "json",
+          type: "POST",
+          url: '<?php echo site_url($site->permalink.'/manage/type/edit/');?>/' + type_id,
+          data: datas.join('&'),
+          success: function(data) {
+            console.log(data);
+          }
+        });
       }
   }   
 
@@ -287,43 +415,14 @@
 <?php 
     foreach($types as $type) {
 ?>
-  Type.add('<?php echo $type->name;?>', '<?php echo $type->icon_id;?>', '<?php echo $type->id;?>');
+  Type.add('<?php echo $type->name;?>', '<?php echo $type->icon_id;?>', '<?php echo $type->id;?>', '<?php echo $type->count;?>');
 <?php
   }
 ?>
   Type.checkType();
+
+  // Modal Event
+  $('#editModal').on('shown', function () {
+    $('#editModal').find('input[name=name]').focus();
+  })
 </script>
-
-<?php
-  echo $this->view('/manage/slices/setting_footer');
-?>
-
-<style type="text/css">
-  #deleteModal {}
-    #deleteModal form { margin-bottom:0; }
-</style>
-
-<!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="deleteForm" action="<?php echo site_url($site->permalink.'/manage/type/delete');?>" method="post" onsubmit="Type.doDelete(); return false;">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">분류 삭제</h4>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="type_id" value="" />
-          <p>
-            삭제된 분류는 다시 복구할 수 없고, 분류에 해당하는 장소들은 자동으로 "분류없음"으로 변경됩니다.
-            삭제하시겠습니까?
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-          <input type="submit" class="btn btn-danger" value="삭제" />
-        </div>
-      </form>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
