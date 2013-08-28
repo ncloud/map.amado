@@ -22,4 +22,10 @@ class M_Site extends CI_Model
 	{
 		return $this->db->from('sites')->get()->result();
 	}
+
+	function gets_all_by_user_id($user_id)
+	{
+		return $this->db->from('sites')->where('user_id', $user_id)->get()->result();
+
+	}
 }

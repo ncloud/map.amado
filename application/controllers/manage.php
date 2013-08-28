@@ -9,7 +9,7 @@ class Manage extends APP_Controller {
 		$this->load->model('m_place');
 		$this->load->model('m_course');
 		
-		if($this->site->id && !$this->input->is_ajax_request()) {
+		if($this->site && !$this->input->is_ajax_request()) {
 			$total_place_approved = $this->m_place->get_count_by_approved($this->site->id);
 			$total_place_rejected = $this->m_place->get_count_by_rejected($this->site->id);
 			$total_place_pending = $this->m_place->get_count_by_pending($this->site->id);
@@ -45,10 +45,14 @@ class Manage extends APP_Controller {
 		}
 		
 		if(empty($this->site->id)) {
-			$sites = $this->m_site->gets_all();
-			if($sites && count($sites) == 1) {
-				redirect('/'.$sites[0]->permalink.'/manage');
+			if(in_array($this->user_data->role, array('admin','super-admin'))) {
+				$sites = $this->m_site->gets_all();
+			} else {
+				$sites = $this->m_site->gets_all_by_user_id($this->user_data->id);
 			}
+
+			$this->set('sites', $sites);
+			$this->view('manage/index_site');
 		} else {
 			$this->__get_place_lists($this->site->id, 'all', $page);
 			$this->view('manage/index');

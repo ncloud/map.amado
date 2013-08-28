@@ -36,9 +36,9 @@ class APP_Controller extends CI_Controller {
         */
 
 	    $this->data = array();
-
-		$this->site = new StdClass;
 		if(isset($this->uri->rsegments[3]) && strpos($this->uri->rsegments[3], 'site:') !== false) {
+			$this->site = new StdClass;
+
 			$site_value = substr($this->uri->rsegments[3], 5);
 
 			if(is_numeric($site_value)) {
@@ -52,7 +52,7 @@ class APP_Controller extends CI_Controller {
 			ksort($this->uri->rsegments);
     	    unset($this->uri->rsegments[0]);
 		} else {
-			$this->site->id = null;
+			$this->site = null;
 		}
 
 		$this->set('site', $this->site);
@@ -98,7 +98,7 @@ class APP_Controller extends CI_Controller {
         } else {
         }
 
-		if($this->site->id) {
+		if($this->site) {
 			$this->load->model('m_role');
 			
 			$this->user_data->role = $this->m_role->get_role($this->site->id, $this->user_data->id);

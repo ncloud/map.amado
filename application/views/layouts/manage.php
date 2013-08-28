@@ -30,15 +30,17 @@
 	      <a class="brand" href="<?php echo site_url("/manage/");?>">
 	        아마도.지도
 	      </a>
+	      <?php if(isset($site)) { ?>
 	      <a class="brand" href="<?php echo site_url($site->permalink."/manage/");?>"><small><?php echo $site->name;?></small></a>
-
+		  <?php } ?>
 	      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
 
-	      <?php 
+      <?php 
+      	if(isset($site)) {
 	      	$menu = isset($menu) ? $menu : '';
 			$menu_title = '';
 			
@@ -99,6 +101,10 @@
 		        <li><a href="<?php echo site_url('/logout');?>">로그아웃</a></li>
 		      </ul>
 	      </div>
+	<?php
+		}
+	?>
+
 	    </div>
 	  </div>
 	</div>
