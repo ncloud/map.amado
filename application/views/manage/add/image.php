@@ -137,7 +137,7 @@
       <label class="control-label" for="image_approved">바로인증</label>
       <div class="controls">
           <label class="checkbox">
-            <input id="image_approved" type="checkbox" name="approved" /> 지금 인증하기
+            <input id="image_approved" type="checkbox" name="approved" checked="checked" /> 지금 인증하기
           </label>
           <p class="help-block">
           관리자는 인증절차 없이 바로 지도에 입력할 수 있습니다.

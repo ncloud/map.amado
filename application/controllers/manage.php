@@ -45,11 +45,29 @@ class Manage extends APP_Controller {
 		}
 		
 		if(empty($this->site->id)) {
+			$paging = new StdClass;
+			$paging->page = $page;
+			$paging->per_page = 15;
+
 			if(in_array($this->user_data->role, array('admin','super-admin'))) {
-				$sites = $this->m_site->gets_all();
+				$paging->total_count = $this->m_site->get_count();
+				$sites = $this->m_site->gets_all($paging->per_page, ($page-1) * $paging->per_page);
 			} else {
-				$sites = $this->m_site->gets_all_by_user_id($this->user_data->id);
+				$paging->total_count = $this->m_site->get_count_by_user_id($this->user_data->id);
+				$sites = $this->m_site->gets_all_by_user_id($this->user_data->id,$paging->per_page, ($page-1) * $paging->per_page);
 			}
+
+			$paging->max = floor($paging->total_count / $paging->per_page);
+			if($paging->total_count % $paging->per_page > 0) $paging->max ++;
+			
+			$paging->start = floor($page / 10) * 10;
+			$paging->end = $paging->start + 10;
+			if($paging->end > $paging->max) {
+				$paging->end = $paging->max;
+			}
+			if($paging->start == 0) $paging->start = 1;
+
+			$this->set('paging', $paging);
 
 			$this->set('sites', $sites);
 			$this->view('manage/index_site');

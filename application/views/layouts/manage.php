@@ -30,7 +30,7 @@
 	      <a class="brand" href="<?php echo site_url("/manage/");?>">
 	        아마도.지도
 	      </a>
-	      <?php if(isset($site)) { ?>
+	      <?php if($site->id) { ?>
 	      <a class="brand" href="<?php echo site_url($site->permalink."/manage/");?>"><small><?php echo $site->name;?></small></a>
 		  <?php } ?>
 	      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -40,7 +40,7 @@
           </button>
 
       <?php 
-      	if(isset($site)) {
+      	if($site->id) {
 	      	$menu = isset($menu) ? $menu : '';
 			$menu_title = '';
 			

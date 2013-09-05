@@ -52,7 +52,8 @@ class APP_Controller extends CI_Controller {
 			ksort($this->uri->rsegments);
     	    unset($this->uri->rsegments[0]);
 		} else {
-			$this->site = null;
+			$this->site = new StdClass;
+			$this->site->id = false;
 		}
 
 		$this->set('site', $this->site);

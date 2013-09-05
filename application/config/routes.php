@@ -38,6 +38,8 @@ $route['default_controller']                    	 = 'page';
 $route['manage']								 	 = 'manage/index';
 $route['ajax/(:any)']							     = 'ajax/$1';
 
+$route['test/(:any)']								 = 'test/$1';
+
 /**
  * Login
  */

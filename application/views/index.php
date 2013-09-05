@@ -569,46 +569,58 @@
       }
 
       function centerMap(menu) {
-          if(Object.keys(gmarkers).length == 0) return false;
+          var length = Object.keys(gmarkers).length;
+          if(length == 0) return false;
 
-          for(var i in gmarkers) {
-            if(gmarkers[i].type != menu) continue;
+          if(length == 1) {
+            for(var key in gmarkers) break;
 
-            var position = gmarkers[i].getPosition();
-            var this_lat = position.lat() || null;
-            var this_lng = position.lng() || null;
+            var position = gmarkers[key].getPosition();
+            var centerLat = position.lat();
+            var centerLng = position.lng();
+            var zoomLvl = 14; 
 
-            if((this_lat && !isNaN(this_lat)) && (this_lng && !isNaN(this_lng))) {
-                var minLat = minLat || this_lat;
-                var maxLat = maxLat || this_lat;
-                var minLng = minLng || this_lng;
-                var maxLng = maxLng || this_lng;
+          } else if(length == 0) {
+            // TODO
+          } else {
+            for(var i in gmarkers) {
+              if(gmarkers[i].type != menu) continue;
 
-                minLat = Math.min(minLat, this_lat);
-                maxLat = Math.max(maxLat, this_lat);
-                minLng = Math.min(minLng, this_lng);
-                maxLng = Math.max(maxLng, this_lng);
+              var position = gmarkers[i].getPosition();
+              var this_lat = position.lat() || null;
+              var this_lng = position.lng() || null;
+
+              if((this_lat && !isNaN(this_lat)) && (this_lng && !isNaN(this_lng))) {
+                  var minLat = minLat || this_lat;
+                  var maxLat = maxLat || this_lat;
+                  var minLng = minLng || this_lng;
+                  var maxLng = maxLng || this_lng;
+
+                  minLat = Math.min(minLat, this_lat);
+                  maxLat = Math.max(maxLat, this_lat);
+                  minLng = Math.min(minLng, this_lng);
+                  maxLng = Math.max(maxLng, this_lng);
+                }
               }
-            }
 
 
-            var centerLat = minLat + ((maxLat - minLat) / 2);
-            var centerLng = minLng + ((maxLng - minLng) / 2);
+              var centerLat = minLat + ((maxLat - minLat) / 2);
+              var centerLng = minLng + ((maxLng - minLng) / 2);
 
-            var dist = (6371 *
-                          Math.acos(
-                            Math.sin(minLat / 57.2958) *
-                              Math.sin(maxLat / 57.2958) + (
-                                Math.cos(minLat / 57.2958) *
-                                Math.cos(maxLat / 57.2958) *
-                                Math.cos(maxLng / 57.2958 - minLng / 57.2958)
+              var dist = (6371 *
+                            Math.acos(
+                              Math.sin(minLat / 57.2958) *
+                                Math.sin(maxLat / 57.2958) + (
+                                  Math.cos(minLat / 57.2958) *
+                                  Math.cos(maxLat / 57.2958) *
+                                  Math.cos(maxLng / 57.2958 - minLng / 57.2958)
+                                  )
                                 )
-                              )
-                          );
-          
-          var mapdisplay = 256;
-          var zoomLvl = Math.floor(8 - Math.log(1.6446 * dist / Math.sqrt(2 * (mapdisplay * mapdisplay))) / Math.log (2));
-
+                            );
+            
+            var mapdisplay = 256;
+            var zoomLvl = Math.floor(8 - Math.log(1.6446 * dist / Math.sqrt(2 * (mapdisplay * mapdisplay))) / Math.log (2));
+          }
           gmap.setCenter(centerLat, centerLng);
           gmap.setZoom(zoomLvl);
       }
