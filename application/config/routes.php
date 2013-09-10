@@ -52,6 +52,8 @@ $route['logout']									 = 'user/logout';
 $route['login/do']                              	 = 'user/login';
 $route['join/do']                               	 = 'user/join';
 
+$route['manage/add']								 = 'manage/add_site';
+
 /* 
  * site by permalink
  */

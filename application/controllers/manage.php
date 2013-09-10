@@ -93,6 +93,11 @@ class Manage extends APP_Controller {
 			$this->view('manage/course/list');
 		}
 	}
+
+	function add_site()
+	{
+		$this->view('manage/add/site');
+	}
 	
 	function add($type = 'place') {
 		if(empty($this->site->id)) redirect('/');
@@ -608,6 +613,15 @@ class Manage extends APP_Controller {
 		
 		redirect($redirect);
 		return false;
+	}
+
+	function basic()
+	{
+		if(empty($this->site->id)) redirect('/');
+
+		$this->set('menu', 'basic');	
+
+		$this->view('manage/setting/basic');
 	}
 
 	function type()
