@@ -96,6 +96,27 @@ class Manage extends APP_Controller {
 
 	function add_site()
 	{
+		$message = null;
+	
+		$site = new StdClass;
+		$site->name = '';
+		$site->permalink = '';
+		$site->type_template = 'none';
+
+		if($_POST && !empty($_POST)) {
+			$errors =$this->__check_for_add_site_form($_POST, $site);
+			if(!$errors) {
+
+			} else {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = $errors;
+			}
+		}
+
+		$this->set('site_data', $site);
+		$this->set('message', $message);
+
 		$this->view('manage/add/site');
 	}
 	
@@ -980,6 +1001,30 @@ class Manage extends APP_Controller {
 			}
  		}
 		
+		if(count($errors) == 0) return false;
+		return $errors;
+	}
+
+	private function __check_for_add_site_form(&$form, &$site = null)
+	{
+		$errors = array();
+
+		if(!isset($form['name']) || empty($form['name'])) {
+			$errors['name'] = '사이트명을 입력해주세요';
+		} else {
+			if($site) $site->name = $form['name'];
+		}
+
+		if(!isset($form['permalink']) || empty($form['permalink'])) {
+			$errors['permalink'] = '주소를 입력해주세요';
+		} else {
+			if($this->m_site->get_by_permalink($form['permalink'])) {
+				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
+			} else {
+				if($site) $site->permalink = $form['permalink'];
+			}
+		}
+
 		if(count($errors) == 0) return false;
 		return $errors;
 	}
