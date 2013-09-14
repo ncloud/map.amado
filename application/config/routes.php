@@ -40,6 +40,8 @@ $route['ajax/(:any)']							     = 'ajax/$1';
 
 $route['test/(:any)']								 = 'test/$1';
 
+$route['invite/(:any)']								 = 'page/invite/$1';
+
 /**
  * Login
  */

@@ -12,10 +12,18 @@ class M_Site extends CI_Model
 	{
 		return $this->db->from('sites')->where('id', $id)->get()->row();
 	}
-	
-	function get_by_permalink($permalink)
+
+	function get_site_owner($id)
 	{
-		return $this->db->from('sites')->where('permalink', $permalink)->get()->row();
+		return $this->db->from('sites')->join('users','users.id = sites.user_id','left')->where('sites.id', $id)->select('users.*')->get()->row();
+	}
+	
+	function get_by_permalink($permalink, $except_site_id = false)
+	{
+		if($except_site_id) 
+			return $this->db->from('sites')->where('permalink', $permalink)->where('id !=', $except_site_id)->get()->row();
+		else 
+			return $this->db->from('sites')->where('permalink', $permalink)->get()->row();
 	}
 
 	function gets_all($count = null, $index = 1)
@@ -56,5 +64,18 @@ class M_Site extends CI_Model
 		$result = $this->db->from('sites')->where('user_id', $user_id)->select('count(*) as count')->get()->row();
 		if($result) return $result->count;
 		return 0;
+	}
+
+	
+	function add($data) {
+		if($this->db->insert('sites', $data)) {
+			return $this->db->insert_id();
+		}
+		
+		return false;
+	}
+
+	function update($site_id, $data) {
+		return $this->db->update('sites', $data, array('id'=>$site_id));
 	}
 }

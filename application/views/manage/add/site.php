@@ -33,9 +33,9 @@
       	주소는 "<?php echo site_url('/');?>주소"와 같이 지도에 직접 접속할 수 있는 방법을 제공합니다.
       </span>
     </div>
-
   </div>
-
+  <!--
+  	// TODO: 분류템플릿 기능
   <div class="control-group">
     <label class="control-label" for="site_type_template">분류 템플릿</label>
     <div class="controls">
@@ -44,6 +44,7 @@
 		</select>
     </div>
   </div>
+  -->
 
   <div class="form-actions">
 	  <button type="submit" class="btn btn-primary">만들기</button>

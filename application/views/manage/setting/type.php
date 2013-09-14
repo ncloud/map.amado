@@ -2,12 +2,11 @@
   echo $this->view('/manage/slices/setting_header');
 
 	$edit_mode = isset($edit_mode) ? $edit_mode : false;
-	$modal_mode = isset($modal_mode) ? $modal_mode : false;
 	
 	$errors = array();
 ?>
 
-  <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">
+  <div class="page-header">
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
 	  	<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -21,19 +20,11 @@
 	  	?>
 	  </div>
 	  <?php } ?>
-  <?php
-  	if($modal_mode) {
-  ?>
-  <button type="button" class="close" data-dismiss="modal">×</button>
-  <?php		
-  	} 
-  ?>
-  	<h3>분류 편집</h3>
+    
+  	<h3>분류 설정</h3>
   </div>
-  <?php if($modal_mode) { ?>
-  <div class="modal-body"> 
-  <?php } ?>
-       <form id="editForm" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post" onsubmit="Type.onSave(this); return false;">
+
+       <form id="editForm" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal" method="post" onsubmit="Type.onSave(this); return false;">
   	   <fieldset>
     		<ul id="type_list" class="type_list sortable unstyled">
     	        <li class="empty_type hide type">

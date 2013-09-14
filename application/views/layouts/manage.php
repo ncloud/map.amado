@@ -88,11 +88,12 @@
 		            </ul>
 		        </li>
 		        <li class="divider-vertical"></li>
-		        <li class="<?php echo $menu == 'type' ? ' active' : '';?> dropdown">
+		        <li class="<?php echo in_array($menu, array('basic','user','type')) ? ' active' : '';?> dropdown">
 		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
 
 		        	<ul class="dropdown-menu">
 		        		<li><a href="<?php echo site_url($site->permalink.'/manage/basic');?>">기본</a>
+		        		<li><a href="<?php echo site_url($site->permalink.'/manage/user');?>">사용자</a>
 		        		<li><a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
 		        	</ul>
 		        </li>

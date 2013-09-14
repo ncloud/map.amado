@@ -124,7 +124,7 @@ class M_User extends CI_Model
         $password_confirm   = $post->password_confirm;
         $name               = isset($post->name) ? $post->name : $username;
         $display_name       = isset($post->display_name) ? $post->display_name : $name;
-        $role_name          = 'login';
+        $role_name          = 'member';
 
         //-- Sanitize
         if($username == '')
@@ -158,14 +158,6 @@ class M_User extends CI_Model
         if($this->db->insert('users', $user))
         {
         	$user->id = $this->db->insert_id();
-        	
-        	$role_data 		= $this->db->get_where('roles',array('name'=> $role_name))->row();
-        	
-        	$role 			= new StdClass;
-        	$role->user_id  = $user->id;
-        	$role->role_id  = $role_data->id;
-        	
-        	$this->db->insert('role_users', $role);  
         	
             return $user->id;
         }
@@ -260,14 +252,6 @@ class M_User extends CI_Model
 			{
 				$user->id = $this->db->insert_id();
                 $user->now_joined = true;
-                
-				$role_data 		= $this->db->get_where('roles',array('name'=> $role_name))->row();
-                
-				$role 			= new StdClass;
-				$role->user_id  = $user->id;
-				$role->role_id  = $role_data->id;
-				
-				$this->db->insert('role_users', $role);  
                 
 				$this->auth->login($username, $password);
                 

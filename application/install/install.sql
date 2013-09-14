@@ -12,8 +12,9 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 CREATE TABLE IF NOT EXISTS `sites` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,  
   `permalink` varchar(128) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `privacy` enum('public','private') DEFAULT 'public',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -102,7 +103,11 @@ CREATE TABLE IF NOT EXISTS `role_users` (
   `site_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `role_id` int(11) unsigned NOT NULL,
-  UNIQUE KEY `site_id` (`site_id`,`user_id`,`role_id`)
+  `invite_email` varchar(128) NOT NULL DEFAULT '',  
+  `invite_code` varchar(32) DEFAULT NULL,
+  `invite_status` enum('invited','send_email','no') DEFAULT 'no',  
+  `insert_time` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`site_id`,`role_id`,`user_id`,`invite_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -114,10 +119,11 @@ CREATE TABLE IF NOT EXISTS `roles` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `roles` (`id`, `name`, `level`) VALUES 
-	  ('1', 'member', '1'), 
-	  ('2', 'admin', '2'), 
-	  ('3', 'super-admin', '3');
+INSERT INTO `roles` (`id`, `name`, `level`, `description`) VALUES 
+	  ('1', 'member', '1', '장소 보기만 가능 (비공개 지도일때)'), 
+    ('2', 'workman', '2', '인증 후 장소 추가 가능'), 
+    ('3', 'admin', '3', '인증 없이 장소 추가 가능'), 
+	  ('4', 'super-admin', '4', '전체 관리자');
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

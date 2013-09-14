@@ -96,6 +96,8 @@ class Manage extends APP_Controller {
 
 	function add_site()
 	{
+		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin','super-admin'))) redirect('/manage');
+
 		$message = null;
 	
 		$site = new StdClass;
@@ -106,7 +108,13 @@ class Manage extends APP_Controller {
 		if($_POST && !empty($_POST)) {
 			$errors =$this->__check_for_add_site_form($_POST, $site);
 			if(!$errors) {
+				$_POST['user_id'] = $this->user_data->id;
+				if($site_id = $this->m_site->add($_POST)) {
+					$this->load->model('m_role');
+					$this->m_role->user_add($site_id, $this->user_data->id, $this->m_role->get_id_by_name('super-admin'));
 
+					redirect($site->permalink.'/manage');
+				}
 			} else {
 				$message = new StdClass;
 				$message->type = 'error';
@@ -640,9 +648,55 @@ class Manage extends APP_Controller {
 	{
 		if(empty($this->site->id)) redirect('/');
 
-		$this->set('menu', 'basic');	
+		$this->set('menu', 'basic');			
+
+		$site_data = clone $this->site;
+
+		$message = null;
+		if(!empty($_POST)) { // edit mode 
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = '변경 권한이 없습니다.';
+			} else {
+				$errors = $this->__check_for_basic_form($this->site->id, $_POST, $site_data);
+				
+				if(!$errors) {
+					if($this->m_site->update($this->site->id, $_POST)) {
+						if($this->site->permalink != $site_data->permalink) {
+							redirect($site_data->permalink.'/manage/basic');	
+						}
+			
+						$message = new StdClass;
+						$message->type = 'success';
+						$message->content = '변경사항을 저장했습니다.';
+					}
+				} else {
+					$message = new StdClass;
+					$message->type = 'error';
+					$message->content = $errors;
+				}
+			}
+		}
+
+		$this->set('message', $message);
+		$this->set('site_data', $site_data);
 
 		$this->view('manage/setting/basic');
+	}
+
+	function user()
+	{
+		if(empty($this->site->id)) redirect('/');
+
+		$this->set('menu', 'user');			
+
+		$users = $this->m_role->gets_by_site_id($this->site->id);
+		$this->set('users', $users);
+
+		$this->set('roles', $this->m_role->gets_all());
+
+		$this->view('manage/setting/user');
 	}
 
 	function type()
@@ -871,37 +925,50 @@ class Manage extends APP_Controller {
 		
 		if(!isset($form['title']) || empty($form['title'])) {
 			$errors['title'] = '이름을 입력해주세요';
+
+			if($change_place) $change_place->title = '';
 		} else {
 			if($change_place) $change_place->title = $form['title'];
 		}
 		
 		if(!isset($form['type_id']) || empty($form['type_id'])) {
-			$errors['type_id'] = '류를 선택해주세요';
+			$errors['type_id'] = '분류를 선택해주세요';
+
+			if($change_place) $change_place->type_id = '';
 		} else {
 			if($change_place) $change_place->type_id = $form['type_id'];
 		}
 		
 		if(!isset($form['address']) || empty($form['address'])) {
 			$errors['address'] = '주소를 입력해주세요';
+
+			if($change_place) $change_place->address = '';
 		} else {
 			if($change_place) $change_place->address = $form['address'];
 		}
 		
 		if(!isset($form['owner_name']) || empty($form['owner_name'])) {
 			$errors['owner_name'] = '등록자 이름을 입력해주세요';
+
+			if($change_place) $change_place->owner_name = '';
 		} else {
 			if($change_place) $change_place->owner_name = $form['owner_name'];
 		}
 		
 		if(!isset($form['owner_email']) || empty($form['owner_email'])) {
 			$errors['owner_email'] = '등록자 이메일을 입력해주세요';
+
+			if($change_place) $change_place->owner_email = '';
 		}else {
 			if($change_place) $change_place->owner_email = $form['owner_email'];
 		}
 		
 		if(isset($form['url']) && $change_place) $change_place->url = $form['url'];
+		else if($change_place) $change_place->url = '';
+
 		if(isset($form['description']) && $change_place) $change_place->description = $form['description'];
-		
+		else if($change_place) $change_place->description = '';
+
 		if(count($errors) == 0) return false;
 		return $errors;
 	}
@@ -914,8 +981,6 @@ class Manage extends APP_Controller {
 		if(!$edit_mode) {
 			if(!isset($form['image']) || empty($form['image'])) {
 				$errors['image'] = '사진을 업로드해주세요';
-			} else {
-				if($change_image) $change_image->title = $form['title'];
 			}
 
 			if(isset($form['image']['type']) && !in_array($form['image']['type'],array('image/png','image/jpeg','image/gif'))) {
@@ -925,30 +990,39 @@ class Manage extends APP_Controller {
 		
 		if(!isset($form['title']) || empty($form['title'])) {
 			$errors['title'] = '이름을 입력해주세요';
+
+			if($change_image) $change_image->title = '';
 		} else {
 			if($change_image) $change_image->title = $form['title'];
 		}
 		
 		if(!isset($form['address']) || empty($form['address'])) {
 			$errors['address'] = '주소를 입력해주세요';
+
+			if($change_image) $change_image->address = '';
 		} else {
 			if($change_image) $change_image->address = $form['address'];
 		}
 		
 		if(!isset($form['owner_name']) || empty($form['owner_name'])) {
 			$errors['owner_name'] = '등록자 이름을 입력해주세요';
+
+			if($change_image) $change_image->owner_name = '';
 		} else {
 			if($change_image) $change_image->owner_name = $form['owner_name'];
 		}
 		
 		if(!isset($form['owner_email']) || empty($form['owner_email'])) {
 			$errors['owner_email'] = '등록자 이메일을 입력해주세요';
+
+			if($change_image) $change_image->owner_email = '';
 		}else {
 			if($change_image) $change_image->owner_email = $form['owner_email'];
 		}
 		
 		if(isset($form['description']) && $change_image) $change_image->description = $form['description'];
-		
+		else if($change_image) $change_image->description = '';
+
 		if(count($errors) == 0) return false;
 		return $errors;
 	}
@@ -959,6 +1033,8 @@ class Manage extends APP_Controller {
 
 		if(!isset($form['title']) || empty($form['title'])) {
 			$errors['title'] = '이름을 입력해주세요';
+			
+			if($change_course) $change_course->title = '';
 		} else {
 			if($change_course) $change_course->title = $form['title'];
 		}
@@ -1007,22 +1083,70 @@ class Manage extends APP_Controller {
 
 	private function __check_for_add_site_form(&$form, &$site = null)
 	{
+		$this->load->helper('string');
+		
 		$errors = array();
 
 		if(!isset($form['name']) || empty($form['name'])) {
 			$errors['name'] = '사이트명을 입력해주세요';
+
+			if($site) $site->name = '';
 		} else {
 			if($site) $site->name = $form['name'];
 		}
 
 		if(!isset($form['permalink']) || empty($form['permalink'])) {
 			$errors['permalink'] = '주소를 입력해주세요';
+
+			if($site) $site->permalink = '';
 		} else {
 			if($this->m_site->get_by_permalink($form['permalink'])) {
 				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
+			} else if(!only_english($form['permalink'])) {
+				$errros['permalink'] = '주소는 영문만 사용하실 수 있습니다.';
 			} else {
 				if($site) $site->permalink = $form['permalink'];
 			}
+		}
+
+		if(count($errors) == 0) return false;
+		return $errors;
+	}
+
+	private function __check_for_basic_form($site_id, &$form, &$site = null) 
+	{
+		$this->load->helper('string');
+
+		$errors = array();
+
+		if(!isset($form['privacy']) || empty($form['privacy']) || !in_array($form['privacy'], array('public', 'private'))) {
+			$errors['privacy'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
+
+			if($site) $site->privacy = 'public';
+		} else {
+			if($site) $site->privacy = $form['privacy'];
+		}
+
+		if(!isset($form['name']) || empty($form['name'])) {
+			$errors['name'] = '사이트명을 입력해주세요';
+
+			if($site) $site->name = '';
+		} else {
+			if($site) $site->name = $form['name'];
+		}
+
+		if(!isset($form['permalink']) || empty($form['permalink'])) {
+			$errors['permalink'] = '주소를 입력해주세요';
+
+			if($site) $site->permalink = '';
+		} else {
+			if($this->m_site->get_by_permalink($form['permalink'], $site_id)) {
+				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
+			}  else if(!only_english($form['permalink'])) {
+				$errors['permalink'] = '주소는 영문만 사용하실 수 있습니다.';
+			} 
+			
+			if($site) $site->permalink = $form['permalink'];
 		}
 
 		if(count($errors) == 0) return false;

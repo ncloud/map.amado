@@ -12,7 +12,7 @@ class Page extends APP_Controller {
 		$this->load->model('m_image');
 		
 		$this->load->helper('parse');
-		
+
 		if(!$this->site->id) {
 			$sites = $this->m_site->gets_all();
 			if($sites && count($sites) == 1) {
@@ -166,6 +166,31 @@ class Page extends APP_Controller {
         $this->set('join_mode', true);        
         
 		$this->view('user/login');
+    }
+
+    function invite($code) 
+    {
+    	$this->layout->setLayout('layouts/manage');
+
+    	$this->load->model('m_role');
+    	$this->load->model('m_site');
+
+    	$message = new StdClass;
+    	$message->type = 'success';
+
+    	if($role = $this->m_role->get_by_invite_code($code)) {
+    		$site = $this->m_site->get($role->site_id);
+
+    		$this->set('role', $role);
+    		$this->set('site', $site);
+		} else {
+			// 잘못된 초대코드
+			$message->type = 'error';
+			$message->message = '잘못된 초대코드입니다. 코드를 확인해주세요.';
+		}
+
+		$this->set('message', $message);
+		$this->view('invite');
     }
 }
 ?>
