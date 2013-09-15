@@ -27,6 +27,11 @@ class M_Role extends CI_Model
 		return $this->db->from('role_users')->join('roles','roles.id = role_users.role_id','left')->where('role_users.invite_code', $code)->select('role_users.*, roles.name as role_name, roles.description as role_description')->get()->row();
 	}
 
+	function get_by_site_and_user_id($site_id, $user_id)
+	{
+		return $this->db->from('role_users')->join('roles','roles.id = role_users.role_id','left')->where('role_users.site_id', $site_id)->where('role_users.user_id', $user_id)->select('role_users.*, roles.name as role_name, roles.description as role_description')->get()->row();		
+	}
+
 	public function get_id_by_name($name)
 	{
 		$result = $this->db->from('roles')->where('name', $name)->get()->row();
@@ -55,7 +60,7 @@ class M_Role extends CI_Model
 	public function gets_by_site_id($site_id)
 	{
 		return $this->db->from('role_users')->join('roles','roles.id = role_users.role_id', 'left')->join('users', 'users.id = role_users.user_id', 'left')->where('role_users.site_id', $site_id)
-						->select('users.id, users.name, role_users.role_id, roles.name as role_name, roles.level as role_level, roles.description as role_description, role_users.invite_status as role_invite_status')->get()->result();
+						->select('users.id, users.name, role_users.role_id, roles.name as role_name, roles.level as role_level, roles.description as role_description, role_users.invite_status as role_invite_status, role_users.invite_code as role_invite_code')->get()->result();
 	}
 	
 	public function user_check($site_id, $user_id, $role_id)
@@ -92,6 +97,25 @@ class M_Role extends CI_Model
 	 	} else {
 	 		return false;
 	 	}
+	}
+
+	public function user_delete($site_id, $user_id) 
+	{
+		return $this->db->delete('role_users', array('site_id'=>$site_id, 'user_id'=>$user_id));
+	}
+
+	public function user_delete_by_code($code) 
+	{
+		return $this->db->delete('role_users', array('invite_code'=>$code));
+	}
+
+	public function update_invite_user($code, $user_id)
+	{
+		$data = new StdClass;
+		$data->user_id = $user_id;
+		$data->invite_status = 'invited';
+
+		return $this->db->update('role_users', $data, array('invite_code'=>$code));
 	}
      
 }//END class

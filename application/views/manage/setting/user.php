@@ -45,15 +45,28 @@
   				<?php
   					switch($user->role_invite_status) {
   						case 'send_email':
-  							echo '이메일로 초대했습니다.';
+  							echo '초대 이메일 발송';
   						break;
-
+              case 'invited':
+                echo '인증 완료';
+              break;
   					}
   				?>
   			</td>
   			<td>
   				<?php if($site->user_id != $user->id) { ?>
-  				<a class="btn">권한삭제</a>
+  				
+          <?php
+            switch($user->role_invite_status) {
+              case 'send_email':
+                echo '<a href="' . site_url($site->permalink.'/manage/invite_cancel/'.$user->role_invite_code) . '" class="btn btn-small">초대취소</a>';
+              break;
+              case 'invited':
+                echo '<a href="' . site_url($site->permalink.'/manage/invite_cancel/'.$site->id.'/'.$user->id) . '" class="btn btn-small">권한취소</a>';
+              break;
+            }
+          ?>
+
   				<?php } ?>
   			</td>
   		</tr>
@@ -144,6 +157,9 @@
   				type: 'POST',
   				dataType: 'json',
   				success: function(data) {
+            $("#inviteModal").modal('hide');
+
+            reload();
 	  			}, error: function(data) {
 	  			}
 	  		});

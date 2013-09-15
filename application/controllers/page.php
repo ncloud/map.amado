@@ -168,12 +168,43 @@ class Page extends APP_Controller {
 		$this->view('user/login');
     }
 
+    function invite_do($code)
+    {
+        if(empty($this->user_data->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/manage');
+
+    	$this->load->model('m_role');
+    	$this->load->model('m_site');
+
+    	$this->set('invite_code', $code);
+
+    	$message = new StdClass;
+    	$message->type = 'success';
+
+    	if($role = $this->m_role->get_by_invite_code($code)) {
+    		$site = $this->m_site->get($role->site_id);
+    		$this->m_role->update_invite_user($code, $this->user_data->id);
+    	
+    		redirect($site->permalink);
+		} else {
+			// 잘못된 초대코드
+			$message->type = 'error';
+			$message->message = '잘못된 초대코드입니다. 코드를 확인해주세요.';
+		}
+
+		$this->set('message', $message);
+		$this->view('invite');
+    }
+
     function invite($code) 
     {
     	$this->layout->setLayout('layouts/manage');
 
     	$this->load->model('m_role');
     	$this->load->model('m_site');
+
+    	$this->set('invite_code', $code);
 
     	$message = new StdClass;
     	$message->type = 'success';

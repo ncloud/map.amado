@@ -29,12 +29,11 @@
   <p>
     초대를 수락하시면 지도 [<?php echo $site->name;?>]에서 "<?php echo $role->role_name;?>"권한으로 아래와 같은 권한 내용을 가집니다. <br />
   </p>
-  <p>	
-	<?php echo $role->role_description;?>
-  </p>
+
+  <pre>권한 : <?php echo $role->role_description;?></pre>
 
   <div class="form-actions">
-  	<a href="#" class="btn btn-primary">초대 수락</a>
+  	<a href="<?php echo site_url('/invite/do/'.$invite_code);?>" class="btn btn-primary">초대 수락</a>
   </div>
 
   <?php

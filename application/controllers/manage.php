@@ -918,6 +918,39 @@ class Manage extends APP_Controller {
 
 		echo json_encode($output);
 	}
+
+    function invite_cancel($v1, $v2 = false)
+    {
+    	if(empty($this->user_data->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/manage');
+
+    	$this->load->model('m_role');
+    	$this->load->model('m_site');
+
+    	if($v2) {
+    		$role = $this->m_role->get_by_site_and_user_id($v1, $v2);
+    	} else {
+    		$role = $this->m_role->get_by_invite_code($v1);
+    	}
+
+		if($role) {
+    		if($site = $this->m_site->get($role->site_id)) {
+    			$user_role_name = $this->m_role->get_role($site->id, $this->user_data->id);
+    			if(in_array($user_role_name, array('admin','super-admin'))) {
+    				$this->load->library('user_agent');
+
+    				if($role->user_id) { // 가입한 사용자
+    					$this->m_role->user_delete($role->site_id, $role->user_id);
+    				} else { // 초대메일 발송한 사용자
+    					$this->m_role->user_delete_by_code($role->invite_code);
+    				}
+
+    				redirect($this->agent->referrer());
+    			}
+    		}
+		}
+    }
 		
 	private function __check_for_place_form(&$form, &$change_place = null)
 	{
