@@ -120,9 +120,9 @@ CREATE TABLE IF NOT EXISTS `roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `roles` (`id`, `name`, `level`, `description`) VALUES 
-	  ('1', 'member', '1', '장소 보기만 가능 (비공개 지도일때)'), 
-    ('2', 'workman', '2', '인증 후 장소 추가 가능'), 
-    ('3', 'admin', '3', '인증 없이 장소 추가 가능'), 
+	  ('1', 'member', '1', '(비공개 지도일때) 장소 보기와 인증 후 장소 추가 가능'), 
+    ('2', 'workman', '2', '인증 없이 장소 추가 가능'), 
+    ('3', 'admin', '3', '관리자'), 
 	  ('4', 'super-admin', '4', '전체 관리자');
 
 CREATE TABLE IF NOT EXISTS `users` (

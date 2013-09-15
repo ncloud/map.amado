@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
-        <label class="control-label" for="place_type_id">종류 *</label>
+        <label class="control-label" for="place_type_id">종류</label>
         <div class="controls">
           <select id="place_type_id" class="span3" name="type_id">
           	<option value="">종류를 선택해주세요</option>
@@ -93,7 +93,7 @@
         </div>
       </div>
       <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-        <label class="control-label" for="place_title">이름 *</label>
+        <label class="control-label" for="place_title">장소명 *</label>
         <div class="controls">
           <input type="text" id="place_title" class="span4" name="title" value="<?php echo isset($place) ? $place->title : ''?>" />
         </div>
@@ -134,7 +134,7 @@
       </div>    
     <?php
       if(($edit_mode && $place->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
-          (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
+          (!$edit_mode && in_array($current_user->role,array('workman','admin','super-admin')))) {
     ?>
       <div class="control-group">
         <label class="control-label" for="place_approved">바로인증</label>

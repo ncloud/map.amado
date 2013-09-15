@@ -240,9 +240,11 @@ class APP_Controller extends CI_Controller {
 	        return false;
 	}
 	
-	public function get_user_data() { return $this->user_data; }
+	public function get_user_data() { 
+		return $this->user_data; 
+	}
 	
-	protected function error($title, $message)
+	protected function error($message, $title = '에러가 발생했습니다')
 	{
 		$this->layout->setLayout('layouts/error');
 		

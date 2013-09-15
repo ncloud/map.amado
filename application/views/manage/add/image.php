@@ -99,7 +99,7 @@
     </div>
 
     <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
-      <label class="control-label" for="image_title">이름 *</label>
+      <label class="control-label" for="image_title">장소명 *</label>
       <div class="controls">
         <input type="text" id="image_title" class="span4" name="title" value="<?php echo isset($image) ? $image->title : ''?>" />
       </div>
@@ -131,7 +131,7 @@
     </div>
   <?php
     if(($edit_mode && $image->status == 'pending' && in_array($current_user->role,array('admin','super-admin'))) ||
-        (!$edit_mode && in_array($current_user->role,array('admin','super-admin')))) {
+        (!$edit_mode && in_array($current_user->role,array('workman','admin','super-admin')))) {
   ?>
     <div class="control-group">
       <label class="control-label" for="image_approved">바로인증</label>

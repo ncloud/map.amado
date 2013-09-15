@@ -27,10 +27,8 @@
        <form id="editForm" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal" method="post" onsubmit="Type.onSave(this); return false;">
   	   <fieldset>
     		<ul id="type_list" class="type_list sortable unstyled">
-    	        <li class="empty_type hide type">
-    	          <div class="controls">
+    	        <li class="empty_type type">
     	            분류가 비어 있습니다.
-    	          </div>
     	        </li>
     		</ul>
       </fieldset>
@@ -209,6 +207,8 @@
           names.push(name);
           index ++;
 
+          self.checkType();
+
           return $item;
       }
 
@@ -255,14 +255,14 @@
       }
 
       self.checkType = function() {
+        console.log(self.$list.find('.type:not(.empty_type)'));
+
         var $empty_type = self.$list.find('.empty_type');
-        if(self.$list.find('.type').length == 0) {
+        if(self.$list.find('.type:not(.empty_type)').length == 0) {
             $empty_type.show();
         } else {
             $empty_type.hide();
         }
-
-        $empty_type.removeClass('hide');
       }
 
       self.deleteType = function(type_id) {
@@ -345,9 +345,8 @@
           dataType: "json",
           url: '<?php echo site_url($site->permalink.'/manage/type/delete/');?>/' + type_id,
           success: function(data) {
-            console.log(data);
             if(data.success) {
-              
+              self.checkType();              
             }
           }
         });
@@ -396,7 +395,6 @@
           url: '<?php echo site_url($site->permalink.'/manage/type/edit/');?>/' + type_id,
           data: datas.join('&'),
           success: function(data) {
-            console.log(data);
           }
         });
       }

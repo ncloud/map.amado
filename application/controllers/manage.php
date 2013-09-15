@@ -40,10 +40,9 @@ class Manage extends APP_Controller {
 	
 	function index($page = 1)
 	{
-		if(empty($this->user_data->id)) {
-			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
-		}
-		
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role(array('member','workman','admin','super-admin'))) return false;
+
 		if(empty($this->site->id)) {
 			$paging = new StdClass;
 			$paging->page = $page;
@@ -79,7 +78,9 @@ class Manage extends APP_Controller {
 	
 	function lists($type, $status, $page = 1)
 	{
-		if(empty($this->site->id)) redirect('/manage');
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 		
 		if(empty($this->user_data->id)) {
 			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
@@ -96,7 +97,8 @@ class Manage extends APP_Controller {
 
 	function add_site()
 	{
-		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin','super-admin'))) redirect('/manage');
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 
 		$message = null;
 	
@@ -129,7 +131,7 @@ class Manage extends APP_Controller {
 	}
 	
 	function add($type = 'place') {
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
 		
 		$message = null;
 
@@ -162,7 +164,7 @@ class Manage extends APP_Controller {
 						unset($_POST['image']);
 
 						if(isset($_POST['approved'])) {
-							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+							if(in_array($this->user_data->role, array('workman','admin','super-admin')) && $_POST['approved'] == 'on') {
 								$_POST['status'] = 'approved';
 							}
 							unset($_POST['approved']);
@@ -224,7 +226,7 @@ class Manage extends APP_Controller {
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
 						if(isset($_POST['approved'])) {
-							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+							if(in_array($this->user_data->role, array('workman','admin','super-admin')) && $_POST['approved'] == 'on') {
 								$_POST['status'] = 'approved';
 							}
 							unset($_POST['approved']);
@@ -282,7 +284,7 @@ class Manage extends APP_Controller {
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
 						if(isset($_POST['approved'])) {
-							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+							if(in_array($this->user_data->role, array('workman','admin','super-admin')) && $_POST['approved'] == 'on') {
 								$_POST['status'] = 'approved';
 							}
 							unset($_POST['approved']);
@@ -354,13 +356,13 @@ class Manage extends APP_Controller {
 
 	function place_delete($id)
 	{
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
 
 		if($place = $this->m_place->get($id)) {
 
 			if($place->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 			 	// 에러
-			 	$this->error('에러가 발생했습니다', '삭제할 권한이 없습니다.');
+			 	$this->error('삭제할 권한이 없습니다.');
 			} else {
 				// 삭제완료
 
@@ -378,7 +380,7 @@ class Manage extends APP_Controller {
 	
 	function place($id = null, $page = 1)
 	{
-		if(empty($this->site->id)) redirect('/manage');
+		if(!$this->__check_site()) return false;
 		
 		$this->set('menu', 'place');
 		
@@ -393,7 +395,7 @@ class Manage extends APP_Controller {
 	
 	function place_edit($id)
 	{
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
 		
 		if($place = $this->m_place->get($id)) {
 			$message = null;
@@ -427,7 +429,7 @@ class Manage extends APP_Controller {
 
 					if(!$errors) {
 						if(isset($_POST['approved'])) {
-							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+							if(in_array($this->user_data->role, array('workman','admin','super-admin')) && $_POST['approved'] == 'on') {
 								$_POST['status'] = 'approved';
 							}
 							unset($_POST['approved']);
@@ -487,15 +489,16 @@ class Manage extends APP_Controller {
 				}
 			}
 		} else {
-			$this->error('에러가 발생했습니다', '잘못된 페이지 주소입니다.');
+			$this->error('잘못된 페이지 주소입니다.');
 		}
 	}
 	
 	function place_change($type, $id, $value)
 	{
-		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
-			return false;
-		}
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
+
 		
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		
@@ -519,8 +522,8 @@ class Manage extends APP_Controller {
 	}
 
 	function course($id = null, $page = 1) {		
-		if(empty($this->site->id)) redirect('/manage');
-		
+		if(!$this->__check_site()) return false;
+			
 		$this->set('menu', 'course');
 
 		if($id) {
@@ -533,7 +536,7 @@ class Manage extends APP_Controller {
 	}
 	
 	function course_edit($id) {
-		if(empty($this->site->id)) redirect('/manage');
+		if(!$this->__check_site()) return false;
 		
 		$this->set('menu', 'course');
 
@@ -552,7 +555,7 @@ class Manage extends APP_Controller {
 
 					if(!$errors) {
 						if(isset($_POST['approved'])) {
-							if(in_array($this->user_data->role, array('admin','super-admin')) && $_POST['approved'] == 'on') {
+							if(in_array($this->user_data->role, array('workman','admin','super-admin')) && $_POST['approved'] == 'on') {
 								$_POST['status'] = 'approved';
 							}
 							unset($_POST['approved']);
@@ -617,14 +620,14 @@ class Manage extends APP_Controller {
 				$this->view('manage/add/course');
 			}
 		} else {
-			$this->error('에러가 발생했습니다', '잘못된 페이지 주소입니다.');
+			$this->error('잘못된 페이지 주소입니다.');
 		}	
 	}
 
 	function course_change($type, $id, $value) {
-		if(empty($this->user_data->id) || !in_array($this->user_data->role, array('admin', 'super-admin'))) {
-			return false;
-		}
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 		
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		
@@ -646,7 +649,9 @@ class Manage extends APP_Controller {
 
 	function basic()
 	{
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 
 		$this->set('menu', 'basic');			
 
@@ -654,28 +659,22 @@ class Manage extends APP_Controller {
 
 		$message = null;
 		if(!empty($_POST)) { // edit mode 
-			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			$errors = $this->__check_for_basic_form($this->site->id, $_POST, $site_data);
+			
+			if(!$errors) {
+				if($this->m_site->update($this->site->id, $_POST)) {
+					if($this->site->permalink != $site_data->permalink) {
+						redirect($site_data->permalink.'/manage/basic');	
+					}
+		
+					$message = new StdClass;
+					$message->type = 'success';
+					$message->content = '변경사항을 저장했습니다.';
+				}
+			} else {
 				$message = new StdClass;
 				$message->type = 'error';
-				$message->content = '변경 권한이 없습니다.';
-			} else {
-				$errors = $this->__check_for_basic_form($this->site->id, $_POST, $site_data);
-				
-				if(!$errors) {
-					if($this->m_site->update($this->site->id, $_POST)) {
-						if($this->site->permalink != $site_data->permalink) {
-							redirect($site_data->permalink.'/manage/basic');	
-						}
-			
-						$message = new StdClass;
-						$message->type = 'success';
-						$message->content = '변경사항을 저장했습니다.';
-					}
-				} else {
-					$message = new StdClass;
-					$message->type = 'error';
-					$message->content = $errors;
-				}
+				$message->content = $errors;
 			}
 		}
 
@@ -687,7 +686,9 @@ class Manage extends APP_Controller {
 
 	function user()
 	{
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 
 		$this->set('menu', 'user');			
 
@@ -701,7 +702,9 @@ class Manage extends APP_Controller {
 
 	function type()
 	{
-		if(empty($this->site->id)) redirect('/');
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
 
 		$this->set('menu', 'type');			
 
@@ -709,9 +712,8 @@ class Manage extends APP_Controller {
 
 		if(!empty($_POST)) { // edit mode 
 			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
-				$message = new StdClass;
-				$message->type = 'error';
-				$message->content = '변경 권한이 없습니다.';
+				$this->error('변경 권한이 없습니다.');
+				return false;
 			} else {
 				$types = array();
 				foreach($_POST as $key => $data) {
@@ -794,37 +796,40 @@ class Manage extends APP_Controller {
 
 	// AJAX Only
 	function type_add($name, $icon_id = false) {
-		if(empty($this->site->id)) redirect('/');
-		
 		$this->layout->setLayout('layouts/empty');
 
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
-			$output->success = false;			
-			$output->message = '추가 권한이 없습니다.';		
+		if(!$this->site->id) {
+			$output->success = false;
+			$output->message = '잘못된 접근입니다';
 		} else {
-			$name = urldecode($name);
-			if(empty($name)) {
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$output->success = false;			
-				$output->message = '필수 항목이 없습니다. (이름)';	
+				$output->message = '추가 권한이 없습니다.';		
 			} else {
-				$this->load->model('m_place');
-
-				if($this->m_place->get_exist_type_by_name($this->site->id, $name)) {
+				$name = urldecode($name);
+				if(empty($name)) {
 					$output->success = false;			
-					$output->message = '이미 이름이 존재합니다.';
+					$output->message = '필수 항목이 없습니다. (이름)';	
 				} else {
-					$data = new StdClass;
-					$data->site_id = $this->site->id;
-					$data->icon_id = ($icon_id === false || !is_numeric($icon_id)) ? 0 : $icon_id;
-					$data->name = $name;
-					$data->order_index = $this->m_place->get_max_type_id($this->site->id) + 1;
+					$this->load->model('m_place');
 
-					if($data->id = $this->m_place->add_type($data)) {
-						$output->success = true;
-						$output->content = $data;
+					if($this->m_place->get_exist_type_by_name($this->site->id, $name)) {
+						$output->success = false;			
+						$output->message = '이미 이름이 존재합니다.';
+					} else {
+						$data = new StdClass;
+						$data->site_id = $this->site->id;
+						$data->icon_id = ($icon_id === false || !is_numeric($icon_id)) ? 0 : $icon_id;
+						$data->name = $name;
+						$data->order_index = $this->m_place->get_max_type_id($this->site->id) + 1;
+
+						if($data->id = $this->m_place->add_type($data)) {
+							$output->success = true;
+							$output->content = $data;
+						}
 					}
 				}
 			}
@@ -834,48 +839,51 @@ class Manage extends APP_Controller {
 	}
 
 	// AJAX ONLY
-	function type_edit($id) {
-		if(empty($this->site->id)) redirect('/');
-		
+	function type_edit($id) {		
 		$this->layout->setLayout('layouts/empty');
 
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
-			$output->success = false;			
-			$output->message = '삭제 권한이 없습니다.';		
+		if(!$this->site->id) {
+			$output->success = false;
+			$output->message = '잘못된 접근입니다';
 		} else {
-			$datas = array();
-			$check_names = array('name');
-			if(isset($_POST) && !empty($_POST)) {
-				foreach($_POST as $key => $data) {
-					if(in_array($key, $check_names)) {
-						$datas[$key] = urldecode($data);
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$output->success = false;			
+				$output->message = '삭제 권한이 없습니다.';		
+			} else {
+				$datas = array();
+				$check_names = array('name');
+				if(isset($_POST) && !empty($_POST)) {
+					foreach($_POST as $key => $data) {
+						if(in_array($key, $check_names)) {
+							$datas[$key] = urldecode($data);
+						}
 					}
 				}
-			}
 
-			if(empty($id)) {
-				$output->success = false;			
-				$output->message = '필수 항목이 없습니다. (ID)';	
-			} else {
-				$this->load->model('m_place');
+				if(empty($id)) {
+					$output->success = false;			
+					$output->message = '필수 항목이 없습니다. (ID)';	
+				} else {
+					$this->load->model('m_place');
 
-				if($type = $this->m_place->get_type($id)) {
-					if($type->site_id == $this->site->id) {
-						if(count($datas)) {
-							$this->m_place->update_type($id, $datas);
+					if($type = $this->m_place->get_type($id)) {
+						if($type->site_id == $this->site->id) {
+							if(count($datas)) {
+								$this->m_place->update_type($id, $datas);
+							}
+
+							$output->success = true;
+						} else {
+							$output->success = false;
+							$output->message = '잘못된 접근입니다.';
 						}
-
-						$output->success = true;
-					} else {
+					} else { // 없는 TYPE
 						$output->success = false;
 						$output->message = '잘못된 접근입니다.';
 					}
-				} else { // 없는 TYPE
-					$output->success = false;
-					$output->message = '잘못된 접근입니다.';
 				}
 			}
 		}
@@ -883,35 +891,38 @@ class Manage extends APP_Controller {
 		echo json_encode($output);
 	}
 	// AJAX Only
-	function type_delete($id) {
-		if(empty($this->site->id)) redirect('/');
-		
+	function type_delete($id) {		
 		$this->layout->setLayout('layouts/empty');
 
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
-			$output->success = false;			
-			$output->message = '삭제 권한이 없습니다.';		
+		if(!$this->site->id) {
+			$output->success = false;
+			$output->message = '잘못된 접근입니다';
 		} else {
-			if(empty($id)) {
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$output->success = false;			
-				$output->message = '필수 항목이 없습니다. (ID)';	
+				$output->message = '삭제 권한이 없습니다.';		
 			} else {
-				$this->load->model('m_place');
+				if(empty($id)) {
+					$output->success = false;			
+					$output->message = '필수 항목이 없습니다. (ID)';	
+				} else {
+					$this->load->model('m_place');
 
-				if($type = $this->m_place->get_type($id)) {
-					if($type->site_id == $this->site->id) {
-						$this->m_place->delete_type($id);
-						$output->success = true;
-					} else {
+					if($type = $this->m_place->get_type($id)) {
+						if($type->site_id == $this->site->id) {
+							$this->m_place->delete_type($id);
+							$output->success = true;
+						} else {
+							$output->success = false;
+							$output->message = '잘못된 접근입니다.';
+						}
+					} else { // 없는 TYPE
 						$output->success = false;
 						$output->message = '잘못된 접근입니다.';
 					}
-				} else { // 없는 TYPE
-					$output->success = false;
-					$output->message = '잘못된 접근입니다.';
 				}
 			}
 		}
@@ -919,9 +930,10 @@ class Manage extends APP_Controller {
 		echo json_encode($output);
 	}
 
+	// INVITE // NOT REQUIRE SITE ID
     function invite_cancel($v1, $v2 = false)
     {
-    	if(empty($this->user_data->id)) redirect('/');
+		if(!$this->__check_login()) return false;
 		
 		$this->layout->setLayout('layouts/manage');
 
@@ -951,26 +963,44 @@ class Manage extends APP_Controller {
     		}
 		}
     }
+
+    // change_role
+    function change_role($user_id, $role_name)
+    {
+		if(!$this->__check_site()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
+
+    	$role_id = $this->m_role->get_id_by_name($role_name);
+    	if(!$role_id) {
+    		$this->error('잘못된 접근입니다');
+    		return false;
+    	}
+
+		$this->m_role->update_user_role($this->site->id, $user_id, $role_id);
+		
+		redirect($this->site->permalink.'/manage/user');
+    }
 		
 	private function __check_for_place_form(&$form, &$change_place = null)
 	{
 		$errors = array();
 		
 		if(!isset($form['title']) || empty($form['title'])) {
-			$errors['title'] = '이름을 입력해주세요';
+			$errors['title'] = '장소명을 입력해주세요';
 
 			if($change_place) $change_place->title = '';
 		} else {
 			if($change_place) $change_place->title = $form['title'];
 		}
-		
+		/*
 		if(!isset($form['type_id']) || empty($form['type_id'])) {
 			$errors['type_id'] = '분류를 선택해주세요';
 
 			if($change_place) $change_place->type_id = '';
 		} else {
 			if($change_place) $change_place->type_id = $form['type_id'];
-		}
+		}*/
 		
 		if(!isset($form['address']) || empty($form['address'])) {
 			$errors['address'] = '주소를 입력해주세요';
@@ -1022,7 +1052,7 @@ class Manage extends APP_Controller {
 		}
 		
 		if(!isset($form['title']) || empty($form['title'])) {
-			$errors['title'] = '이름을 입력해주세요';
+			$errors['title'] = '장소명을 입력해주세요';
 
 			if($change_image) $change_image->title = '';
 		} else {
@@ -1254,6 +1284,35 @@ class Manage extends APP_Controller {
 		if($paging->start == 0) $paging->start = 1;
 		
 		$this->set('paging', $paging);
-		
+	}
+
+	private function __check_site()
+	{
+		if(empty($this->site->id)) {
+			redirect('/manage');
+			return false;
+		}
+
+		return true;
+	}
+
+	private function __check_login()
+	{
+		if(empty($this->user_data->id)) {
+			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
+			return false;
+		}
+
+		return true;
+	}
+
+	private function __check_role($check_roles = array('admin', 'super-admin'))
+	{
+		if(in_array($this->user_data->role, $check_roles)) {
+			return true;
+		} else {
+			$this->error('접근 권한이 없습니다.');
+			return false;
+		}
 	}
 }

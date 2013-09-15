@@ -3,6 +3,11 @@
   
   $errors = array();
 ?>
+
+<style type="text/css">
+  td.button { width:80px; }
+</style>
+
 <form id="addform" action="<?php echo site_url($site->permalink.'/manage/basic');?>" class="form-horizontal" method="post">
 
   <div class="page-header">
@@ -39,7 +44,29 @@
   	?>
   		<tr>
   			<td><?php echo $user->name;?></td>
-  			<td><?php echo $user->role_name;?></td>
+  			<td>
+          <?php if($site->user_id == $user->id) { ?>
+            <?php echo $user->role_name;?>
+          <?php } else { ?>
+          <div class="btn-group dropdown">
+            <button class="btn btn-small dropdown-toggle" data-toggle="dropdown">
+              <?php echo $user->role_name;?>&nbsp;
+              <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu">
+              <?php
+                foreach($roles as $role) {
+                  if($role->name == 'super-admin') continue;
+              ?>
+                <li<?php echo $role->name == $user->role_name ? ' class="disabled"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/change_role/'.$user->id.'/'.urlencode($role->name));?>"><?php echo $role->name;?> : <?php echo $role->description;?></a></li>
+              <?php
+                }
+              ?>
+            </ul>
+          </div>
+          <?php } ?>
+        </td>
   			<td><?php echo $user->role_description;?></td>
   			<td>
   				<?php
@@ -53,7 +80,7 @@
   					}
   				?>
   			</td>
-  			<td>
+  			<td class="button">
   				<?php if($site->user_id != $user->id) { ?>
   				
           <?php
@@ -66,7 +93,6 @@
               break;
             }
           ?>
-
   				<?php } ?>
   			</td>
   		</tr>

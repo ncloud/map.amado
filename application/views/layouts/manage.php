@@ -87,6 +87,9 @@
 			            </li>
 		            </ul>
 		        </li>
+		        <?php
+		        	if(in_array($current_user->role, array('admin','super-admin'))) { 
+		        ?>
 		        <li class="divider-vertical"></li>
 		        <li class="<?php echo in_array($menu, array('basic','user','type')) ? ' active' : '';?> dropdown">
 		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
@@ -97,6 +100,9 @@
 		        		<li><a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
 		        	</ul>
 		        </li>
+		        <?php
+		        	}
+		        ?>
 		      </ul>
 		      <ul class="nav pull-right">
 		        <li><a href="<?php echo site_url('/'.$site->permalink);?>">사이트 보기</a></li>

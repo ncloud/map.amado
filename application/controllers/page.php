@@ -188,9 +188,8 @@ class Page extends APP_Controller {
     	
     		redirect($site->permalink);
 		} else {
-			// 잘못된 초대코드
-			$message->type = 'error';
-			$message->message = '잘못된 초대코드입니다. 코드를 확인해주세요.';
+			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
+			return false;
 		}
 
 		$this->set('message', $message);
@@ -215,9 +214,8 @@ class Page extends APP_Controller {
     		$this->set('role', $role);
     		$this->set('site', $site);
 		} else {
-			// 잘못된 초대코드
-			$message->type = 'error';
-			$message->message = '잘못된 초대코드입니다. 코드를 확인해주세요.';
+			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
+			return false;
 		}
 
 		$this->set('message', $message);

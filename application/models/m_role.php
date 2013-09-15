@@ -118,4 +118,11 @@ class M_Role extends CI_Model
 		return $this->db->update('role_users', $data, array('invite_code'=>$code));
 	}
      
+    public function update_user_role($site_id, $user_id, $role_id)
+    {
+    	$data = new StdClass;
+    	$data->role_id = $role_id;
+    	
+ 		return $this->db->update('role_users', $data, array('site_id'=>$site_id, 'user_id'=>$user_id));
+    }
 }//END class
