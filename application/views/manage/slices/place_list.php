@@ -13,8 +13,8 @@
 	  	<div class="pull-right">
 
       <div class="btn-group">
-        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add/place');?>">장소 추가</a>
-        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add/image');?>">사진 추가</a>
+        <a class="btn" href="<?php echo site_url($map->permalink.'/manage/add/place');?>">장소 추가</a>
+        <a class="btn" href="<?php echo site_url($map->permalink.'/manage/add/image');?>">사진 추가</a>
       </div>
 	  	</div>
   	</h4>
@@ -78,16 +78,16 @@
       	<div class="btn-group">
           <a class="btn btn-<?php echo $place->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>				 
       	  <ul class="dropdown-menu">
-      	     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
-      	     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
+      	     <li<?php echo $place->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/approved');?>">인증하기</a></li>
+      	     <li<?php echo $place->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/rejected');?>">거부하기</a></li>
       	     <li class="divider"></li>
-      	     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
+      	     <li<?php echo $place->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/change/status/'.$place->id.'/pending');?>">대기하기</a></li>
       	  </ul>
       	</div>
       <?php } ?>
       	<div class="btn-group">
         <?php if($current_user->id == $place->user_id || in_array($current_user->role, array('admin', 'super-admin'))) { ?>
-      		<a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/edit/'.$place->id);?>">편집</a>
+      		<a class='btn btn-small' href="<?php echo site_url($map->permalink.'/manage/'.($place->attached=='image'?'image':'place').'/edit/'.$place->id);?>">편집</a>
         <?php } ?>
       	</div>
       </td>
@@ -108,15 +108,15 @@
   <div class="pagination pagination-centered">
     <ul>
         <li<?php echo $paging->page == 1 ? ' class="disabled"' : '';?>>
-          <a href="<?php echo $paging->page == 1 ? '#' : site_url($site->permalink.'/manage/list/place/'.$status.'/'.($paging->page-1));?>">&larr;</a>
+          <a href="<?php echo $paging->page == 1 ? '#' : site_url($map->permalink.'/manage/list/place/'.$status.'/'.($paging->page-1));?>">&larr;</a>
         </li>
       <?php
       	for($page = $paging->start; $page <= $paging->end ; $page++) {
       ?>
-        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/list/place/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
+        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($map->permalink.'/manage/list/place/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
         <li<?php echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
-          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($site->permalink.'/manage/list/place/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
+          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($map->permalink.'/manage/list/place/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
         </li>
     </ul>
   </div>

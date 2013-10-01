@@ -7,17 +7,17 @@ class Ajax extends APP_Controller {
 		$this->layout->setLayout('layouts/empty');
 	}
 
-	function places($site_id) {
+	function places($map_id) {
 		$output = new StdClass;
 		$output->success = false;
 
 		$output->input = isset($_POST['query']) ? $_POST['query'] : '';
 
-		if($site_id && !empty($output->input)) {
-			if($site = $this->m_site->get($site_id)) {		
+		if($map_id && !empty($output->input)) {
+			if($map = $this->m_map->get($map_id)) {		
 				$this->load->model('m_place');
 				
-				$places = $this->m_place->gets($site->id);					
+				$places = $this->m_place->gets($map->id);					
 				if($places) {
 
 					$output->success = true;				
@@ -38,7 +38,7 @@ class Ajax extends APP_Controller {
 		echo json_encode($output);
 	}
 
-	function add_role($site_id) {
+	function add_role($map_id) {
 		header('Content-Type: application/json');
 
 		$this->load->model('m_role');
@@ -60,29 +60,29 @@ class Ajax extends APP_Controller {
 			$max_role = end($role_names);
 
 			if($role_name != $max_role) { // super admin 			
-				$site = $this->m_site->get($site_id);
-				if($site) {
-					$role = $this->m_role->get_role($site_id, $this->user_data->id);
+				$map = $this->m_map->get($map_id);
+				if($map) {
+					$role = $this->m_role->get_role($map_id, $this->user_data->id);
 					if(in_array($role, array('admin','super-admin'))) {
 						if(in_array($role_name, $role_names)) {
 							if(!empty($email)) {
-								if($add_user = $this->m_role->user_add($site_id, 0, $this->m_role->get_id_by_name($role_name), $email)) {
+								if($add_user = $this->m_role->user_add($map_id, 0, $this->m_role->get_id_by_name($role_name), $email)) {
 									$output->success = true;
 
 									// email send
 									$this->load->library('email');
 
-									$site_owner = $this->m_site->get_site_owner($site_id);
+									$map_owner = $this->m_map->get_map_owner($map_id);
 
 									$config = array();
 									$config['mailtype'] = 'html';
 									$this->email->initialize($config);
 
-									$this->email->from($site_owner->email, '아마도 지도');
+									$this->email->from($map_owner->email, '아마도 지도');
 									$this->email->to($email); 
 
 									$link = site_url('/invite/' . $add_user->invite_code);
-									$message = '아마도 지도의 ' . $site_owner->name .'님께서 지도 [' . $site->name . ']에 초대하셨습니다. <br />';
+									$message = '아마도 지도의 ' . $map_owner->name .'님께서 지도 [' . $map->name . ']에 초대하셨습니다. <br />';
 									$message.= '아래 주소를 클릭해주세요.<br /><br />';
 									$message.= '<a href="'.$link.'">' . $link . '</a>';
 

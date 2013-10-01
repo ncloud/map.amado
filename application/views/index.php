@@ -10,8 +10,8 @@
     <div class="menu" id="menu">        
 	  
 	  <div class="header" id="header">
-	  	<a class="site" href="<?php echo site_url('/'.$site->permalink);?>"><?php echo $site->name;?></a>
-      <a class="btn tool" href="<?php echo site_url('/'.$site->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
+	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
+      <a class="btn tool" href="<?php echo site_url('/'.$map->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
 	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -405,9 +405,18 @@
         contextMenuOptions.classNames={menu:'context_menu', menuSeparator:'context_menu_separator'};
         
         var menuItems=[];        
+        <?php
+          if($map->add_role == 'guest' || 
+            ($map->add_role == 'member' && in_array($current_user->role,array('member','workman','admin','super-admin'))) ||
+            ($map->add_role == 'workman' && in_array($current_user->role,array('workman','admin','super-admin'))) ||
+            ($map->add_role == 'admin' && in_array($current_user->role,array('admin','super-admin')))) {
+        ?>
         menuItems.push({className:'context_menu_item', eventName:'add_here_click', label:'이곳에 장소 추가하기'});
         menuItems.push({className:'context_menu_item', eventName:'add_image_here_click', label:'이곳에 사진  추가하기'});
         menuItems.push({});
+        <?php
+          }
+        ?>
         menuItems.push({className:'context_menu_item', eventName:'zoom_in_click', label:'지도 확대하기'});
         menuItems.push({className:'context_menu_item', eventName:'zoom_out_click', label:'지도 축소하기'});
         menuItems.push({});

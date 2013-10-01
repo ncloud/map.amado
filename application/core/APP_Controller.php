@@ -7,7 +7,7 @@ class APP_Controller extends CI_Controller {
     protected $language;
 	protected $queries;
 	
-	protected $site;
+	protected $map;
 	
 	protected $signed;
 	
@@ -15,7 +15,7 @@ class APP_Controller extends CI_Controller {
     {
         parent::__construct();
 		    
-		$this->load->model('m_site');
+		$this->load->model('m_map');
 		
         $this->load->library('auth');
         $this->load->library('input');
@@ -36,15 +36,15 @@ class APP_Controller extends CI_Controller {
         */
 
 	    $this->data = array();
-		if(isset($this->uri->rsegments[3]) && strpos($this->uri->rsegments[3], 'site:') !== false) {
-			$this->site = new StdClass;
+		if(isset($this->uri->rsegments[3]) && strpos($this->uri->rsegments[3], 'map:') !== false) {
+			$this->map = new StdClass;
 
-			$site_value = substr($this->uri->rsegments[3], 5);
+			$map_value = substr($this->uri->rsegments[3], 4);
 
-			if(is_numeric($site_value)) {
-				$this->site = $this->m_site->get($site_value);
+			if(is_numeric($map_value)) {
+				$this->map = $this->m_map->get($map_value);
 			} else {
-				$this->site = $this->m_site->get_by_permalink($site_value);
+				$this->map = $this->m_map->get_by_permalink($map_value);
 			}
 			
 			unset($this->uri->rsegments[3]);
@@ -52,11 +52,11 @@ class APP_Controller extends CI_Controller {
 			ksort($this->uri->rsegments);
     	    unset($this->uri->rsegments[0]);
 		} else {
-			$this->site = new StdClass;
-			$this->site->id = false;
+			$this->map = new StdClass;
+			$this->map->id = false;
 		}
 
-		$this->set('site', $this->site);
+		$this->set('map', $this->map);
 		
 		// --
 		
@@ -99,10 +99,10 @@ class APP_Controller extends CI_Controller {
         } else {
         }
 
-		if($this->site) {
+		if($this->map) {
 			$this->load->model('m_role');
 			
-			$this->user_data->role = $this->m_role->get_role($this->site->id, $this->user_data->id);
+			$this->user_data->role = $this->m_role->get_role($this->map->id, $this->user_data->id);
 			if(!$this->user_data->role) $this->user_data->role = 'guest';
 		} else {
 			$this->user_data->role = 'guest';

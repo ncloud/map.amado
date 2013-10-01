@@ -12,7 +12,7 @@
       <div class="pull-right">
 
       <div class="btn-group">
-        <a class="btn" href="<?php echo site_url($site->permalink.'/manage/add/course');?>">코스 추가</a>
+        <a class="btn" href="<?php echo site_url($map->permalink.'/manage/add/course');?>">코스 추가</a>
       </div>
       </div>
     </h4>
@@ -61,14 +61,14 @@
         <div class="btn-group">
           <a class="btn btn-<?php echo $course->status == 'approved' ? 'success' : 'danger';?> btn-small dropdown-toggle" data-toggle="dropdown" href="#">인증 처리 <span class="caret"></span></a>         
     <ul class="dropdown-menu">
-       <li<?php echo $course->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/approved');?>">인증하기</a></li>
-       <li<?php echo $course->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/rejected');?>">거부하기</a></li>
+       <li<?php echo $course->status == 'approved' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/course/change/status/'.$course->id.'/approved');?>">인증하기</a></li>
+       <li<?php echo $course->status == 'rejected' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/course/change/status/'.$course->id.'/rejected');?>">거부하기</a></li>
        <li class="divider"></li>
-       <li<?php echo $course->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($site->permalink.'/manage/course/change/status/'.$course->id.'/pending');?>">대기하기</a></li>
+       <li<?php echo $course->status == 'pending' ? ' class="disabled"' : '';?>><a tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/course/change/status/'.$course->id.'/pending');?>">대기하기</a></li>
     </ul>
   </div>
   <div class="btn-group">
-    <a class='btn btn-small' href="<?php echo site_url($site->permalink.'/manage/course/edit/'.$course->id);?>">편집</a>
+    <a class='btn btn-small' href="<?php echo site_url($map->permalink.'/manage/course/edit/'.$course->id);?>">편집</a>
   </div>
       </td>
     </tr>
@@ -88,15 +88,15 @@
   <div class="pagination pagination-centered">
     <ul>
         <li<?php echo $paging->page == 1 ? ' class="disabled"' : '';?>>
-          <a href="<?php echo $paging->page == 1 ? '#' : site_url($site->permalink.'/manage/list/course/'.$status.'/'.($paging->page-1));?>">&larr;</a>
+          <a href="<?php echo $paging->page == 1 ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page-1));?>">&larr;</a>
         </li>
       <?php
         for($page = $paging->start; $page <= $paging->end ; $page++) {
       ?>
-        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/list/course/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
+        <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($map->permalink.'/manage/list/course/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
         <li<?php echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
-          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($site->permalink.'/manage/list/course/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
+          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
         </li>
     </ul>
   </div>

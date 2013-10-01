@@ -16,7 +16,7 @@
   	<h4>환영합니다</h4>
   </div>
 
-  <h5>아마도 지도 [<?php echo $site->name;?>]에 초대되셨습니다.</h5>
+  <h5>아마도 지도 [<?php echo $map->name;?>]에 초대되셨습니다.</h5>
 
   <?php
   	if(empty($current_user->id)) {
@@ -27,7 +27,7 @@
   ?>
 	
   <p>
-    초대를 수락하시면 지도 [<?php echo $site->name;?>]에서 "<?php echo $role->role_name;?>"권한으로 아래와 같은 권한 내용을 가집니다. <br />
+    초대를 수락하시면 지도 [<?php echo $map->name;?>]에서 "<?php echo $role->role_name;?>"권한으로 아래와 같은 권한 내용을 가집니다. <br />
   </p>
 
   <pre>권한 : <?php echo $role->role_description;?></pre>

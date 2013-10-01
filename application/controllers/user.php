@@ -122,7 +122,7 @@ class User extends APP_Controller
 		if(!empty($this->user_data->id))
         {//-- Already logged in as s Someone
             //TODO: Display 'Already Logged In' Error Page
-            show_error('You have already logged in to the website', 500, 'Already Logged In.');
+            show_error('You have already logged in to the webmap', 500, 'Already Logged In.');
         }
 		else 
 		{
@@ -136,7 +136,7 @@ class User extends APP_Controller
 			else if(!empty($this->user_data->id)) 
 			{//-- Already logged in as someone
 				//TODO: Display 'Already Logged In' Error Page
-				show_error('You have already logged in to the website', 500, 'Already Logged In.');
+				show_error('You have already logged in to the webmap', 500, 'Already Logged In.');
 			} else {
 			  $me = null;		
 	

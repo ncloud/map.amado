@@ -5,7 +5,7 @@
   $errors = array();
 ?>
 
-<form id="addform_image" enctype="multipart/form-data" method="post" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/image/edit/'.$image->id) : site_url($site->permalink.'/manage/add/image');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>">
+<form id="addform_image" enctype="multipart/form-data" method="post" action="<?php echo $edit_mode ? site_url($map->permalink.'/manage/image/edit/'.$image->id) : site_url($map->permalink.'/manage/add/image');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">
     <?php if(isset($message) && !empty($message)) { ?>
     <div class="alert alert-<?php echo $message->type;?>">
@@ -171,12 +171,12 @@
   <?php   
     } else {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage');?>" class="btn">취소</a>
+      <a href="<?php echo site_url($map->permalink.'/manage');?>" class="btn">취소</a>
   <?php
   }
     if($edit_mode) {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage/place/delete/'.$image->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
+      <a href="<?php echo site_url($map->permalink.'/manage/place/delete/'.$image->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
   <?php    
     }
   ?>

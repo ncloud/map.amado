@@ -55,33 +55,33 @@ $route['logout']									 = 'user/logout';
 $route['login/do']                              	 = 'user/login';
 $route['join/do']                               	 = 'user/join';
 
-$route['manage/add']								 = 'manage/add_site';
+$route['manage/add']								 = 'manage/add_map';
 
 /* 
- * site by permalink
+ * map by permalink
  */
-$route['(:any)/manage/place/edit/(:num)']			 		= 'manage/place_edit/site:$1/$2';
-$route['(:any)/manage/image/edit/(:num)']			 		= 'manage/place_edit/site:$1/$2';
-$route['(:any)/manage/place/delete/(:num)']			 		= 'manage/place_delete/site:$1/$2';
-$route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change/site:$1/$2/$3/$4';
+$route['(:any)/manage/place/edit/(:num)']			 		= 'manage/place_edit/map:$1/$2';
+$route['(:any)/manage/image/edit/(:num)']			 		= 'manage/place_edit/map:$1/$2';
+$route['(:any)/manage/place/delete/(:num)']			 		= 'manage/place_delete/map:$1/$2';
+$route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change/map:$1/$2/$3/$4';
 
-$route['(:any)/manage/course/edit/(:num)']			 		= 'manage/course_edit/site:$1/$2';
-$route['(:any)/manage/course/change/(:any)/(:num)/(:any)']	= 'manage/course_change/site:$1/$2/$3/$4';
+$route['(:any)/manage/course/edit/(:num)']			 		= 'manage/course_edit/map:$1/$2';
+$route['(:any)/manage/course/change/(:any)/(:num)/(:any)']	= 'manage/course_change/map:$1/$2/$3/$4';
 
-$route['(:any)/manage/list/(:any)']					 = 'manage/lists/site:$1/$2';
-$route['(:any)/manage/list']						 = 'manage/lists/site:$1';
+$route['(:any)/manage/list/(:any)']					 = 'manage/lists/map:$1/$2';
+$route['(:any)/manage/list']						 = 'manage/lists/map:$1';
 
-$route['(:any)/manage/type/add/(:any)/(:num)']       = 'manage/type_add/site:$1/$2/$3';
-$route['(:any)/manage/type/add/(:any)']				 = 'manage/type_add/site:$1/$2';
-$route['(:any)/manage/type/delete/(:num)']		     = 'manage/type_delete/site:$1/$2';
-$route['(:any)/manage/type/edit/(:num)']		     = 'manage/type_edit/site:$1/$2';
+$route['(:any)/manage/type/add/(:any)/(:num)']       = 'manage/type_add/map:$1/$2/$3';
+$route['(:any)/manage/type/add/(:any)']				 = 'manage/type_add/map:$1/$2';
+$route['(:any)/manage/type/delete/(:num)']		     = 'manage/type_delete/map:$1/$2';
+$route['(:any)/manage/type/edit/(:num)']		     = 'manage/type_edit/map:$1/$2';
 
-$route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/site:$1/$4/$5/$6';
-$route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/site:$1/$4/$5';
-$route['(:any)/(:any)/(:any)/(:any)']				 = '$2/$3/site:$1/$4';
-$route['(:any)/(:any)/(:any)']						 = '$2/$3/site:$1';
-$route['(:any)/(:any)']								 = '$2/index/site:$1';
-$route['(:any)']									 = 'page/index/site:$1';
+$route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/map:$1/$4/$5/$6';
+$route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/map:$1/$4/$5';
+$route['(:any)/(:any)/(:any)/(:any)']				 = '$2/$3/map:$1/$4';
+$route['(:any)/(:any)/(:any)']						 = '$2/$3/map:$1';
+$route['(:any)/(:any)']								 = '$2/index/map:$1';
+$route['(:any)']									 = 'page/index/map:$1';
 
 
 /* End of file routes.php */

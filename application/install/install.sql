@@ -9,12 +9,16 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   KEY `session_id` (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `sites` (
+CREATE TABLE IF NOT EXISTS `maps` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,  
+  `name` varchar(255) DEFAULT NULL,    
+  `description` text,
   `permalink` varchar(128) DEFAULT NULL,
-  `privacy` enum('public','private') DEFAULT 'public',
+  `privacy` enum('public','private') DEFAULT 'public',  
+  `add_role` enum('guest','member','workman','admin') DEFAULT 'member',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -27,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `attaches` (
 
 CREATE TABLE IF NOT EXISTS `places` (
   `id` int(11) NOT NULL AUTO_INCREMENT,  
-  `site_id` int(11) unsigned DEFAULT NULL,
+  `map_id` int(11) unsigned DEFAULT NULL,
   `type_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
   `status` enum('pending','rejected','approved') NOT NULL DEFAULT 'pending',
@@ -42,21 +46,21 @@ CREATE TABLE IF NOT EXISTS `places` (
   `owner_name` varchar(100) NOT NULL,
   `owner_email` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `site_id` (`site_id`)
+  KEY `map_id` (`map_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `place_types` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `site_id` int(11) unsigned DEFAULT NULL,
+  `map_id` int(11) unsigned DEFAULT NULL,
   `icon_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(32) NOT NULL,
   `order_index` tinyint(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `site_id` (`site_id`),
-  UNIQUE KEY `site_id` (`site_id`,`name`)
+  KEY `map_id` (`map_id`),
+  UNIQUE KEY `map_id` (`map_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `place_types` (`id`, `site_id`, `icon_id`, `name`, `order_index`) VALUES 
+INSERT INTO `place_types` (`id`, `map_id`, `icon_id`, `name`, `order_index`) VALUES 
 	  ('1', '1', '1', '역사/유적', '1'),
 	  ('2', '1', '2', '미술/전시', '2'),
 	  ('3', '1', '3', '문화', '3'), 
@@ -75,14 +79,14 @@ CREATE TABLE IF NOT EXISTS `course_targets` (
 	  
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `site_id` int(11) unsigned DEFAULT NULL,
+  `map_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned DEFAULT NULL,
   `status` enum('approved','rejected','pending') DEFAULT 'pending',
   `permalink` varchar(128) DEFAULT NULL,
   `title` varchar(128) DEFAULT NULL,  
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`),  
-  KEY `site_id` (`site_id`)
+  KEY `map_id` (`map_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	  
 CREATE TABLE IF NOT EXISTS `user_tokens` (
@@ -100,14 +104,14 @@ CREATE TABLE IF NOT EXISTS `user_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `role_users` (
-  `site_id` int(11) unsigned DEFAULT NULL,
+  `map_id` int(11) unsigned DEFAULT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `role_id` int(11) unsigned NOT NULL,
   `invite_email` varchar(128) NOT NULL DEFAULT '',  
   `invite_code` varchar(32) DEFAULT NULL,
   `invite_status` enum('invited','send_email','no') DEFAULT 'no',  
   `insert_time` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`site_id`,`role_id`,`user_id`,`invite_email`)
+  PRIMARY KEY (`map_id`,`role_id`,`user_id`,`invite_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -152,12 +156,12 @@ CREATE TABLE IF NOT EXISTS `users` (
 INSERT INTO `users` (`id`, `username`, `password`, `name`, `display_name`, `email`, `activation_key`) VALUES 
 	  ('1', 'email_admin@example.com', 'eab9w5ad7083f70b822653b5ba5cae5bcaadab5438a', '관리자', '관리자', 'admin@example.com', 'ibloepduwdldkqzcfy7pyezfenvxkmvw');
 
-INSERT INTO `sites` (`id`, `user_id`, `permalink`, `name`) VALUES 
-	  ('1', '1', 'basic', '기본');
+INSERT INTO `maps` (`id`, `user_id`, `permalink`, `name`, `create_time`, `update_time`) VALUES 
+	  ('1', '1', 'basic', '기본', NOW(), NOW());
 
-/* INSERT INTO `courses` (`site_id`, `user_id`, `title`) VALUES 
+/* INSERT INTO `courses` (`map_id`, `user_id`, `title`) VALUES 
     ('1', '1', '기본'); */
 
-INSERT INTO `role_users` (`site_id`, `user_id`, `role_id`) VALUES 
+INSERT INTO `role_users` (`map_id`, `user_id`, `role_id`) VALUES 
 	  (null, '1', '3');
 	  	  

@@ -9,21 +9,21 @@ class Manage extends APP_Controller {
 		$this->load->model('m_place');
 		$this->load->model('m_course');
 		
-		if($this->site && !$this->input->is_ajax_request()) {
-			$total_place_approved = $this->m_place->get_count_by_approved($this->site->id);
-			$total_place_rejected = $this->m_place->get_count_by_rejected($this->site->id);
-			$total_place_pending = $this->m_place->get_count_by_pending($this->site->id);
-			$total_place_all = $this->m_place->get_count($this->site->id);
+		if($this->map && !$this->input->is_ajax_request()) {
+			$total_place_approved = $this->m_place->get_count_by_approved($this->map->id);
+			$total_place_rejected = $this->m_place->get_count_by_rejected($this->map->id);
+			$total_place_pending = $this->m_place->get_count_by_pending($this->map->id);
+			$total_place_all = $this->m_place->get_count($this->map->id);
 			
 			$this->set('total_place_approved', $total_place_approved);
 			$this->set('total_place_rejected', $total_place_rejected);
 			$this->set('total_place_pending', $total_place_pending);
 			$this->set('total_place_all', $total_place_all);
 
-			$total_course_approved = $this->m_course->get_count_by_approved($this->site->id);
-			$total_course_rejected = $this->m_course->get_count_by_rejected($this->site->id);
-			$total_course_pending = $this->m_course->get_count_by_pending($this->site->id);
-			$total_course_all = $this->m_course->get_count($this->site->id);
+			$total_course_approved = $this->m_course->get_count_by_approved($this->map->id);
+			$total_course_rejected = $this->m_course->get_count_by_rejected($this->map->id);
+			$total_course_pending = $this->m_course->get_count_by_pending($this->map->id);
+			$total_course_all = $this->m_course->get_count($this->map->id);
 
 			$this->set('total_course_approved', $total_course_approved);
 			$this->set('total_course_rejected', $total_course_rejected);
@@ -41,19 +41,18 @@ class Manage extends APP_Controller {
 	function index($page = 1)
 	{
 		if(!$this->__check_login()) return false;
-		if(!$this->__check_role(array('member','workman','admin','super-admin'))) return false;
 
-		if(empty($this->site->id)) {
+		if(empty($this->map->id)) {
 			$paging = new StdClass;
 			$paging->page = $page;
 			$paging->per_page = 15;
 
 			if(in_array($this->user_data->role, array('admin','super-admin'))) {
-				$paging->total_count = $this->m_site->get_count();
-				$sites = $this->m_site->gets_all($paging->per_page, ($page-1) * $paging->per_page);
+				$paging->total_count = $this->m_map->get_count();
+				$maps = $this->m_map->gets_all($paging->per_page, ($page-1) * $paging->per_page);
 			} else {
-				$paging->total_count = $this->m_site->get_count_by_user_id($this->user_data->id);
-				$sites = $this->m_site->gets_all_by_user_id($this->user_data->id,$paging->per_page, ($page-1) * $paging->per_page);
+				$paging->total_count = $this->m_map->get_count_by_user_id($this->user_data->id);
+				$maps = $this->m_map->gets_all_by_user_id($this->user_data->id,$paging->per_page, ($page-1) * $paging->per_page);
 			}
 
 			$paging->max = floor($paging->total_count / $paging->per_page);
@@ -68,17 +67,17 @@ class Manage extends APP_Controller {
 
 			$this->set('paging', $paging);
 
-			$this->set('sites', $sites);
-			$this->view('manage/index_site');
+			$this->set('maps', $maps);
+			$this->view('manage/index_map');
 		} else {
-			$this->__get_place_lists($this->site->id, 'all', $page);
+			$this->__get_place_lists($this->map->id, 'all', $page);
 			$this->view('manage/index');
 		}
 	}
 	
 	function lists($type, $status, $page = 1)
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 		
@@ -87,35 +86,34 @@ class Manage extends APP_Controller {
 		}
 
 		if($type == 'place') {
-			$this->__get_place_lists($this->site->id, $status, $page);
+			$this->__get_place_lists($this->map->id, $status, $page);
 			$this->view('manage/list');
 		} else if($type == 'course') {
-			$this->__get_course_lists($this->site->id, $status, $page);
+			$this->__get_course_lists($this->map->id, $status, $page);
 			$this->view('manage/course/list');
 		}
 	}
 
-	function add_site()
+	function add_map()
 	{
 		if(!$this->__check_login()) return false;
-		if(!$this->__check_role()) return false;
 
 		$message = null;
 	
-		$site = new StdClass;
-		$site->name = '';
-		$site->permalink = '';
-		$site->type_template = 'none';
+		$map = new StdClass;
+		$map->name = '';
+		$map->permalink = '';
+		$map->type_template = 'none';
 
 		if($_POST && !empty($_POST)) {
-			$errors =$this->__check_for_add_site_form($_POST, $site);
+			$errors =$this->__check_for_add_map_form($_POST, $map);
 			if(!$errors) {
 				$_POST['user_id'] = $this->user_data->id;
-				if($site_id = $this->m_site->add($_POST)) {
+				if($map_id = $this->m_map->add($_POST)) {
 					$this->load->model('m_role');
-					$this->m_role->user_add($site_id, $this->user_data->id, $this->m_role->get_id_by_name('super-admin'));
+					$this->m_role->user_add($map_id, $this->user_data->id, $this->m_role->get_id_by_name('super-admin'));
 
-					redirect($site->permalink.'/manage');
+					redirect($map->permalink.'/manage');
 				}
 			} else {
 				$message = new StdClass;
@@ -124,16 +122,25 @@ class Manage extends APP_Controller {
 			}
 		}
 
-		$this->set('site_data', $site);
+		$this->set('map_data', $map);
 		$this->set('message', $message);
 
-		$this->view('manage/add/site');
+		$this->view('manage/add/map');
 	}
 	
 	function add($type = 'place') {
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		
 		$message = null;
+
+
+        if($this->map->add_role == 'guest' || 
+            ($this->map->add_role == 'member' && in_array($this->user_data->role,array('member','workman','admin','super-admin'))) ||
+            ($this->map->add_role == 'workman' && in_array($this->user_data->role,array('workman','admin','super-admin'))) ||
+            ($this->map->add_role == 'admin' && in_array($this->user_data->role,array('admin','super-admin')))) {
+        } else {
+        	return false;
+        }
 
 		switch($type) {
 			case 'image':	
@@ -158,7 +165,7 @@ class Manage extends APP_Controller {
 					$errors = $this->__check_for_image_form($_POST, $default_image);
 					if(!$errors) {
 						$_POST['file'] = $_POST['image'];
-						$_POST['site_id'] = $this->site->id;
+						$_POST['map_id'] = $this->map->id;
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 
 						unset($_POST['image']);
@@ -171,13 +178,14 @@ class Manage extends APP_Controller {
 						}
 						
 						$image_id = $this->m_image->add($_POST);
+						$this->m_map->update_time($this->map->id);
 
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();	
 
 						if(!$this->input->is_ajax_request()) {
 							if($image_id) {
-								redirect($this->site->permalink.'/manage');
+								redirect($this->map->permalink.'/manage');
 							}
 						} else {
 							$message = new StdClass;
@@ -222,7 +230,7 @@ class Manage extends APP_Controller {
 				if(!empty($_POST)) {
 					$errors = $this->__check_for_place_form($_POST, $default_place);
 					if(!$errors) {
-						$_POST['site_id'] = $this->site->id;
+						$_POST['map_id'] = $this->map->id;
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
 						if(isset($_POST['approved'])) {
@@ -233,13 +241,14 @@ class Manage extends APP_Controller {
 						}
 
 						$place_id = $this->m_place->add($_POST);
+						$this->m_map->update_time($this->map->id);
 						
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
 
 						if(!$this->input->is_ajax_request()) {
 							if($place_id) {
-								redirect($this->site->permalink.'/manage');
+								redirect($this->map->permalink.'/manage');
 							}
 						} else {
 							$message = new StdClass;
@@ -264,7 +273,7 @@ class Manage extends APP_Controller {
 					$this->set('message', $message);
 					
 					$this->set('place', $default_place);
-					$this->set('place_types', $this->m_place->get_types($this->site->id));	
+					$this->set('place_types', $this->m_place->get_types($this->map->id));	
 					
 					$this->view('manage/add/place');
 				}
@@ -280,7 +289,7 @@ class Manage extends APP_Controller {
 				if(!empty($_POST)) {
 					$errors = $this->__check_for_course_form($_POST, $default_course, $default_course_targes);
 					if(!$errors) {
-						$_POST['site_id'] = $this->site->id;
+						$_POST['map_id'] = $this->map->id;
 						$_POST['user_id'] = isset($this->user_data->id) ? $this->user_data->id : 0;
 						
 						if(isset($_POST['approved'])) {
@@ -291,13 +300,14 @@ class Manage extends APP_Controller {
 						}
 
 						$course_id = $this->m_course->add($_POST);
+						$this->m_map->update_time($this->map->id);
 
 						if($course_id) 
 							$this->m_course->update_targets($course_id, $default_course_targes);
 
 						if(!$this->input->is_ajax_request()) {
 							if($course_id) {
-								redirect($this->site->permalink.'/manage/course');
+								redirect($this->map->permalink.'/manage/course');
 							}
 						} else {
 							$message = new StdClass;
@@ -346,7 +356,7 @@ class Manage extends APP_Controller {
 					
 					$this->set('course', $default_course);
 					$this->set('course_targets', $default_course_targes);
-					$this->set('place_lists', $this->m_place->gets($this->site->id));
+					$this->set('place_lists', $this->m_place->gets($this->map->id));
 
 					$this->view('manage/add/course');
 				}
@@ -356,7 +366,7 @@ class Manage extends APP_Controller {
 
 	function place_delete($id)
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 
 		if($place = $this->m_place->get($id)) {
 
@@ -372,22 +382,24 @@ class Manage extends APP_Controller {
 				} else {
 					$this->m_place->delete($place->id);
 				}
+				
+				$this->m_map->update_time($this->map->id);
 
-				redirect($this->site->permalink.'/manage');
+				redirect($this->map->permalink.'/manage');
 			}
 		}
 	}
 	
 	function place($id = null, $page = 1)
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		
 		$this->set('menu', 'place');
 		
 		if($id) {
 
 		} else {
-			$this->__get_place_lists($this->site->id, 'all', $page);
+			$this->__get_place_lists($this->map->id, 'all', $page);
 
 			$this->view('manage/index');
 		}
@@ -395,7 +407,7 @@ class Manage extends APP_Controller {
 	
 	function place_edit($id)
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		
 		if($place = $this->m_place->get($id)) {
 			$message = null;
@@ -440,6 +452,8 @@ class Manage extends APP_Controller {
 						} else {
 							$this->m_place->update($id, $_POST);
 						}
+						
+						$this->m_map->update_time($this->map->id);
 					
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
@@ -483,7 +497,7 @@ class Manage extends APP_Controller {
 					$this->view('manage/add/image');
 				} else {
 					$this->set('place', $place);
-					$this->set('place_types', $this->m_place->get_types($this->site->id));
+					$this->set('place_types', $this->m_place->get_types($this->map->id));
 				
 					$this->view('manage/add/place');
 				}
@@ -495,7 +509,7 @@ class Manage extends APP_Controller {
 	
 	function place_change($type, $id, $value)
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
@@ -508,6 +522,8 @@ class Manage extends APP_Controller {
 					$data = array();
 					$data['status'] = $value;
 					$this->m_place->update($id, $data);
+					
+					$this->m_map->update_time($this->map->id);
 					
 					$this->load->model('m_work');
 					$this->m_work->rebuild_geocode_for_places();
@@ -522,21 +538,21 @@ class Manage extends APP_Controller {
 	}
 
 	function course($id = null, $page = 1) {		
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 			
 		$this->set('menu', 'course');
 
 		if($id) {
 
 		} else {
-			$this->__get_course_lists($this->site->id, 'all', $page);
+			$this->__get_course_lists($this->map->id, 'all', $page);
 
 			$this->view('manage/course/index');
 		}
 	}
 	
 	function course_edit($id) {
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		
 		$this->set('menu', 'course');
 
@@ -563,6 +579,8 @@ class Manage extends APP_Controller {
 
 						$this->m_course->update($id, $_POST);
 						$this->m_course->update_targets($id, $course_targets);
+
+						$this->m_map->update_time($this->map->id);
 
 						$message = new StdClass;
 						$message->type = 'success';
@@ -615,7 +633,7 @@ class Manage extends APP_Controller {
 				$this->set('course', $course);
 				$this->set('course_targets', $course_targets);
 
-				$this->set('place_lists', $this->m_place->gets($this->site->id));
+				$this->set('place_lists', $this->m_place->gets($this->map->id));
 			
 				$this->view('manage/add/course');
 			}
@@ -625,7 +643,7 @@ class Manage extends APP_Controller {
 	}
 
 	function course_change($type, $id, $value) {
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 		
@@ -637,6 +655,8 @@ class Manage extends APP_Controller {
 					$data = array();
 					$data['status'] = $value;
 					$this->m_course->update($id, $data);
+
+					$this->m_map->update_time($this->map->id);
 										
 					redirect($redirect);
 				}
@@ -649,22 +669,22 @@ class Manage extends APP_Controller {
 
 	function basic()
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
 		$this->set('menu', 'basic');			
 
-		$site_data = clone $this->site;
+		$map_data = clone $this->map;
 
 		$message = null;
 		if(!empty($_POST)) { // edit mode 
-			$errors = $this->__check_for_basic_form($this->site->id, $_POST, $site_data);
+			$errors = $this->__check_for_basic_form($this->map->id, $_POST, $map_data);
 			
 			if(!$errors) {
-				if($this->m_site->update($this->site->id, $_POST)) {
-					if($this->site->permalink != $site_data->permalink) {
-						redirect($site_data->permalink.'/manage/basic');	
+				if($this->m_map->update($this->map->id, $_POST)) {
+					if($this->map->permalink != $map_data->permalink) {
+						redirect($map_data->permalink.'/manage/basic');	
 					}
 		
 					$message = new StdClass;
@@ -679,20 +699,20 @@ class Manage extends APP_Controller {
 		}
 
 		$this->set('message', $message);
-		$this->set('site_data', $site_data);
+		$this->set('map_data', $map_data);
 
 		$this->view('manage/setting/basic');
 	}
 
 	function user()
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
 		$this->set('menu', 'user');			
 
-		$users = $this->m_role->gets_by_site_id($this->site->id);
+		$users = $this->m_role->gets_by_map_id($this->map->id);
 		$this->set('users', $users);
 
 		$this->set('roles', $this->m_role->gets_all());
@@ -702,7 +722,7 @@ class Manage extends APP_Controller {
 
 	function type()
 	{
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
@@ -742,7 +762,7 @@ class Manage extends APP_Controller {
 							$update_datas[] = $update_data;
 						} else {
 							$insert_data = array();
-							$insert_data['site_id'] = $this->site->id;
+							$insert_data['map_id'] = $this->map->id;
 							$insert_data['icon_id'] = $type_data['icon_id'];
 							$insert_data['name'] = $type_data['name'];
 							$insert_data['order_index'] = $type_data['order'];
@@ -772,10 +792,10 @@ class Manage extends APP_Controller {
 		} else {
 			$this->set('message', $message);
 
-			$types = $this->m_place->gets_type($this->site->id);
+			$types = $this->m_place->gets_type($this->map->id);
 			
 			$types_counts = array();
-			$result = $this->m_place->get_types_count($this->site->id);
+			$result = $this->m_place->get_types_count($this->map->id);
 			foreach($result as $item) {
 				$types_counts[$item->type_id] = $item->count;
 			}
@@ -801,7 +821,7 @@ class Manage extends APP_Controller {
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!$this->site->id) {
+		if(!$this->map->id) {
 			$output->success = false;
 			$output->message = '잘못된 접근입니다';
 		} else {
@@ -816,15 +836,15 @@ class Manage extends APP_Controller {
 				} else {
 					$this->load->model('m_place');
 
-					if($this->m_place->get_exist_type_by_name($this->site->id, $name)) {
+					if($this->m_place->get_exist_type_by_name($this->map->id, $name)) {
 						$output->success = false;			
 						$output->message = '이미 이름이 존재합니다.';
 					} else {
 						$data = new StdClass;
-						$data->site_id = $this->site->id;
+						$data->map_id = $this->map->id;
 						$data->icon_id = ($icon_id === false || !is_numeric($icon_id)) ? 0 : $icon_id;
 						$data->name = $name;
-						$data->order_index = $this->m_place->get_max_type_id($this->site->id) + 1;
+						$data->order_index = $this->m_place->get_max_type_id($this->map->id) + 1;
 
 						if($data->id = $this->m_place->add_type($data)) {
 							$output->success = true;
@@ -845,7 +865,7 @@ class Manage extends APP_Controller {
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!$this->site->id) {
+		if(!$this->map->id) {
 			$output->success = false;
 			$output->message = '잘못된 접근입니다';
 		} else {
@@ -870,7 +890,7 @@ class Manage extends APP_Controller {
 					$this->load->model('m_place');
 
 					if($type = $this->m_place->get_type($id)) {
-						if($type->site_id == $this->site->id) {
+						if($type->map_id == $this->map->id) {
 							if(count($datas)) {
 								$this->m_place->update_type($id, $datas);
 							}
@@ -897,7 +917,7 @@ class Manage extends APP_Controller {
 		$output = new StdClass;
 		$output->success = false;
 
-		if(!$this->site->id) {
+		if(!$this->map->id) {
 			$output->success = false;
 			$output->message = '잘못된 접근입니다';
 		} else {
@@ -912,7 +932,7 @@ class Manage extends APP_Controller {
 					$this->load->model('m_place');
 
 					if($type = $this->m_place->get_type($id)) {
-						if($type->site_id == $this->site->id) {
+						if($type->map_id == $this->map->id) {
 							$this->m_place->delete_type($id);
 							$output->success = true;
 						} else {
@@ -938,22 +958,22 @@ class Manage extends APP_Controller {
 		$this->layout->setLayout('layouts/manage');
 
     	$this->load->model('m_role');
-    	$this->load->model('m_site');
+    	$this->load->model('m_map');
 
     	if($v2) {
-    		$role = $this->m_role->get_by_site_and_user_id($v1, $v2);
+    		$role = $this->m_role->get_by_map_and_user_id($v1, $v2);
     	} else {
     		$role = $this->m_role->get_by_invite_code($v1);
     	}
 
 		if($role) {
-    		if($site = $this->m_site->get($role->site_id)) {
-    			$user_role_name = $this->m_role->get_role($site->id, $this->user_data->id);
+    		if($map = $this->m_map->get($role->map_id)) {
+    			$user_role_name = $this->m_role->get_role($map->id, $this->user_data->id);
     			if(in_array($user_role_name, array('admin','super-admin'))) {
     				$this->load->library('user_agent');
 
     				if($role->user_id) { // 가입한 사용자
-    					$this->m_role->user_delete($role->site_id, $role->user_id);
+    					$this->m_role->user_delete($role->map_id, $role->user_id);
     				} else { // 초대메일 발송한 사용자
     					$this->m_role->user_delete_by_code($role->invite_code);
     				}
@@ -967,7 +987,7 @@ class Manage extends APP_Controller {
     // change_role
     function change_role($user_id, $role_name)
     {
-		if(!$this->__check_site()) return false;
+		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
@@ -977,9 +997,9 @@ class Manage extends APP_Controller {
     		return false;
     	}
 
-		$this->m_role->update_user_role($this->site->id, $user_id, $role_id);
+		$this->m_role->update_user_role($this->map->id, $user_id, $role_id);
 		
-		redirect($this->site->permalink.'/manage/user');
+		redirect($this->map->permalink.'/manage/user');
     }
 		
 	private function __check_for_place_form(&$form, &$change_place = null)
@@ -1103,7 +1123,7 @@ class Manage extends APP_Controller {
 		}
 
 		if(isset($form['permalink']) && !empty($form['permalink'])) {
-			if($this->m_course->check_permalink($this->site->id, $form['permalink'])) {
+			if($this->m_course->check_permalink($this->map->id, $form['permalink'])) {
 				$errors['permalink'] = '고유값이 중복되었습니다.';
 				if($change_course) $change_course->permalink = $form['permalink'];
 			} else {
@@ -1144,31 +1164,31 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 
-	private function __check_for_add_site_form(&$form, &$site = null)
+	private function __check_for_add_map_form(&$form, &$map = null)
 	{
 		$this->load->helper('string');
 		
 		$errors = array();
 
 		if(!isset($form['name']) || empty($form['name'])) {
-			$errors['name'] = '사이트명을 입력해주세요';
+			$errors['name'] = '지도명을 입력해주세요';
 
-			if($site) $site->name = '';
+			if($map) $map->name = '';
 		} else {
-			if($site) $site->name = $form['name'];
+			if($map) $map->name = $form['name'];
 		}
 
 		if(!isset($form['permalink']) || empty($form['permalink'])) {
 			$errors['permalink'] = '주소를 입력해주세요';
 
-			if($site) $site->permalink = '';
+			if($map) $map->permalink = '';
 		} else {
-			if($this->m_site->get_by_permalink($form['permalink'])) {
+			if($this->m_map->get_by_permalink($form['permalink'])) {
 				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
 			} else if(!only_english($form['permalink'])) {
 				$errros['permalink'] = '주소는 영문만 사용하실 수 있습니다.';
 			} else {
-				if($site) $site->permalink = $form['permalink'];
+				if($map) $map->permalink = $form['permalink'];
 			}
 		}
 
@@ -1176,7 +1196,7 @@ class Manage extends APP_Controller {
 		return $errors;
 	}
 
-	private function __check_for_basic_form($site_id, &$form, &$site = null) 
+	private function __check_for_basic_form($map_id, &$form, &$map = null) 
 	{
 		$this->load->helper('string');
 
@@ -1185,38 +1205,46 @@ class Manage extends APP_Controller {
 		if(!isset($form['privacy']) || empty($form['privacy']) || !in_array($form['privacy'], array('public', 'private'))) {
 			$errors['privacy'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
 
-			if($site) $site->privacy = 'public';
+			if($map) $map->privacy = 'public';
 		} else {
-			if($site) $site->privacy = $form['privacy'];
+			if($map) $map->privacy = $form['privacy'];
+		}
+
+		if(!isset($form['add_role']) || empty($form['add_role']) || !in_array($form['add_role'], array('guest', 'member', 'workman', 'admin'))) {
+			$errors['add_role'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
+
+			if($map) $map->add_role = 'member';
+		} else {
+			if($map) $map->add_role = $form['add_role'];
 		}
 
 		if(!isset($form['name']) || empty($form['name'])) {
-			$errors['name'] = '사이트명을 입력해주세요';
+			$errors['name'] = '지도명을 입력해주세요';
 
-			if($site) $site->name = '';
+			if($map) $map->name = '';
 		} else {
-			if($site) $site->name = $form['name'];
+			if($map) $map->name = $form['name'];
 		}
 
 		if(!isset($form['permalink']) || empty($form['permalink'])) {
 			$errors['permalink'] = '주소를 입력해주세요';
 
-			if($site) $site->permalink = '';
+			if($map) $map->permalink = '';
 		} else {
-			if($this->m_site->get_by_permalink($form['permalink'], $site_id)) {
+			if($this->m_map->get_by_permalink($form['permalink'], $map_id)) {
 				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
 			}  else if(!only_english($form['permalink'])) {
 				$errors['permalink'] = '주소는 영문만 사용하실 수 있습니다.';
 			} 
 			
-			if($site) $site->permalink = $form['permalink'];
+			if($map) $map->permalink = $form['permalink'];
 		}
 
 		if(count($errors) == 0) return false;
 		return $errors;
 	}
 
-	private function __get_course_lists($site_id, $status, $page = 1) {
+	private function __get_course_lists($map_id, $status, $page = 1) {
 		$this->set('status', $status);
 		$this->set('menu', 'course_' . $status);
 
@@ -1227,11 +1255,11 @@ class Manage extends APP_Controller {
 		switch($status) {
 			case 'all':
 				$paging->total_count = $this->get('total_course_all');
-				$courses = $this->m_course->gets_all($site_id, $paging->per_page, $page);
+				$courses = $this->m_course->gets_all($map_id, $paging->per_page, $page);
 			break;			
 			default:
 				$paging->total_count = $this->get('total_course_' . $status);
-				$courses = $this->m_course->gets_by_status($site_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
+				$courses = $this->m_course->gets_by_status($map_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
 			break;
 		}
 
@@ -1252,7 +1280,7 @@ class Manage extends APP_Controller {
 		$this->set('paging', $paging);
 	}
 
-	private function __get_place_lists($site_id, $status, $page = 1)
+	private function __get_place_lists($map_id, $status, $page = 1)
 	{
 		$this->set('status', $status);
 		$this->set('menu', 'place_' . $status);
@@ -1264,11 +1292,11 @@ class Manage extends APP_Controller {
 		switch($status) {
 			case 'all':
 				$paging->total_count = $this->get('total_place_all');
-				$places = $this->m_place->gets_all($site_id, $paging->per_page, ($page-1)*$paging->per_page);
+				$places = $this->m_place->gets_all($map_id, $paging->per_page, ($page-1)*$paging->per_page);
 			break;			
 			default:
 				$paging->total_count = $this->get('total_place_' . $status);
-				$places = $this->m_place->gets_by_status($site_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
+				$places = $this->m_place->gets_by_status($map_id, $status, $paging->per_page, ($page-1)*$paging->per_page);
 			break;
 		}
 		$this->set('places', $places);
@@ -1286,9 +1314,9 @@ class Manage extends APP_Controller {
 		$this->set('paging', $paging);
 	}
 
-	private function __check_site()
+	private function __check_map()
 	{
-		if(empty($this->site->id)) {
+		if(empty($this->map->id)) {
 			redirect('/manage');
 			return false;
 		}

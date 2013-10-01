@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/course/edit/'.$course->id) :  site_url($site->permalink.'/manage/add/course');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo $edit_mode ? site_url($map->permalink.'/manage/course/edit/'.$course->id) :  site_url($map->permalink.'/manage/add/course');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -54,7 +54,7 @@
         <div class="controls">
           <input type="text" id="course_permalink" class="span4" name="permalink" value="<?php echo isset($course) ? $course->permalink : ''?>" />
           <p class="help-block">
-            고유값은 코스에 쉽게 접근할 수 있는 고유주소에 사용됩니다. (예: example.com/<?php echo $site->permalink;?>/course/고유값)
+            고유값은 코스에 쉽게 접근할 수 있는 고유주소에 사용됩니다. (예: example.com/<?php echo $map->permalink;?>/course/고유값)
           </p>
         </div>
       </div>
@@ -128,12 +128,12 @@
   <?php		
   	} else {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage/course');?>" class="btn">취소</a>
+      <a href="<?php echo site_url($map->permalink.'/manage/course');?>" class="btn">취소</a>
   <?php
 	}
    if($edit_mode) {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage/course/delete/'.$course->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
+      <a href="<?php echo site_url($map->permalink.'/manage/course/delete/'.$course->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
   <?php    
     }
   ?>
@@ -299,7 +299,7 @@
                 return item
               },
               source: sources/*function (query, process) {
-                  return $.post("<?php echo site_url('/ajax/places/'.$site->id);?>", { query: query }, function (data) {
+                  return $.post("<?php echo site_url('/ajax/places/'.$map->id);?>", { query: query }, function (data) {
                       if(data.success) { 
                         map_lists = new Array();   
                         var datas = new Array();

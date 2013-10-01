@@ -13,11 +13,11 @@ class Page extends APP_Controller {
 		
 		$this->load->helper('parse');
 
-		if(!$this->site->id) {
-			$sites = $this->m_site->gets_all();
-			if($sites && count($sites) == 1) {
-				redirect('/'.$sites[0]->permalink);
-			}
+		if(!$this->map->id) {
+			$maps = $this->m_map->gets_all();
+			$this->set('maps', $maps);
+
+			$this->view('welcome');
 		} else {
 			$course_mode = false;
 
@@ -25,7 +25,7 @@ class Page extends APP_Controller {
 	        $full_lng = 0;
 	        $full_count = 0;
 
-			$course_lists = $this->m_course->gets($this->site->id);
+			$course_lists = $this->m_course->gets($this->map->id);
 			if(!empty($course_lists)) {
 				$course_index = 1;
 				foreach($course_lists as $key => $course) {					
@@ -60,11 +60,11 @@ class Page extends APP_Controller {
 			$this->set('course_default', $course_default);
 
 				
-			$place_types = $this->m_place->get_types($this->site->id);
+			$place_types = $this->m_place->get_types($this->map->id);
 			$this->set('place_types', $place_types);
 			
 			$place_lists_by_type = array();
-			$place_lists = $this->m_place->gets($this->site->id);
+			$place_lists = $this->m_place->gets($this->map->id);
 			if($place_lists) {
 				uasort($place_lists, 'parseForLat');
 			}
@@ -175,7 +175,7 @@ class Page extends APP_Controller {
 		$this->layout->setLayout('layouts/manage');
 
     	$this->load->model('m_role');
-    	$this->load->model('m_site');
+    	$this->load->model('m_map');
 
     	$this->set('invite_code', $code);
 
@@ -183,10 +183,10 @@ class Page extends APP_Controller {
     	$message->type = 'success';
 
     	if($role = $this->m_role->get_by_invite_code($code)) {
-    		$site = $this->m_site->get($role->site_id);
+    		$map = $this->m_map->get($role->map_id);
     		$this->m_role->update_invite_user($code, $this->user_data->id);
     	
-    		redirect($site->permalink);
+    		redirect($map->permalink);
 		} else {
 			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
 			return false;
@@ -201,7 +201,7 @@ class Page extends APP_Controller {
     	$this->layout->setLayout('layouts/manage');
 
     	$this->load->model('m_role');
-    	$this->load->model('m_site');
+    	$this->load->model('m_map');
 
     	$this->set('invite_code', $code);
 
@@ -209,10 +209,10 @@ class Page extends APP_Controller {
     	$message->type = 'success';
 
     	if($role = $this->m_role->get_by_invite_code($code)) {
-    		$site = $this->m_site->get($role->site_id);
+    		$map = $this->m_map->get($role->map_id);
 
     		$this->set('role', $role);
-    		$this->set('site', $site);
+    		$this->set('map', $map);
 		} else {
 			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
 			return false;

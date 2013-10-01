@@ -15,20 +15,20 @@
 	  ?>
 	</div>
 	<?php } ?>
-  	<h3>사이트 추가</h3>
+  	<h3>지도 만들기</h3>
   </div>
 
   <div class="control-group<?php echo isset($errors['name']) ? ' error' : '';?>">
-    <label class="control-label" for="site_name">사이트명</label>
+    <label class="control-label" for="map_name">지도명</label>
     <div class="controls">
-      <input type="text" id="site_name" name="name" value="<?php echo $site_data->name;?>" />
+      <input type="text" id="map_name" name="name" value="<?php echo $map_data->name;?>" />
     </div>
   </div>
 
   <div class="control-group<?php echo isset($errors['permalink']) ? ' error' : '';?>">
-    <label class="control-label" for="site_permalink">주소</label>
+    <label class="control-label" for="map_permalink">주소</label>
     <div class="controls">
-      <input type="text" id="site_permalink" name="permalink" value="<?php echo $site_data->permalink;?>" />
+      <input type="text" id="map_permalink" name="permalink" value="<?php echo $map_data->permalink;?>" />
       <span class="help-block">
       	주소는 "<?php echo site_url('/');?>주소"와 같이 지도에 직접 접속할 수 있는 방법을 제공합니다.
       </span>
@@ -37,9 +37,9 @@
   <!--
   	// TODO: 분류템플릿 기능
   <div class="control-group">
-    <label class="control-label" for="site_type_template">분류 템플릿</label>
+    <label class="control-label" for="map_type_template">분류 템플릿</label>
     <div class="controls">
-		<select id="site_type_template" name="type_template">
+		<select id="map_type_template" name="type_template">
 		  <option value="none">사용안함</option>
 		</select>
     </div>

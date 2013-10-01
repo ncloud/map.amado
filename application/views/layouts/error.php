@@ -10,6 +10,25 @@
 	<script type='text/javascript' src='<?php echo site_url('/bootstrap/js/bootstrap.js');?>'></script>
 </head>
 <body class="error">    
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="navbar-inner">
+	    <div class="container">
+	      <a class="brand" href="<?php echo site_url("/manage/");?>">
+	        아마도.지도
+	      </a>
+
+	      <ul class="nav pull-right">
+	      <?php if($current_user->id) { ?>
+	        <li><a href="<?php echo site_url('/logout');?>">로그아웃</a></li>
+	      <?php } else { ?>
+	        <li><a href="<?php echo site_url('/login');?>">로그인</a></li>
+	      <?php } ?>
+	      </ul>
+	    </div>
+	  </div>
+	</div>
+
   <div id="content" class="container">
         <?php echo $content_for_layout;?>
     </div>

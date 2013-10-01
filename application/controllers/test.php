@@ -8,7 +8,7 @@ class Test extends APP_Controller {
 	function make_map_image($id)
 	{
 		$this->load->model('m_place');
-		$site = $this->m_site->get($id);
+		$map = $this->m_map->get($id);
 		
 		$full_lat = 0;
 		$full_lng = 0;
@@ -19,7 +19,7 @@ class Test extends APP_Controller {
 		$min_lat = $max_lat = false;
 		$min_lng = $max_lng = false;
 		
-		$place_lists = $this->m_place->gets($site->id);
+		$place_lists = $this->m_place->gets($map->id);
 		if($place_lists) {
 	        foreach($place_lists as $key => $place) {
 	          if($place->attached == 'image') {

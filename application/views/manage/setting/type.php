@@ -24,7 +24,7 @@
   	<h3>분류 설정</h3>
   </div>
 
-       <form id="editForm" action="<?php echo site_url($site->permalink.'/manage/type/');?>" class="form-horizontal" method="post" onsubmit="Type.onSave(this); return false;">
+       <form id="editForm" action="<?php echo site_url($map->permalink.'/manage/type/');?>" class="form-horizontal" method="post" onsubmit="Type.onSave(this); return false;">
   	   <fieldset>
     		<ul id="type_list" class="type_list sortable unstyled">
     	        <li class="empty_type type">
@@ -57,7 +57,7 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="editForm" class="form-horizontal" action="<?php echo site_url($site->permalink.'/manage/type/edit');?>" method="post" onsubmit="Type.doEditType(); return false;">
+      <form id="editForm" class="form-horizontal" action="<?php echo site_url($map->permalink.'/manage/type/edit');?>" method="post" onsubmit="Type.doEditType(); return false;">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">분류 변경</h4>
@@ -86,7 +86,7 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="deleteForm" action="<?php echo site_url($site->permalink.'/manage/type/delete');?>" method="post" onsubmit="Type.doDeleteType(); return false;">
+      <form id="deleteForm" action="<?php echo site_url($map->permalink.'/manage/type/delete');?>" method="post" onsubmit="Type.doDeleteType(); return false;">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">분류 삭제</h4>
@@ -255,8 +255,6 @@
       }
 
       self.checkType = function() {
-        console.log(self.$list.find('.type:not(.empty_type)'));
-
         var $empty_type = self.$list.find('.empty_type');
         if(self.$list.find('.type:not(.empty_type)').length == 0) {
             $empty_type.show();
@@ -283,7 +281,7 @@
         $.ajax({
           dataType: "json",
           type: "POST", 
-          url: '<?php echo site_url($site->permalink.'/manage/type/');?>',
+          url: '<?php echo site_url($map->permalink.'/manage/type/');?>',
           data: datas.join('&'),
           success: function(data) {
             if(data.success) {
@@ -313,7 +311,7 @@
 
             $.ajax({
                 dataType: "json",
-                url: '<?php echo site_url($site->permalink.'/manage/type/add/');?>/' + encodeURIComponent(name),
+                url: '<?php echo site_url($map->permalink.'/manage/type/add/');?>/' + encodeURIComponent(name),
                 success: function(data) {
                   if(data.success) {
                     $item.find('input.id').val(data.content.id);
@@ -343,7 +341,7 @@
 
         $.ajax({
           dataType: "json",
-          url: '<?php echo site_url($site->permalink.'/manage/type/delete/');?>/' + type_id,
+          url: '<?php echo site_url($map->permalink.'/manage/type/delete/');?>/' + type_id,
           success: function(data) {
             if(data.success) {
               self.checkType();              
@@ -392,7 +390,7 @@
         $.ajax({
           dataType: "json",
           type: "POST",
-          url: '<?php echo site_url($site->permalink.'/manage/type/edit/');?>/' + type_id,
+          url: '<?php echo site_url($map->permalink.'/manage/type/edit/');?>/' + type_id,
           data: datas.join('&'),
           success: function(data) {
           }

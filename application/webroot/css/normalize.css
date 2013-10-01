@@ -397,7 +397,7 @@ input[type="search"]::-webkit-search-decoration {
 
 /*
  * Removes inner padding and border in FF3+
- * www.sitepen.com/blog/2008/05/14/the-devils-in-the-details-fixing-dojos-toolbar-buttons/
+ * www.mappen.com/blog/2008/05/14/the-devils-in-the-details-fixing-dojos-toolbar-buttons/
  */
 
 button::-moz-focus-inner,

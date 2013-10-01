@@ -21,7 +21,7 @@
 		var service = {url: "<?php echo site_url('/');?>"};
 	</script>
 </head>
-<body>    
+<body> 
 	<div class='notifications top-center'></div>
 
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -30,8 +30,8 @@
 	      <a class="brand" href="<?php echo site_url("/manage/");?>">
 	        아마도.지도
 	      </a>
-	      <?php if($site->id) { ?>
-	      <a class="brand" href="<?php echo site_url($site->permalink."/manage/");?>"><small><?php echo $site->name;?></small></a>
+	      <?php if($map->id) { ?>
+	      <a class="brand" href="<?php echo site_url($map->permalink."/manage/");?>"><small><?php echo $map->name;?></small></a>
 		  <?php } ?>
 	      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
@@ -40,7 +40,7 @@
           </button>
 
       <?php 
-      	if($site->id) {
+      	if($map->id) {
 	      	$menu = isset($menu) ? $menu : '';
 			$menu_title = '';
 			
@@ -58,32 +58,32 @@
 	      <div class="nav-collapse">
 		      <ul class="nav">
 		        <li<?php echo $menu == "all" ? ' class="active"' : "";?>>
-		          <a href="<?php echo site_url($site->permalink."/manage/place");?>">장소</a>
+		          <a href="<?php echo site_url($map->permalink."/manage/place");?>">장소</a>
 		        </li>
 		        <li<?php echo $menu == "course" ? ' class="active"' : "";?>>
-		        	<a href="<?php echo site_url($site->permalink."/manage/course");?>">코스</a>
+		        	<a href="<?php echo site_url($map->permalink."/manage/course");?>">코스</a>
 		        </li>
 		        <li class="<?php echo in_array($menu, array('place_approved','place_pending','place_rejected','course_approved','course_pending','course_rejected')) ? 'active ' : '';?>dropdown">
-		        	<a href="<?php echo site_url($site->permalink."/manage/list/place/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
+		        	<a href="<?php echo site_url($map->permalink."/manage/list/place/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
 		        	<ul class="dropdown-menu">
 		                <li<?php echo $menu == "place_approved" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/place/approved");?>">인증 장소 <span class="badge pull-right"><?php echo $total_place_approved;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/place/approved");?>">인증 장소 <span class="badge pull-right"><?php echo $total_place_approved;?></span></a>
 			            </li>
 			            <li<?php echo $menu == "place_pending" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/place/pending");?>">대기 장소 <span class="badge pull-right"><?php echo $total_place_pending;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/place/pending");?>">대기 장소 <span class="badge pull-right"><?php echo $total_place_pending;?></span></a>
 			            </li>
 			            <li<?php echo $menu == "place_rejected" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/place/rejected");?>">거부 장소 <span class="badge pull-right"><?php echo $total_place_rejected;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/place/rejected");?>">거부 장소 <span class="badge pull-right"><?php echo $total_place_rejected;?></span></a>
 			            </li>
 			            <li class="divider"></li>
 		                <li<?php echo $menu == "course_approved" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/course/approved");?>">인증 코스 <span class="badge pull-right"><?php echo $total_course_approved;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/course/approved");?>">인증 코스 <span class="badge pull-right"><?php echo $total_course_approved;?></span></a>
 			            </li>
 			            <li<?php echo $menu == "course_pending" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/course/pending");?>">대기 코스 <span class="badge pull-right"><?php echo $total_course_pending;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/course/pending");?>">대기 코스 <span class="badge pull-right"><?php echo $total_course_pending;?></span></a>
 			            </li>
 			            <li<?php echo $menu == "course_rejected" ? ' class="active"' : "";?>>
-			              <a href="<?php echo site_url($site->permalink."/manage/list/course/rejected");?>">거부 코스 <span class="badge pull-right"><?php echo $total_course_rejected;?></span></a>
+			              <a href="<?php echo site_url($map->permalink."/manage/list/course/rejected");?>">거부 코스 <span class="badge pull-right"><?php echo $total_course_rejected;?></span></a>
 			            </li>
 		            </ul>
 		        </li>
@@ -95,9 +95,9 @@
 		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
 
 		        	<ul class="dropdown-menu">
-		        		<li><a href="<?php echo site_url($site->permalink.'/manage/basic');?>">기본</a>
-		        		<li><a href="<?php echo site_url($site->permalink.'/manage/user');?>">사용자</a>
-		        		<li><a href="<?php echo site_url($site->permalink.'/manage/type');?>">분류</a>
+		        		<li><a href="<?php echo site_url($map->permalink.'/manage/basic');?>">기본</a>
+		        		<li><a href="<?php echo site_url($map->permalink.'/manage/user');?>">사용자</a>
+		        		<li><a href="<?php echo site_url($map->permalink.'/manage/type');?>">분류</a>
 		        	</ul>
 		        </li>
 		        <?php
@@ -105,11 +105,18 @@
 		        ?>
 		      </ul>
 		      <ul class="nav pull-right">
-		        <li><a href="<?php echo site_url('/'.$site->permalink);?>">사이트 보기</a></li>
+		        <li><a href="<?php echo site_url('/'.$map->permalink);?>">지도 보기</a></li>
 		        <li><a href="<?php echo site_url('/logout');?>">로그아웃</a></li>
 		      </ul>
 	      </div>
 	<?php
+		} else {
+	?>
+      <ul class="nav pull-right">
+      	<li><a href="<?php echo site_url('/');?>">홈</a></li>
+        <li><a href="<?php echo site_url('/logout');?>">로그아웃</a></li>
+      </ul>
+	<?php		
 		}
 	?>
 

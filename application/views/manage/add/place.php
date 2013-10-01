@@ -5,7 +5,7 @@
 	$errors = array();
 ?>
 
-<form id="addform" action="<?php echo $edit_mode ? site_url($site->permalink.'/manage/place/edit/'.$place->id) :  site_url($site->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
+<form id="addform" action="<?php echo $edit_mode ? site_url($map->permalink.'/manage/place/edit/'.$place->id) :  site_url($map->permalink.'/manage/add/place');?>" class="form-horizontal<?php echo $modal_mode ? ' modal-form' : '';?>" method="post">
   <div class="<?php echo $modal_mode ? 'modal' : 'page';?>-header">  
   	<?php if(isset($message) && !empty($message)) { ?>
 	  <div class="alert alert-<?php echo $message->type;?>">
@@ -78,10 +78,10 @@
         </div>
       </div>
       <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
-        <label class="control-label" for="place_type_id">종류</label>
+        <label class="control-label" for="place_type_id">분류</label>
         <div class="controls">
           <select id="place_type_id" class="span3" name="type_id">
-          	<option value="">종류를 선택해주세요</option>
+          	<option value="">분류를 선택해주세요</option>
             <?php
             	foreach($place_types as $type) {
             ?>
@@ -90,6 +90,9 @@
             	}
   		  ?>
           </select>
+        <?php if(in_array($current_user->role, array('admin','super-admin'))) { ?>
+          <span class="help-inline"><a href="<?php echo site_url($map->permalink.'/manage/type');?>">분류 설정</a></span>
+        <?php } ?>
         </div>
       </div>
       <div class="control-group<?php echo isset($errors['title']) ? ' error' : '';?>">
@@ -105,7 +108,7 @@
           <?php
           	if(!$modal_mode) {
           ?>
-          <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
+          <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">지도상에서 입력하기</a></span>
           <?php
   			}
   		?>
@@ -119,7 +122,7 @@
         <div class="controls">
           <input type="text" id="place_url" class="span4" name="url" value="<?php echo isset($place) ? $place->url : ''?>" />
           <p class="help-block">
-            장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yoursite.com"
+            장소에서 운영하고 있거나 장소와 관련되어 있는 홈페이지, 페이스북등 대표 주소를 입력해주세요. 예:) "http://www.yourmap.com"
           </p>
         </div>
       </div>
@@ -137,7 +140,7 @@
           (!$edit_mode && in_array($current_user->role,array('workman','admin','super-admin')))) {
     ?>
       <div class="control-group">
-        <label class="control-label" for="place_approved">바로인증</label>
+        <label class="control-label" for="place_approved">바로 인증</label>
         <div class="controls">
             <label class="checkbox">
               <input id="place_approved" type="checkbox" name="approved" checked="checked" /> 지금 인증하기
@@ -174,12 +177,12 @@
   <?php		
   	} else {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage');?>" class="btn">취소</a>
+      <a href="<?php echo site_url($map->permalink.'/manage');?>" class="btn">취소</a>
   <?php
 	}
    if($edit_mode) {
   ?>
-      <a href="<?php echo site_url($site->permalink.'/manage/place/delete/'.$place->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
+      <a href="<?php echo site_url($map->permalink.'/manage/place/delete/'.$place->id);?>" class="btn btn-danger pull-right" onclick="return confirm('삭제하시면 다시 복구하실 수 없습니다. 삭제하시겠습니까?');">삭제하기</a>
   <?php    
     }
   ?>
@@ -193,7 +196,7 @@
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">좌표 입력하기</h3>
+    <h3 id="myModalLabel">지도상에서 입력하기</h3>
   </div>
   <div class="modal-body" style="position:relative;">
     <div id="map" style="width:100%; height:300px;"></div>
@@ -242,7 +245,7 @@
         if(searched) {
           searched = false;
         } else {
-          $('#address_for_search').val(center.jb + ', ' + center.kb);
+          $('#address_for_search').val(center.lat() + ', ' + center.lng());
         }
       }
 		});

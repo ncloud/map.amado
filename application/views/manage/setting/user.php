@@ -8,7 +8,7 @@
   td.button { width:80px; }
 </style>
 
-<form id="addform" action="<?php echo site_url($site->permalink.'/manage/basic');?>" class="form-horizontal" method="post">
+<form id="addform" action="<?php echo site_url($map->permalink.'/manage/basic');?>" class="form-horizontal" method="post">
 
   <div class="page-header">
     <?php if(isset($message) && !empty($message)) { ?>
@@ -45,7 +45,7 @@
   		<tr>
   			<td><?php echo $user->name;?></td>
   			<td>
-          <?php if($site->user_id == $user->id) { ?>
+          <?php if($map->user_id == $user->id) { ?>
             <?php echo $user->role_name;?>
           <?php } else { ?>
           <div class="btn-group dropdown">
@@ -59,7 +59,7 @@
                 foreach($roles as $role) {
                   if($role->name == 'super-admin') continue;
               ?>
-                <li<?php echo $role->name == $user->role_name ? ' class="disabled"' : '';?>><a href="<?php echo site_url($site->permalink.'/manage/change_role/'.$user->id.'/'.urlencode($role->name));?>"><?php echo $role->name;?> : <?php echo $role->description;?></a></li>
+                <li<?php echo $role->name == $user->role_name ? ' class="disabled"' : '';?>><a href="<?php echo site_url($map->permalink.'/manage/change_role/'.$user->id.'/'.urlencode($role->name));?>"><?php echo $role->name;?> : <?php echo $role->description;?></a></li>
               <?php
                 }
               ?>
@@ -81,15 +81,15 @@
   				?>
   			</td>
   			<td class="button">
-  				<?php if($site->user_id != $user->id) { ?>
+  				<?php if($map->user_id != $user->id) { ?>
   				
           <?php
             switch($user->role_invite_status) {
               case 'send_email':
-                echo '<a href="' . site_url($site->permalink.'/manage/invite_cancel/'.$user->role_invite_code) . '" class="btn btn-small">초대취소</a>';
+                echo '<a href="' . site_url($map->permalink.'/manage/invite_cancel/'.$user->role_invite_code) . '" class="btn btn-small">초대취소</a>';
               break;
               case 'invited':
-                echo '<a href="' . site_url($site->permalink.'/manage/invite_cancel/'.$site->id.'/'.$user->id) . '" class="btn btn-small">권한취소</a>';
+                echo '<a href="' . site_url($map->permalink.'/manage/invite_cancel/'.$map->id.'/'.$user->id) . '" class="btn btn-small">권한취소</a>';
               break;
             }
           ?>
@@ -112,7 +112,7 @@
 <div class="modal fade" id="inviteModal" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="editForm" class="form-horizontal" action="<?php echo site_url($site->permalink.'/manage/user/invite');?>" method="post" onsubmit="User.doInvite(this); return false;">
+      <form id="editForm" class="form-horizontal" action="<?php echo site_url($map->permalink.'/manage/user/invite');?>" method="post" onsubmit="User.doInvite(this); return false;">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4 class="modal-title">초대하기</h4>
@@ -178,7 +178,7 @@
   			}
 
   			$.ajax({
-  				url:'<?php echo site_url('/ajax/add_role/'.$site->id);?>/' , 
+  				url:'<?php echo site_url('/ajax/add_role/'.$map->id);?>/' , 
   				data: 'email=' + encodeURIComponent(email) + '&privacy=' + encodeURIComponent(privacy),
   				type: 'POST',
   				dataType: 'json',
