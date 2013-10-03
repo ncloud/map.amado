@@ -115,7 +115,10 @@
             $facebook_button.find('span').text('페이스북으로 로그인하세요');
         }
         
-        $form.find('.email').focus();
-                    
+        $form.find('.email').focus();                
     }
+
+    $(function() {
+        $('.email').focus();
+    });
 </script>

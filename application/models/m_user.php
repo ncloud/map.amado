@@ -281,10 +281,12 @@ class M_User extends CI_Model
 	
 	public function update($user_id, $data, $modify_time = true) 
 	{
-		if($modify_time) $data->modify_time   = $this->date->timestamp();
+		if($modify_time) $data->modify_time = $this->date->timestamp();
 		
 		$this->db->where('id', $user_id);
 		$this->db->update('users', $data);
+
+        return true;
 	}
 
     public function update_field($user_id, $field, $vlaue)
@@ -294,6 +296,8 @@ class M_User extends CI_Model
         
         $this->db->where('id', $user_id);
         $this->db->update('users', $data);
+
+        return true;
     }
     
     public function increment_count($user_id, $field, $value = 1)
@@ -301,6 +305,8 @@ class M_User extends CI_Model
         $this->db->set($field, $field . ' + ' . $value, FALSE);
         $this->db->where('id', $user_id);
         $this->db->update('users');
+
+        return true;
     }
     
     public function decrement_count($user_id, $field, $value = 1)
@@ -308,6 +314,8 @@ class M_User extends CI_Model
         $this->db->set($field, $field . ' - ' . $value, FALSE);
         $this->db->where('id', $user_id);
         $this->db->update('users');
+
+        return true;
     }
     
     public function update_count($user_id, $field, $count)
@@ -317,6 +325,8 @@ class M_User extends CI_Model
         
         $this->db->where('id', $user_id);
         $this->db->update('users', $data);
+
+        return true;
     }
 
     //----------------------- PRIVATE METHODS --------------------------//

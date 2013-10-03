@@ -48,6 +48,7 @@ $route['invite/(:any)']								 = 'page/invite/$1';
  */
 $route['login']								    	 = 'page/login';
 $route['join']                                  	 = 'page/join';
+$route['edit']                                  	 = 'page/edit';
 
 $route['login/facebook']                        	 = 'user/login_facebook';
 $route['logout']									 = 'user/logout';

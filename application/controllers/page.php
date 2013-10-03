@@ -14,6 +14,13 @@ class Page extends APP_Controller {
 		$this->load->helper('parse');
 
 		if(!$this->map->id) {
+			$this->layout->setLayout('layouts/welcome');
+			$my_maps = array();
+			if($this->user_data->id) {
+				$my_maps = $this->m_map->gets_all_by_user_id($this->user_data->id);
+			}
+			$this->set('my_maps', $my_maps);
+
 			$maps = $this->m_map->gets_all();
 			$this->set('maps', $maps);
 
@@ -168,32 +175,62 @@ class Page extends APP_Controller {
 		$this->view('user/login');
     }
 
-    function invite_do($code)
+    function edit()
     {
-        if(empty($this->user_data->id)) redirect('/');
+        if(empty($this->user_data->id)) // 로그인 되어 있지 않으면
+        {
+            redirect('/');
+            return false;
+        }
+
+        $this->layout->setLayout('layouts/welcome');
 		
-		$this->layout->setLayout('layouts/manage');
+		$user_data = $this->user_data;
+		$message = null;
 
-    	$this->load->model('m_role');
-    	$this->load->model('m_map');
+		if($_POST && !empty($_POST)) {
+			$message = new StdClass;
 
-    	$this->set('invite_code', $code);
+			$errors = array();
 
-    	$message = new StdClass;
-    	$message->type = 'success';
+			if(!isset($_POST['name']) || empty($_POST['name'])) {
+				$errors['name'] = '이름을 입력해주세요';
 
-    	if($role = $this->m_role->get_by_invite_code($code)) {
-    		$map = $this->m_map->get($role->map_id);
-    		$this->m_role->update_invite_user($code, $this->user_data->id);
-    	
-    		redirect($map->permalink);
-		} else {
-			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
-			return false;
+				$user_data->name = '';
+			} else {
+				$user_data->name = $_POST['name'];
+			}
+
+			if(!isset($_POST['email']) || empty($_POST['email'])) {
+				$errors['email'] = '이메일을 입력해주세요';
+
+				$user_data->email = '';
+			} else {
+				$user_data->email = $_POST['email'];
+			}
+
+			if(!count($errors)) {
+				$data = new StdClass;
+				$data->name = $data->display_name = $_POST['name'];
+				$data->email = $_POST['email'];
+
+				if($this->m_user->update($this->user_data->id, $data)) {
+					$message->type = 'success';
+					$message->content = '변경사항이 수정되었습니다.';
+				} else {
+					$message->type = 'error';
+					$message->content = array();
+				}
+			} else {
+				$message->type = 'error';
+				$message->content = $errors;
+			}
 		}
 
 		$this->set('message', $message);
-		$this->view('invite');
+		$this->set('user_data', $user_data);
+
+		$this->view('user/edit');
     }
 
     function invite($code) 
@@ -213,6 +250,34 @@ class Page extends APP_Controller {
 
     		$this->set('role', $role);
     		$this->set('map', $map);
+		} else {
+			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
+			return false;
+		}
+
+		$this->set('message', $message);
+		$this->view('invite');
+    }
+
+    function invite_do($code)
+    {
+        if(empty($this->user_data->id)) redirect('/');
+		
+		$this->layout->setLayout('layouts/manage');
+
+    	$this->load->model('m_role');
+    	$this->load->model('m_map');
+
+    	$this->set('invite_code', $code);
+
+    	$message = new StdClass;
+    	$message->type = 'success';
+
+    	if($role = $this->m_role->get_by_invite_code($code)) {
+    		$map = $this->m_map->get($role->map_id);
+    		$this->m_role->update_invite_user($code, $this->user_data->id);
+    	
+    		redirect($map->permalink);
 		} else {
 			$this->error('잘못된 초대코드입니다. 코드를 확인해주세요.');
 			return false;
