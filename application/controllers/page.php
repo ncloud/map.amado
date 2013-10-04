@@ -189,13 +189,14 @@ class Page extends APP_Controller {
 		$message = null;
 
 		if($_POST && !empty($_POST)) {
+			$this->load->helper('email');
+
 			$message = new StdClass;
 
 			$errors = array();
 
 			if(!isset($_POST['name']) || empty($_POST['name'])) {
 				$errors['name'] = '이름을 입력해주세요';
-
 				$user_data->name = '';
 			} else {
 				$user_data->name = $_POST['name'];
@@ -205,6 +206,9 @@ class Page extends APP_Controller {
 				$errors['email'] = '이메일을 입력해주세요';
 
 				$user_data->email = '';
+			} else if(!valid_email($_POST['email'])) {
+				$errors['email'] = '이메일 형식이 잘못되었습니다. 다시 입력해주세요';
+				$user_data->email = $_POST['email'];
 			} else {
 				$user_data->email = $_POST['email'];
 			}
@@ -217,6 +221,8 @@ class Page extends APP_Controller {
 				if($this->m_user->update($this->user_data->id, $data)) {
 					$message->type = 'success';
 					$message->content = '변경사항이 수정되었습니다.';
+
+					$this->auth->update_user($user_data);
 				} else {
 					$message->type = 'error';
 					$message->content = array();

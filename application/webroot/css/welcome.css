@@ -1,4 +1,9 @@
-body { padding-top: 20px; padding-bottom: 40px; }
+/* style */
+	.modal form .modal-body .control-label { width:150px; }
+	.modal form .modal-body .controls { margin-left:170px; }
+
+/* layout */
+	body { padding-top: 20px; padding-bottom: 40px; }
 
 	.container_welcome { margin: 0 auto; max-width: 700px; }
 	.container_welcome .jumbotron { text-align:center; margin-bottom:20px; }

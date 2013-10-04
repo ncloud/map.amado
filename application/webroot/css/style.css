@@ -1,0 +1,52 @@
+
+/* ui */
+	.help-block
+	{
+	  font-size: 8pt;
+	  color: #777;
+	  margin-top:10px;
+	}
+
+/* plugin */
+	body.dragging, body.dragging * {
+	  cursor: move !important;
+	}
+
+	.sortable li.dragged {
+	  position: absolute;
+	  opacity: 0.5;
+	  border: 1px solid #ccc;
+	  z-index: 2000;
+	}
+
+	.sortable li.placeholder {
+		border: 1px dashed #bbb;
+		background: #f8f8f8;
+		height: 30px;
+	}
+
+/* layout */
+	.footer { padding-bottom:30px; }
+
+/* bootstrap */
+	.sidebar-nav { padding:4px 0; margin-top:20px; }
+
+  	.modal {}
+    	.modal form { margin-bottom:0; }
+    	.modal form .modal-body { padding-top:30px; }
+			.modal form .modal-body .control-label { width:50px; }
+			.modal form .modal-body .controls { margin-left:70px; }
+
+/* list */
+	table tr td.num { width:20px; }
+	table tr td.type { width:10px; text-align:center; }
+	table tr td.approved { width:30px; }
+	table tr td.buttons { width:150px; text-align:right; }
+		table tr td.buttons * { text-align:left; }
+
+	table tr th.author,	
+	table tr td.author { width:100px;}
+
+/* modal */
+	.modal-footer .input-append { margin-bottom:0; }
+	.modal-footer form { margin-bottom:0; }

@@ -14,8 +14,8 @@
 <?php if(isset($og_map_name)) { ?><meta property="og:map_name" content="<?php echo $og_map_name;?>" /><?php } ?>
 <?php if(isset($og_image)) { ?><meta property="og:image" content="<?php echo $og_image;?>" /><?php } ?>
 
-    <link rel="stylesheet" href="<?php echo site_url('/css/reset.css');?>" />
-    <link rel="stylesheet" href="<?php echo site_url('/css/welcome.css');?>" />
+    <link rel="stylesheet" href="<?php echo site_url("/css/style.css");?>" />    
+	<link rel="stylesheet" href="<?php echo site_url('/css/welcome.css');?>" />
     
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
@@ -59,7 +59,7 @@
 			  <li><a href="<?php echo site_url('/login');?>">로그인</a></li>
 			<?php } ?>
 			</ul>
-			<h3 class="muted">아마도.지도</h3>
+			<h3 class="muted"><a href="<?php echo site_url('/');?>">아마도.지도</a></h3>
 		</div>
 
         <?php echo $content_for_layout;?>

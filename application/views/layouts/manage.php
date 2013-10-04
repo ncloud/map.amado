@@ -8,6 +8,7 @@
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
     <link type="text/css" href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
 
+	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/style.css");?>" />    
 	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/manage.css");?>" />    
 	
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
