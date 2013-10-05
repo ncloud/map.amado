@@ -28,12 +28,14 @@
         <div class="control-group<?php echo isset($errors['privacy']) ? ' error' : '';?>">
           <label class="control-label" for="map_privacy">공개</label>
           <div class="controls">
-            <label class="radio inline">
-              <input type="radio" name="privacy" value="public"<?php echo $map_data->privacy == 'public' ? ' checked="checked"' : '';?>> 공개
-            </label>
-            <label class="radio inline">
-              <input type="radio" name="privacy" value="private"<?php echo $map_data->privacy == 'private' ? ' checked="checked"' : '';?>> 비공개
-            </label>
+            <div class='radio-group'>
+              <label class="radio inline">
+                <input type="radio" name="privacy" value="public"<?php echo $map_data->privacy == 'public' ? ' checked="checked"' : '';?>> 공개
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="privacy" value="private"<?php echo $map_data->privacy == 'private' ? ' checked="checked"' : '';?>> 비공개
+              </label>
+            </div>
             <span class="help-block">
               비공개로 설정하시면 일반 방문객은 지도를 볼 수 없으며 로그인한 사용자의 권한에 따라 볼 수 있습니다.
             </span>

@@ -77,6 +77,7 @@
   		?>
         </div>
       </div>
+      <hr />
       <div class="control-group<?php echo isset($errors['type_id']) ? ' error' : '';?>">
         <label class="control-label" for="place_type_id">분류</label>
         <div class="controls">

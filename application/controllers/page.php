@@ -14,7 +14,6 @@ class Page extends APP_Controller {
 		$this->load->helper('parse');
 
 		if(!$this->map->id) {
-			$this->layout->setLayout('layouts/welcome');
 			$my_maps = array();
 			if($this->user_data->id) {
 				$my_maps = $this->m_map->gets_all_by_user_id($this->user_data->id);
@@ -26,6 +25,8 @@ class Page extends APP_Controller {
 
 			$this->view('welcome');
 		} else {
+			$this->layout->setLayout('layouts/map');
+
 			$course_mode = false;
 
 			$full_lat = 0;
@@ -146,9 +147,7 @@ class Page extends APP_Controller {
             redirect('/');
             return false;
         }
-        
-    	$this->layout->setLayout('layouts/user');
-		
+        		
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		$this->set('redirect_url', $redirect);
 		
@@ -164,9 +163,7 @@ class Page extends APP_Controller {
             redirect('/');
             return false;
         }
-		
-		$this->layout->setLayout('layouts/user');
-        
+		        
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		$this->set('redirect_url', $redirect);
 		
@@ -182,8 +179,6 @@ class Page extends APP_Controller {
             redirect('/');
             return false;
         }
-
-        $this->layout->setLayout('layouts/welcome');
 		
 		$user_data = $this->user_data;
 		$message = null;

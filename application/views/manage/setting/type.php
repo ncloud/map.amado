@@ -189,7 +189,7 @@
           '    <div class="text"><span class="name">' + name + '<span> <span class="badge">' + (count) + '</span></div>' +
           '    <div class="btn-group">' + 
           '        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
-          '          <span class="caret"></span>' + 
+          '          <span class="caret only-caret"></span>' + 
           '        </a>' + 
           '        <ul class="dropdown-menu pull-right">' + 
           '           <li><a data-toggle="modal" href="#editModal" onclick="Type.setEditTypeModal(' + index + ');">변경</a></li>' +

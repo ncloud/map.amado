@@ -3,7 +3,6 @@
 <head>
 	<meta charset="utf-8">
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
-	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-responsive.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-custom.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
     <link type="text/css" href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
@@ -23,22 +22,24 @@
 	</script>
 </head>
 <body> 
-	<div class='notifications top-center'></div>
+	<div id="wrap">
+		<div class='notifications top-center'></div>
 
-	<div class="navbar navbar-inverse navbar-fixed-top">
-	  <div class="navbar-inner">
-	    <div class="container">
-	      <a class="brand" href="<?php echo site_url("/manage/");?>">
-	        아마도.지도
-	      </a>
-	      <?php if($map->id) { ?>
-	      <a class="brand" href="<?php echo site_url($map->permalink."/manage/");?>"><small><?php echo $map->name;?></small></a>
-		  <?php } ?>
-	      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+		<div class="navbar navbar-inverse navbar-fixed-top">
+		  <div class="navbar-inner">
+		    <div class="container">
+		      <div class="logo-wrap">
+			      <a class="brand" href="<?php echo site_url("/");?>">아마도.지도</a>
+			      <?php if($map->id) { ?>
+			      <a class="sub-brand" href="<?php echo site_url($map->permalink."/manage/");?>"><?php echo $map->name;?></a>
+				  <?php } ?>
+			  </div>
+
+		      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
 
       <?php 
       	if($map->id) {
@@ -58,13 +59,13 @@
 	      ?>
 	      <div class="nav-collapse">
 		      <ul class="nav">
-		        <li<?php echo $menu == "all" ? ' class="active"' : "";?>>
+		        <li<?php echo in_array($menu, array("all","cours","place_all")) ? ' class="active"' : "";?>>
 		          <a href="<?php echo site_url($map->permalink."/manage/place");?>">장소</a>
 		        </li>
-		        <li<?php echo $menu == "course" ? ' class="active"' : "";?>>
+		        <li<?php echo in_array($menu,array("course","course_all")) ? ' class="active"' : "";?>>
 		        	<a href="<?php echo site_url($map->permalink."/manage/course");?>">코스</a>
-		        </li>
-		        <li class="<?php echo in_array($menu, array('place_approved','place_pending','place_rejected','course_approved','course_pending','course_rejected')) ? 'active ' : '';?>dropdown">
+		        </li>		        
+				<li class="<?php echo in_array($menu, array('place_approved','place_pending','place_rejected','course_approved','course_pending','course_rejected')) ? 'active ' : '';?>dropdown">
 		        	<a href="<?php echo site_url($map->permalink."/manage/list/place/all");?>" class="dropdown-toggle" data-toggle="dropdown">상태별 <b class="caret"></b></a>
 		        	<ul class="dropdown-menu">
 		                <li<?php echo $menu == "place_approved" ? ' class="active"' : "";?>>
@@ -91,7 +92,6 @@
 		        <?php
 		        	if(in_array($current_user->role, array('admin','super-admin'))) { 
 		        ?>
-		        <li class="divider-vertical"></li>
 		        <li class="<?php echo in_array($menu, array('basic','user','type')) ? ' active' : '';?> dropdown">
 		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
 
@@ -125,10 +125,14 @@
 	  </div>
 	</div>
 
-    <div id="content" class="container">
-        <?php echo $content_for_layout;?>
-    </div>
 
-    <footer class="footer"></footer>
+    <div id="content" class="main-content">
+    	<div class="main-content-data">
+			<div class="content-padding">
+    	    	<?php echo $content_for_layout;?>
+    	    </div>
+    	</div>
+    </div>
+</div>
 </body>
 </html>

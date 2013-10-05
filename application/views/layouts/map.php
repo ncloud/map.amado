@@ -14,8 +14,9 @@
 <?php if(isset($og_map_name)) { ?><meta property="og:map_name" content="<?php echo $og_map_name;?>" /><?php } ?>
 <?php if(isset($og_image)) { ?><meta property="og:image" content="<?php echo $og_image;?>" /><?php } ?>
 
-    <link rel="stylesheet" href="<?php echo site_url("/css/style.css");?>" />    
-	<link rel="stylesheet" href="<?php echo site_url('/css/welcome.css');?>" />
+    <link rel="stylesheet" href="<?php echo site_url('/css/reset.css');?>" />
+    <link rel="stylesheet" href="<?php echo site_url('/css/layout.css');?>" />
+    
     
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
@@ -38,30 +39,10 @@
 <?php echo $styles_for_layout;?>
 <?php echo $scripts_for_layout;?>
 </head>
-<body>        
-    <div id="content" class="container_welcome">
-		<div class="masthead">
-			<ul class="nav nav-pills pull-right">
-			<?php if($current_user->id) { ?>
-				<li>
-				  <div class="btn-group">
-				  <a class="btn" href="#"><i class="icon-user"></i> <?php echo $current_user->name;?></a>
-				  <a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
-				  <ul class="dropdown-menu">
-				    <li><a href="<?php echo site_url('/edit');?>"><i class="icon-pencil"></i> 정보수정</a></li>
-				    <li class="divider"></li>
-				    <li><a href="<?php echo site_url('/logout');?>"><i class="icon-off"></i> 로그아웃</a></li>
-				  </ul>
-				</div>
-			  </li>
-			<?php } else { ?>
-			  <li class="active"><a href="<?php echo site_url('/join');?>">회원가입</a></li>
-			  <li><a href="<?php echo site_url('/login');?>">로그인</a></li>
-			<?php } ?>
-			</ul>
-			<h3 class="muted"><a href="<?php echo site_url('/');?>">아마도.지도</a></h3>
-		</div>
-
+<body>    
+	<div class='notifications top-center'></div>
+    
+    <div id="content">
         <?php echo $content_for_layout;?>
     </div>
 </body>
