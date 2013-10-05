@@ -71,9 +71,9 @@
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="new_pasword_re">새로운 비밀번호 확인</label>
+          <label class="control-label" for="new_password_re">새로운 비밀번호 확인</label>
           <div class="controls">
-            <input id="new_pasword_re" type="password" class="span3" name="new_pasword_re" value="" />
+            <input id="new_password_re" type="password" class="span3" name="new_password_re" value="" />
             <p class="help-block">
               잘못된 입력을 맞기 위해 새로운 비밀번호를 한번 더 입력해주세요.
             </p>
@@ -105,15 +105,32 @@
     }
 
     if(form.new_password_re.value == '') {
-      form.new_pasword_re.focus();
+      form.new_password_re.focus();
       return false;
     }
 
-    if(form.new_password.value != form.new_pasword_re.value) {
-      alert('새로운 비밀번호와 새로운 비밀번호 확인을 같게 입력해주세요.');
+    if(form.new_password.value != form.new_password_re.value) {
+      alert('"새로운 비밀번호"와 "새로운 비밀번호 확인"을 같게 입력해주세요.');
 
       return false;
     }
+
+    $.ajax({
+      url: "<?php echo site_url('/ajax/update_user_data/'.$current_user->id);?>",
+      type: "POST",
+      data: "old_password=" + form.old_password.value + "&new_password=" + form.new_password.value + "&new_password_re=" + form.new_password_re.value,
+      dataType: 'json',
+      success: function(data) {
+        if(data.success) { // 성공
+          $("#myModal").modal('hide');
+        } else {
+          alert(data.message);
+        }
+      },
+      error: function(data) {
+      }
+    });
+
 
     return true;
   }

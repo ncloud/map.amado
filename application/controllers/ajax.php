@@ -116,6 +116,46 @@ class Ajax extends APP_Controller {
 		echo json_encode($output);
 	}
 
+	function update_user_data($user_id)
+	{
+		$error = false;
+
+		$output = new StdClass;
+		$output->success = true;
+
+		if(!$this->user_data->id) {
+			$error = '잘못된 접근입니다.';
+		} else {
+			if($this->user_data->id != $user_id) {
+				$error = '잘못된 접근입니다.';
+			} else if(empty($_POST) || !isset($_POST['old_password']) || !isset($_POST['new_password']) || !isset($_POST['new_password_re'])) {
+				$error = '잘못된 접근입니다.';
+			} else {
+				$user_data = $this->m_user->get($this->user_data->id, true);
+
+				if(empty($_POST['old_password'])) {
+					$error = '현재 비밀번호를 입력해주세요.';
+				} else if($this->auth->password($_POST['old_password']) != $user_data->password) {
+					$error = '현재 비밀번호가 틀렸습니다.';
+				} else if($_POST['new_password'] != $_POST['new_password_re']) {
+					$error = '"새로운 비밀번호"와 "새로운 비밀번호 확인"을 같게 입력해주세요.';
+				} else {
+					$update_data = new StdClass;
+					$update_data->password = $this->auth->password($_POST['new_password']);
+
+					$this->m_user->update($user_id, $update_data);
+				}
+			}
+		}
+
+		if($error !== false) {
+			$output->success = false;
+			$output->message = $error;
+		}
+
+		echo json_encode($output);
+	}
+
 	function weather($lat = '37.588710224492', $lng = '127.00605010202')
 	{
 		$url = 'http://www.kma.go.kr/wid/queryDFS.jsp?gridx=' . $lat . '&gridy=' . $lng;
