@@ -630,6 +630,7 @@
             
             var mapdisplay = 256;
             var zoomLvl = Math.floor(8 - Math.log(1.6446 * dist / Math.sqrt(2 * (mapdisplay * mapdisplay))) / Math.log (2));
+            if(zoomLvl >= 19) zoomLvl = 19;
           }
           gmap.setCenter(centerLat, centerLng);
           gmap.setZoom(zoomLvl);

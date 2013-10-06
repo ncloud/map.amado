@@ -1506,6 +1506,7 @@ class Manage extends APP_Controller {
 
 	            $mapdisplay = 64;
 	          	$zoom_lvl = floor(8 - log(1.6446 * $dist / sqrt(2 * ($mapdisplay * $mapdisplay))) / log (2));
+	          	if($zoom_lvl >= 19) $zoom_lvl = 19;
 
 	        	$url = 'http://maps.googleapis.com/maps/api/staticmap?center='.($lat).','.($lng).'&zoom='.$zoom_lvl.'&size='.$width.'x'.$height.'&sensor=false' . ($markers ? $markers : '');
 
