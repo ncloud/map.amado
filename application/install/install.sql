@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `maps` (
   `description` text,
   `permalink` varchar(128) DEFAULT NULL,
   `privacy` enum('public','private') DEFAULT 'public',  
+  `preview_map_url` varchar(255) DEFULT NULL,
   `add_role` enum('guest','member','workman','admin') DEFAULT 'member',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
