@@ -12,7 +12,7 @@
       <div class="pull-right">
 
       <div class="btn-group">
-        <a class="btn" href="<?php echo site_url($map->permalink.'/manage/add/course');?>">코스 추가</a>
+        <a class="btn btn-primary" href="<?php echo site_url($map->permalink.'/manage/add/course');?>">코스 추가</a>
       </div>
       </div>
     </h4>

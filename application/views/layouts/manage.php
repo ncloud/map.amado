@@ -99,6 +99,9 @@
 		        		<li><a href="<?php echo site_url($map->permalink.'/manage/basic');?>">기본</a>
 		        		<li><a href="<?php echo site_url($map->permalink.'/manage/user');?>">사용자</a>
 		        		<li><a href="<?php echo site_url($map->permalink.'/manage/type');?>">분류</a>
+		        		<li class="divider"></li>
+		        		<li><a href="<?php echo site_url($map->permalink.'/manage/import');?>">가져오기</a></li>
+		        		<!--<li><a href="<?php echo site_url($map->permalink.'/manage/export');?>">내보내기</a></li>-->
 		        	</ul>
 		        </li>
 		        <?php

@@ -214,60 +214,61 @@
 
           val = $.extend(val, {url:''});
 
-          var iconSize = null;
+          var iconSize = new google.maps.Size(32,36);
+          var iconCenter = new google.maps.Point(16,32);
 
-        // format marker URI for display and linking
-         var markerURL = val.url;
-         if(markerURL.substr(0,7) != "http://") {
-          markerURL = "http://" + markerURL; 
-         } 
-         var markerURL_short = markerURL.replace("http://", "");
-         var markerURL_short = markerURL_short.replace("www.", "");
+          // format marker URI for display and linking
+           var markerURL = val.url;
+           if(markerURL.substr(0,7) != "http://") {
+            markerURL = "http://" + markerURL; 
+           } 
+           var markerURL_short = markerURL.replace("http://", "");
+           var markerURL_short = markerURL_short.replace("www.", "");
 
-         var info = 
-            "<div class='marker_title'>"+val.title+"</div>"
-            + "<div class='marker_uri'><a target='_blank' href='"+markerURL+"'>"+markerURL_short+"</a></div>"
-            + "<div class='marker_desc'>"+val.description+"</div>"
-            + "<div class='marker_address'>"+val.address+"</div>";           
-          
-          // build this marker
-          var markerImage = new google.maps.MarkerImage("<?php echo site_url('/img/icons/');?>/"+val.icon+".png", null, null, null, iconSize);
-          var marker = gmap.addMarker({
-              type: val.type,
-              type_id: val.type_id,
-              lat: val.lat,
-              lng: val.lng,
-              title: '',
-              zIndex: 10 + i,
-              icon: markerImage,
-              infoWindow: {
-                content: info
-              },
-              click: function(e) {
+           var info = 
+              "<div class='marker_title'>"+val.title+"</div>"
+              + "<div class='marker_uri'><a target='_blank' href='"+markerURL+"'>"+markerURL_short+"</a></div>"
+              + "<div class='marker_desc'>"+val.description+"</div>"
+              + "<div class='marker_address'>"+val.address+"</div>";           
+            
+            // build this marker
+            var markerImage = new google.maps.MarkerImage("<?php echo site_url('/img/icons/');?>/"+val.icon+".png", null, null, iconCenter, iconSize);
+            var marker = gmap.addMarker({
+                type: val.type,
+                type_id: val.type_id,
+                lat: val.lat,
+                lng: val.lng,
+                title: '',
+                zIndex: 10 + i,
+                icon: markerImage,
+                infoWindow: {
+                  content: info
+                },
+                click: function(e) {
 
-              },
-              mouseover: function() {
-                  $("#label_place_"+i).show();//fadeIn('fast');
-              },
-              mouseout: function() { 
-                  $("#label_place_"+i).hide();//fadeOut('fast');
-              }
-            });
+                },
+                mouseover: function() {
+                    $("#label_place_"+i).show();//fadeIn('fast');
+                },
+                mouseout: function() { 
+                    $("#label_place_"+i).hide();//fadeOut('fast');
+                }
+              });
 
-          gmarkers['place_' + i] = marker;
-          
-          // add marker label
-          var label = new Label({id: 'place_' + i, map:gmap.map});
-          
-          label.bindTo('position', marker);
-          label.set("text", val.title);
-          label.bindTo('visible', marker);
-          label.bindTo('clickable', marker);
-          label.bindTo('zIndex', marker);
+            gmarkers['place_' + i] = marker;
+            
+            // add marker label
+            var label = new Label({id: 'place_' + i, map:gmap.map, distance: {x:0, y:4}});
+            
+            label.bindTo('position', marker);
+            label.set("text", val.title);
+            label.bindTo('visible', marker);
+            label.bindTo('clickable', marker);
+            label.bindTo('zIndex', marker);
 
-          <?php if($course_mode) { ?>
-          marker.setVisible(false);
-          <?php } ?>
+            <?php if($course_mode) { ?>
+            marker.setVisible(false);
+            <?php } ?>
         });
 
         jQuery.each(images, function(i, val) {

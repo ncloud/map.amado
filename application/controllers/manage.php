@@ -179,6 +179,7 @@ class Manage extends APP_Controller {
 						
 						$image_id = $this->m_image->add($_POST);
 						$this->m_map->update_time($this->map->id);
+						$this->__update_map_preview($this->map->id);
 
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();	
@@ -242,6 +243,7 @@ class Manage extends APP_Controller {
 
 						$place_id = $this->m_place->add($_POST);
 						$this->m_map->update_time($this->map->id);
+						$this->__update_map_preview($this->map->id);
 						
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
@@ -301,6 +303,7 @@ class Manage extends APP_Controller {
 
 						$course_id = $this->m_course->add($_POST);
 						$this->m_map->update_time($this->map->id);
+						$this->__update_map_preview($this->map->id);
 
 						if($course_id) 
 							$this->m_course->update_targets($course_id, $default_course_targes);
@@ -384,6 +387,7 @@ class Manage extends APP_Controller {
 				}
 				
 				$this->m_map->update_time($this->map->id);
+				$this->__update_map_preview($this->map->id);
 
 				redirect($this->map->permalink.'/manage');
 			}
@@ -454,6 +458,7 @@ class Manage extends APP_Controller {
 						}
 						
 						$this->m_map->update_time($this->map->id);
+						$this->__update_map_preview($this->map->id);
 					
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
@@ -524,6 +529,7 @@ class Manage extends APP_Controller {
 					$this->m_place->update($id, $data);
 					
 					$this->m_map->update_time($this->map->id);
+					$this->__update_map_preview($this->map->id);
 					
 					$this->load->model('m_work');
 					$this->m_work->rebuild_geocode_for_places();
@@ -581,6 +587,7 @@ class Manage extends APP_Controller {
 						$this->m_course->update_targets($id, $course_targets);
 
 						$this->m_map->update_time($this->map->id);
+						$this->__update_map_preview($this->map->id);
 
 						$message = new StdClass;
 						$message->type = 'success';
@@ -657,6 +664,7 @@ class Manage extends APP_Controller {
 					$this->m_course->update($id, $data);
 
 					$this->m_map->update_time($this->map->id);
+					$this->__update_map_preview($this->map->id);
 										
 					redirect($redirect);
 				}
@@ -730,6 +738,9 @@ class Manage extends APP_Controller {
 
 		$message = null;
 
+
+		$map_icon_ids = array(1,2,3,4,5,6,7,8,9,10);
+
 		if(!empty($_POST)) { // edit mode 
 			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
 				$this->error('변경 권한이 없습니다.');
@@ -779,7 +790,6 @@ class Manage extends APP_Controller {
 				$message->type = 'success';
 				$message->content = '변경사항을 저장했습니다.';
 			}
-
 		}
 
 		if($this->input->is_ajax_request()) {
@@ -809,9 +819,102 @@ class Manage extends APP_Controller {
 			}
 
 			$this->set('types', $types);
+			$this->set('map_icon_ids', $map_icon_ids);
 
 			$this->view('manage/setting/type');
 		}
+	}
+
+	function import()
+	{
+		if(!$this->__check_map()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
+
+		$this->set('menu', 'import');
+
+		$message = null;
+
+		$errors = array();
+
+		$import_data = new stdClass;
+		$import_data->url = '';
+		$import_data->status = 'approved';
+
+		if($_POST && !empty($_POST)) {					
+			$datas = array();
+
+			if(isset($_POST['url']) && empty($_POST['url'])) {
+				$errors['url'] = 'URL을 입력해주세요';
+			} else {
+				$url = $_POST['url'];
+				$status = isset($_POST['status']) ? $_POST['status'] : 'pending';
+				if(!in_array($status, array('pending','approved', 'rejected'))) $status = 'pending';
+
+				$content = @file_get_contents($url);
+				if($content) {
+
+					$xml = simplexml_load_string($content);
+					if($xml) {
+						$placemarks = $xml->Document->Placemark;
+						foreach($placemarks as $placemark) {
+							$data = new StdClass;
+							$data->map_id = $this->map->id;
+							$data->user_id = $this->user_data->id;
+							$data->type_id = IMPORT_TYPE_ID;
+
+							$data->status = $status;
+
+							$data->title = (string)$placemark->name;
+							$data->description = (string)$placemark->description;
+
+							$points = explode(',',$placemark->Point->coordinates);
+							$data->lat = $points[1];
+							$data->lng = $points[0];
+							$data->address = $data->lat . ', ' . $data->lng;
+							$data->address_is_position = 'yes';
+
+							$data->owner_name = $this->user_data->name;
+							$data->owner_email = $this->user_data->email;
+
+							$datas[] = $data;
+						}
+
+						$this->m_place->import($datas, true);
+					} else {
+						$erros['url'] = '잘못된 URL이거나 알 수 없는 파일 포맷입니다.';						
+					}
+				} else {
+					$erros['url'] = '잘못된 URL이거나 파일이 삭제된 것 같습니다. 다시 확인해주세요.';
+				}
+			}
+
+			$message = new StdClass;
+
+			if(count($errors)) {
+				$message->type = 'error';
+				$message->content = $errors;
+			} else {
+				$message->type = 'success';
+				$message->content = '가져오기를 성공했습니다. 장소(' . count($datas) . ')';
+			}
+
+		}
+		$this->set('import_data', $import_data);
+		$this->set('message', $message);
+
+		$this->view('manage/setting/import');			
+	}
+
+	function export()
+	{
+		if(!$this->__check_map()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
+
+		$this->set('menu', 'export');
+
+		$this->view('manage/setting/export');			
 	}
 
 	// AJAX Only
@@ -874,7 +977,7 @@ class Manage extends APP_Controller {
 				$output->message = '삭제 권한이 없습니다.';		
 			} else {
 				$datas = array();
-				$check_names = array('name');
+				$check_names = array('name', 'icon_id');
 				if(isset($_POST) && !empty($_POST)) {
 					foreach($_POST as $key => $data) {
 						if(in_array($key, $check_names)) {
@@ -896,6 +999,9 @@ class Manage extends APP_Controller {
 							}
 
 							$output->success = true;
+							$output->content = new StdClass;
+							$output->content->name = $datas['name'];
+							$output->content->icon_id = $datas['icon_id'];
 						} else {
 							$output->success = false;
 							$output->message = '잘못된 접근입니다.';
@@ -1341,6 +1447,78 @@ class Manage extends APP_Controller {
 		} else {
 			$this->error('접근 권한이 없습니다.');
 			return false;
+		}
+	}
+
+	private function __update_map_preview($map_id, $width = 300, $height = 300)
+	{
+		$this->load->model('m_place');
+
+		$map = $this->m_map->get($map_id);
+		if($map) {
+			$full_lat = 0;
+			$full_lng = 0;
+			$full_count = 0;
+
+			$markers = '';
+
+			$min_lat = $max_lat = false;
+			$min_lng = $max_lng = false;
+			
+			$place_lists = $this->m_place->gets($map->id);
+			if($place_lists) {
+		        foreach($place_lists as $key => $place) {
+		          if($place->attached == 'image') {
+		          } else if($place->attached == 'no') {
+			        $full_lat += $place->lat;
+			        $full_lng += $place->lng;
+			        $full_count ++;
+
+	                $min_lat = $min_lat === false ? $place->lat : $min_lat;
+	                $max_lat = $max_lat === false ? $place->lat : $max_lat;
+	                $min_lng = $min_lng === false ? $place->lng : $min_lng;
+	                $max_lng = $max_lng === false ? $place->lng : $max_lng;
+
+	                $min_lat = $min_lat < $place->lat ? $min_lat : $place->lat;
+	                $max_lat = $min_lat > $place->lat ? $min_lat : $place->lat;
+	                $min_lng = $min_lng < $place->lng ? $min_lng : $place->lng;
+	                $max_lng = $min_lng > $place->lng ? $min_lng : $place->lng;
+
+	            //    $markers .= '&markers='. urlencode('color:blue|'.$place->lat.','.$place->lng); 
+		        }
+		       }
+		   }
+
+			if($full_count) {
+	            $lat = $full_lat/$full_count;//$min_lat + (($max_lat - $min_lat) / 2);
+	            $lng = $full_lng/$full_count;//$min_lng + (($max_lng - $min_lng) / 2);
+
+	            $dist = (6371 *
+	                          acos(
+	                            sin($min_lat / 57.2958) *
+	                              sin($max_lat / 57.2958) + (
+	                                cos($min_lat / 57.2958) *
+	                                cos($max_lat / 57.2958) *
+	                                cos($max_lng / 57.2958 - $min_lng / 57.2958)
+	                                )
+	                              )
+	                          );
+
+	            $mapdisplay = 64;
+	          	$zoom_lvl = floor(8 - log(1.6446 * $dist / sqrt(2 * ($mapdisplay * $mapdisplay))) / log (2));
+
+	        	$url = 'http://maps.googleapis.com/maps/api/staticmap?center='.($lat).','.($lng).'&zoom='.$zoom_lvl.'&size='.$width.'x'.$height.'&sensor=false' . ($markers ? $markers : '');
+
+	        	$map_data = new StdClass;
+	        	$map_data->preview_map_url = $url;
+	        	$this->m_map->update($map->id, $map_data);
+	        } else {
+	        	$map_data = new StdClass;
+	        	$map_data->preview_map_url = '';
+	        	$this->m_map->update($map->id, $map_data);
+	        }
+		} else {
+			// 잘못된 아이디
 		}
 	}
 }

@@ -17,6 +17,10 @@ define('DEFAULT_LNG','127.0010451');
 
 define('TITLE', '아마도.지도');
 
+// TYPE_ID
+define('IMPORT_TYPE_ID', 50000);
+define('NO_TYPE_ID', 50001);
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

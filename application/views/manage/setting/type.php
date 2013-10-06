@@ -37,8 +37,23 @@
       <hr />
 
       <div id="type_tools" class="type_tools">
-        <div class="add_window">
-          <input type="text" class="add_window_input" value="" />
+        <div class="add_window input-append">
+          <div class="btn-group">
+              <a href="#" class="btn btn-gray dropdown-toggle" data-toggle="dropdown"><img id="typeIconImageForNew", class="add_window_icon" src="<?php echo site_url('/img/icons/1.png');?>" alt="" /> <b class="caret"></b></a>
+
+              <ul class="dropdown-menu column-menu">
+              <?php
+                foreach($map_icon_ids as $map_icon_id) {
+              ?>
+                <li><a href="#" onclick="Type.changeIconID('#typeIconForNew', '#typeIconImageForNew', <?php echo $map_icon_id;?>); return false;"><img src="<?php echo site_url('/img/icons/'.$map_icon_id.'.png');?>" alt="" /></a></li>
+              <?php 
+                }
+              ?>
+              </ul>
+          </div>
+
+          <input type="hidden" id="typeIconForNew" class="icon_id" value="1" />
+          <input type="text" class="add_window_input span5" value="" />
           <input type="button" class="btn" value="추가" onclick="Type.addForAddWindow(); return false;" />
           <a class="close" href="#" onclick="Type.hideAddWindow(); return false;">&times;</a>
         </div>
@@ -66,6 +81,27 @@
           <input type="hidden" name="type_id" value="" />
           <input type="hidden" name="type_index" value="" />
           
+          <div class="control-group">
+            <label class="control-label" for="typeIcon">아이콘</label>
+            <div class="controls">
+              <input type="hidden" id="typeIcon" name="icon_id" />
+
+            <div class="btn-group">
+                <a href="#" class="btn btn-white dropdown-toggle" data-toggle="dropdown"><img  id="typeIconImage" class="add_window_icon icon_image" src="<?php echo site_url('/img/icons/1.png');?>" alt="" /> <b class="caret"></b></a>
+
+                <ul class="dropdown-menu column-menu">
+                <?php
+                  foreach($map_icon_ids as $map_icon_id) {
+                ?>
+                  <li><a href="#" onclick="Type.changeIconID('#typeIcon', '#typeIconImage', <?php echo $map_icon_id;?>); return false;"><img src="<?php echo site_url('/img/icons/'.$map_icon_id.'.png');?>" alt="" /></a></li>
+                <?php 
+                  }
+                ?>
+                </ul>
+            </div>
+            </div>
+          </div>
+
           <div class="control-group">
             <label class="control-label" for="typeName">이름</label>
             <div class="controls">
@@ -156,6 +192,8 @@
       this.$tools = $('#type_tools');
 
       this.$addWindow = this.$tools.find('.add_window');
+      this.$addWindowIconId = this.$addWindow.find('input[type=hidden]');
+      this.$addWindowIcon = this.$addWindow.find('img.add_window_icon');
       this.$addWindowInput = this.$addWindow.find('input[type=text]');
       this.$buttons = this.$tools.find('.buttons');
 
@@ -186,9 +224,10 @@
           '    <input type="hidden" name="type' + index + '_id" class="id" value="' + (id) + '" />' +
           '    <input type="hidden" name="type' + index + '_icon_id" class="icon_id" value="' + (icon_id) + '" />' +
           '    <input type="hidden" name="type' + index + '_order" class="order" value="' + (now) + '" />' +
-          '    <div class="text"><span class="name">' + name + '<span> <span class="badge">' + (count) + '</span></div>' +
+          '    <div class="icon"><img src="<?php echo site_url('/img/icons');?>/' + (icon_id) + '.png" alt="" /></div>' + 
+          '    <div class="text"><span class="name">' + name + '</span> <span class="badge">' + (count) + '</span></div>' +
           '    <div class="btn-group">' + 
-          '        <a class="btn btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
+          '        <a class="btn btn-gray btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
           '          <span class="caret only-caret"></span>' + 
           '        </a>' + 
           '        <ul class="dropdown-menu pull-right">' + 
@@ -221,14 +260,26 @@
 
       self.addForAddWindow = function() {
         var name = self.$addWindowInput.val();
+        var icon_id = self.$addWindowIconId.val();
+
         if(name != '') {
-          if($item = self.add(name)) {
+          if($item = self.add(name, icon_id)) {
             self.hideAddWindow();
             self.saveForAdd($item);            
           } else {
             $addWindowInput.select();
           }
         }
+      }
+
+      self.changeIconID = function(target, targetForImage, id) {
+          var $target = $(target);
+          var $target_for_image = $(targetForImage);
+
+          $target.val(id);
+
+          var icon_url = "<?php echo site_url('/img/icons');?>/" + id + ".png";
+          $target_for_image.attr('src', icon_url);
       }
 
       self.showAddWindow = function() {
@@ -308,10 +359,11 @@
         // 값이 공백일때만 저장함..
         if($item.find('input.id').val() == '') {
             var name = $item.find('input.name').val();
+            var icon_id = $item.find('input.icon_id').val();
 
             $.ajax({
                 dataType: "json",
-                url: '<?php echo site_url($map->permalink.'/manage/type/add/');?>/' + encodeURIComponent(name),
+                url: '<?php echo site_url($map->permalink.'/manage/type/add/');?>/' + encodeURIComponent(name) + '/' + icon_id,
                 success: function(data) {
                   if(data.success) {
                     $item.find('input.id').val(data.content.id);
@@ -355,11 +407,15 @@
 
         var type_id = $("#type" + type_index).find('input.id').val();
         var type_name = $("#type" + type_index).find('input.name').val();
+        var type_icon_id = $("#type" + type_index).find('input.icon_id').val();
 
         $editModal.find('input[name=type_index]').val(type_index);
         $editModal.find('input[name=type_id]').val(type_id);
 
         $editModal.find('input[name=name]').val(type_name);
+        $editModal.find('input[name=icon_id]').val(type_icon_id);
+
+        $editModal.find('img.icon_image').attr('src', "<?php echo site_url('/img/icons');?>/" + type_icon_id + ".png");
       }
 
       self.doEditType = function() {        
@@ -386,13 +442,20 @@
             datas.push(name + '=' + encodeURIComponent($input.val()));
           }
         });
-
+        
         $.ajax({
           dataType: "json",
           type: "POST",
           url: '<?php echo site_url($map->permalink.'/manage/type/edit/');?>/' + type_id,
           data: datas.join('&'),
           success: function(data) {
+            if(data.success) {
+              $("#type" + type_index).find('input.name').val(data.content.name);
+              $("#type" + type_index).find('input.icon_id').val(data.content. icon_id);
+
+              $("#type" + type_index).find('span.name').text(data.content.name);
+              $("#type" + type_index).find('.icon img').attr('src', "<?php echo site_url('/img/icons');?>/" + data.content.icon_id + ".png");
+            }
           }
         });
       }

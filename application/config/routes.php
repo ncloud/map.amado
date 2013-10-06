@@ -64,7 +64,9 @@ $route['manage/add']								 = 'manage/add_map';
 $route['(:any)/manage/place/edit/(:num)']			 		= 'manage/place_edit/map:$1/$2';
 $route['(:any)/manage/image/edit/(:num)']			 		= 'manage/place_edit/map:$1/$2';
 $route['(:any)/manage/place/delete/(:num)']			 		= 'manage/place_delete/map:$1/$2';
+$route['(:any)/manage/image/delete/(:num)']			 		= 'manage/place_delete/map:$1/$2';
 $route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change/map:$1/$2/$3/$4';
+$route['(:any)/manage/image/change/(:any)/(:num)/(:any)']	= 'manage/place_change/map:$1/$2/$3/$4';
 
 $route['(:any)/manage/course/edit/(:num)']			 		= 'manage/course_edit/map:$1/$2';
 $route['(:any)/manage/course/change/(:any)/(:num)/(:any)']	= 'manage/course_change/map:$1/$2/$3/$4';

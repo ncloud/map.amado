@@ -94,6 +94,13 @@ class M_Place extends CI_Model
 	{
 		return $this->db->from('place_types')->where('map_id', $map_id)->order_by('order_index ASC')->get()->result();
 	}
+
+	function check_place($map_id, $lat, $lng)
+	{
+		$result = $this->db->from('places')->where('map_id', $map_id)->where(array('lat'=>$lat,'lng'=>$lng))->get()->row();
+		if($result) return true;
+		else return false;
+	}
 	
 	function add($data) {
 		$data['lat'] = 0;
@@ -166,11 +173,16 @@ class M_Place extends CI_Model
 
 	function get_types($map_id)
 	{
-		return $this->db->from('place_types')->where('map_id', $map_id)->get()->result();
+		$result = $this->db->from('place_types')->where('map_id', $map_id)->get()->result();
+		$result = array_merge($result, $this->__default_types($map_id, count($result)));
+
+		return $result;
 	}
 
 	function get_types_count($map_id) {
-		return $this->db->from('places')->where('map_id', $map_id)->group_by('type_id')->select('type_id, COUNT(type_id) as count')->get()->result();
+		$result = $this->db->from('places')->where('map_id', $map_id)->group_by('type_id')->select('type_id, COUNT(type_id) as count')->get()->result();
+
+		return $result; // IMPORT_TYPE
 	}
 
 	function delete_type($id) {
@@ -204,5 +216,36 @@ class M_Place extends CI_Model
 		} else {
 			return false;
 		}
+	}
+
+	function import($datas, $check_position = false)
+	{
+		if($check_position) {
+			foreach($datas as $data) {
+				if(!$this->check_place($data->map_id, $data->lat, $data->lng)) {
+					$this->db->insert('places', $data);
+				}
+			}
+		} else {
+			$this->db->insert_batch('places', $datas, true);
+		}
+
+		return true;
+	}
+
+	function __default_types($map_id, $order_index)
+	{
+		$result = array();
+
+		$type = new StdClass;
+		$type->id = IMPORT_TYPE_ID;
+		$type->map_id = $map_id;
+		$type->icon_id = IMPORT_TYPE_ID;
+		$type->name = '가져오기';
+		$type->order_index = $order_index + 1;
+
+		$result[] = $type;
+
+		return $result;
 	}
 }

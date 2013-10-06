@@ -96,7 +96,7 @@ class Page extends APP_Controller {
 				$count_by_type[$place_type->id] = 0;
 				$place_types_by_id[$place_type->id] = $place_type;
 			}
-			
+
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
 		          $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;

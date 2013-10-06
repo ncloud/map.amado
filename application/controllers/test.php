@@ -38,7 +38,7 @@ class Test extends APP_Controller {
                 $min_lng = $min_lng < $place->lng ? $min_lng : $place->lng;
                 $max_lng = $min_lng > $place->lng ? $min_lng : $place->lng;
 
-                $markers .= '&markers='. urlencode('color:blue|'.$place->lat.','.$place->lng); 
+            //    $markers .= '&markers='. urlencode('color:blue|'.$place->lat.','.$place->lng); 
 	        }
 	       }
 	   }
@@ -61,7 +61,7 @@ class Test extends APP_Controller {
             $mapdisplay = 64;
           	$zoom_lvl = floor(8 - log(1.6446 * $dist / sqrt(2 * ($mapdisplay * $mapdisplay))) / log (2));
 
-        	$url = 'http://maps.googleapis.com/maps/api/staticmap?center='.($lat).','.($lng).'&zoom='.$zoom_lvl.'&size=200x200&sensor=false' . ($markers ? $markers : '');
+        	$url = 'http://maps.googleapis.com/maps/api/staticmap?center='.($lat).','.($lng).'&zoom='.$zoom_lvl.'&size=300x300&sensor=false' . ($markers ? $markers : '');
         	echo '<img src="' . $url . '" alt="" />';
         } else {
         }
