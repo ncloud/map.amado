@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `place_types` (
   `order_index` tinyint(4) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `map_id` (`map_id`),
-  UNIQUE KEY `map_id` (`map_id`,`name`)
+  UNIQUE KEY `map_id_2` (`map_id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `place_types` (`id`, `map_id`, `icon_id`, `name`, `order_index`) VALUES 
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `role_users` (
   `invite_code` varchar(32) DEFAULT NULL,
   `invite_status` enum('invited','send_email','no') DEFAULT 'no',  
   `insert_time` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`map_id`,`role_id`,`user_id`,`invite_email`)
+  UNIQUE KEY (`map_id`,`role_id`,`user_id`,`invite_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `roles` (

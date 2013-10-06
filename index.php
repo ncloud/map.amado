@@ -10,9 +10,9 @@
  * For more info visit:  http://www.php.net/error_reporting
  *
  */
-    ini_set('display_errors', '1');
-	error_reporting(E_ALL);
-//	error_reporting(0);
+//    ini_set('display_errors', '1');
+//	error_reporting(E_ALL);
+	error_reporting(0);
 
 /*
  *---------------------------------------------------------------
@@ -24,14 +24,14 @@
  * as this file.
  *
  */
-	$system_path = "../../codeigniter/system";
+	$system_path = "../codeigniter/system";
 	
 /*
  *---------------------------------------------------------------
  * SHARE FOLDER NAME
  *---------------------------------------------------------------
  */	
-	$share_path = "../../codeigniter/share";
+	$share_path = "../codeigniter/share";
 	
 /*
  *---------------------------------------------------------------
