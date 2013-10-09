@@ -42,6 +42,23 @@
           </div>
         </div>  
 
+        <div class="control-group<?php echo isset($errors['is_viewed_home']) ? ' error' : '';?>">
+          <label class="control-label" for="is_viewed_home">홈 등록</label>
+          <div class="controls">
+            <div class='radio-group'>
+              <label class="radio inline">
+                <input type="radio" name="is_viewed_home" value="yes"<?php echo $map_data->is_viewed_home == 'yes' ? ' checked="checked"' : '';?>> 등록
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="is_viewed_home" value="no"<?php echo $map_data->is_viewed_home == 'no' ? ' checked="checked"' : '';?>> 등록안함
+              </label>
+            </div>
+            <span class="help-block">
+              홈에 등록하시면 "아마도.지도" 홈에 등록되어 더 많은 방문객들이 접근할 수 있습니다.
+            </span>
+          </div>
+        </div>  
+
         <div class="control-group<?php echo isset($errors['add_role']) ? ' error' : '';?>">
           <label class="control-label" for="map_add_role">추가 권한</label>
           <div class="controls">

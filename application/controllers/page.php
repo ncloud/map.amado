@@ -20,7 +20,7 @@ class Page extends APP_Controller {
 			}
 			$this->set('my_maps', $my_maps);
 
-			$maps = $this->m_map->gets_all();
+			$maps = $this->m_map->gets_all(true);
 			$this->set('maps', $maps);
 
 			$this->view('welcome');

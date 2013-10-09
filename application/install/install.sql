@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `maps` (
   `privacy` enum('public','private') DEFAULT 'public',  
   `preview_map_url` varchar(255) DEFULT NULL,
   `add_role` enum('guest','member','workman','admin') DEFAULT 'member',
+  `is_viewed_home` enum('yes','no') DEFAULT 'yes',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

@@ -26,9 +26,11 @@ class M_Map extends CI_Model
 			return $this->db->from('maps')->where('permalink', $permalink)->get()->row();
 	}
 
-	function gets_all($count = null, $index = 1)
+	function gets_all($home_mode = true, $count = null, $index = 1)
 	{
 		$this->db->from('maps')->join('users','maps.user_id = users.id', 'join');
+
+		if($home_mode)  $this->db->where('is_viewed_home', 'yes');
 
         if($index > 1) {
             $this->db->limit($count, ($index - 1));

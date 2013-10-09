@@ -1316,6 +1316,15 @@ class Manage extends APP_Controller {
 			if($map) $map->privacy = $form['privacy'];
 		}
 
+
+		if(!isset($form['is_viewed_home']) || empty($form['is_viewed_home']) || !in_array($form['is_viewed_home'], array('yes', 'no'))) {
+			$errors['privacy'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
+
+			if($map) $map->is_viewed_home = 'yes';
+		} else {
+			if($map) $map->is_viewed_home = $form['is_viewed_home'];
+		}
+
 		if(!isset($form['add_role']) || empty($form['add_role']) || !in_array($form['add_role'], array('guest', 'member', 'workman', 'admin'))) {
 			$errors['add_role'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
 
