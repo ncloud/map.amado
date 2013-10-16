@@ -25,7 +25,7 @@
 	  	if($course_mode) {
 	  ?>
 		  <ul id="tab_menu" class="tab">
-		  	<li class="course selected"><a href="#" onclick="changeMenu('course'); return false;">코스</a</li>
+		  	<li class="course selected"><a href="#" onclick="changeMenu('course'); return false;">코스</a></li>
 		  	<li class="category"><a href="#" onclick="changeMenu('category'); return false;">분류</a></li>
 		  </ul>
 		  

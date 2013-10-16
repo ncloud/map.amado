@@ -19,7 +19,7 @@
             <div class="or">또는</div>
 
     	    <div class="alternative_wrap">
-    	        <button class="btn btn-fluid btn-info <?php echo $join_mode ? 'login_button' : 'join_button';?>" onclick="toggle_login_mode(); return false;"><?php echo $join_mode ? '로그인' : '회원가입';?></a>
+    	        <button class="btn btn-fluid btn-info <?php echo $join_mode ? 'login_button' : 'join_button';?>" onclick="toggle_login_mode(); return false;"><?php echo $join_mode ? '로그인' : '회원가입';?></button>
     	    </div>
         <?php
             if($this->config->item('facebook_use')) {

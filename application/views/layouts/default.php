@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modalmanager.js");?>"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modal.js");?>"></script>
     <script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-notify.js");?>"></script>
+	<script type="text/javascript" src="<?php echo site_url("/js/plugin/jquery.placeholder.js");?>"></script>
 
 	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>
 
@@ -36,6 +37,7 @@
 
 		$(function() {
 			$(".tip").tooltip({container:'body',placement:'bottom'});
+			$("input, textarea").placeholder();
 		})
 	</script>
 	        

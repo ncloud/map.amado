@@ -127,9 +127,9 @@
 	.dropdown-menu .divider { margin:0px !important; border-bottom:0 !important; }
 
 	.dropdown-menu > li > a { color:#333 !important; font-size:13px !important; padding:10px !important; }
-	.dropdown-menu > li > a:hover { background:#f4f4f4 !important; }
+	.dropdown-menu > li > a:hover { background:#f4f4f4 !important; filter:none; }
 		.dropdown-menu > li > a i { margin-right:4px; }
-	
+
 	.dropdown-menu > .disabled > a,
 	.dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
 		color:#aaa !important;

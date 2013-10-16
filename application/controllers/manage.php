@@ -179,10 +179,12 @@ class Manage extends APP_Controller {
 						
 						$image_id = $this->m_image->add($_POST);
 						$this->m_map->update_time($this->map->id);
-						$this->__update_map_preview($this->map->id);
 
 						$this->load->model('m_work');
-						$this->m_work->rebuild_geocode_for_places();	
+						$this->m_work->rebuild_geocode_for_places();							
+
+						$this->__update_map_preview($this->map->id);
+
 
 						if(!$this->input->is_ajax_request()) {
 							if($image_id) {
@@ -243,10 +245,11 @@ class Manage extends APP_Controller {
 
 						$place_id = $this->m_place->add($_POST);
 						$this->m_map->update_time($this->map->id);
-						$this->__update_map_preview($this->map->id);
 						
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
+
+						$this->__update_map_preview($this->map->id);
 
 						if(!$this->input->is_ajax_request()) {
 							if($place_id) {
@@ -458,10 +461,11 @@ class Manage extends APP_Controller {
 						}
 						
 						$this->m_map->update_time($this->map->id);
-						$this->__update_map_preview($this->map->id);
 					
 						$this->load->model('m_work');
 						$this->m_work->rebuild_geocode_for_places();
+
+						$this->__update_map_preview($this->map->id);
 
 						$message = new StdClass;
 						$message->type = 'success';
@@ -529,10 +533,11 @@ class Manage extends APP_Controller {
 					$this->m_place->update($id, $data);
 					
 					$this->m_map->update_time($this->map->id);
-					$this->__update_map_preview($this->map->id);
 					
 					$this->load->model('m_work');
 					$this->m_work->rebuild_geocode_for_places();
+					
+					$this->__update_map_preview($this->map->id);
 					
 					redirect($redirect);
 				}
@@ -1478,7 +1483,7 @@ class Manage extends APP_Controller {
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
 		          if($place->attached == 'image') {
-		          } else if($place->attached == 'no') {
+		          } else if($place->attached == 'no' && $place->lat && $place->lng) {
 			        $full_lat += $place->lat;
 			        $full_lng += $place->lng;
 			        $full_count ++;
