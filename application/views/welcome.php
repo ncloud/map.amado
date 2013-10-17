@@ -21,7 +21,7 @@
 						<?php if(!empty($map->preview_map_url)) { ?>
 						<img class="background" src="<?php echo $map->preview_map_url;?>" alt="" />
 						<?php } ?>
-						<a class="link" href="<?php echo site_url($map->permalink);?>"></a>
+						<a class="link" href="<?php echo site_url($map->permalink);?>">LINK</a>
 						<div class="info">
 							<h5><a href="<?php echo site_url($map->permalink);?>"><?php echo $map->name;?></a> <small><?php echo $map->permalink;?></small></h5>
 						</div>

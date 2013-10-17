@@ -67,7 +67,7 @@
 	.table th, .table td { vertical-align: middle; }
 	.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th { background:#eee; }
 	
-	.pagination { padding-bottom:10px; margin:0; }
+	.pagination { margin:0; }
 		.pagination ul { box-shadow:none; height:30px; }
 	
 

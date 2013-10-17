@@ -13,7 +13,7 @@
 
 		.maps .map { position:relative; overflow:hidden; height:200px !important; background:#e1e1e1; }
 			.maps .map img.background { position:absolute; width:300px;  margin-top:-75px; }
-			.maps .map a.link { position:absolute; top:0; left:0; right:0; bottom:0; }
+			.maps .map a.link { position:absolute; top:0; left:0; right:0; bottom:0; text-indent:-10000px; overflow: hidden; }
 				.maps .map a.link:hover { background:rgba(255,255,255,0.5); }
 			
 			.maps .map .manage { position:absolute; top:10px; right:10px; }
