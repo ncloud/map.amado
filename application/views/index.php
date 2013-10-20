@@ -2,17 +2,19 @@
   <?php echo isset($error) && !empty($error) ? $error : ''; ?>
 
 	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
-	
+	<a class="toggle" href="#" onclick="toggleMenu(); return false;">메뉴</a>
+
     <!-- google map -->
     <div id="map"></div>
     
     <!-- right-side gutter -->
     <div class="menu" id="menu">        
 	  
-	  <div class="header" id="header">
-	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
-      <a class="btn tool" href="<?php echo site_url('/'.$map->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
-	  </div>
+  	  <div class="header" id="header">
+        <a class="btn tool" href="<?php echo site_url('/'.$map->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
+  	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
+        <a class="btn close" href="#">&times;</a>
+  	  </div>
 	  
 	  <?php if($current_user->id) { ?>
 	  <!--<div class="buttons" id="buttons">
@@ -634,6 +636,16 @@
           }
           gmap.setCenter(centerLat, centerLng);
           gmap.setZoom(zoomLvl);
+      }
+
+      function toggleMenu()
+      {
+        var $menu = $("#menu");
+        if($menu.css('display') == 'none') {
+          $menu.show();
+        } else {
+          $menu.hide();
+        }
       }
       
       // add modal form submit

@@ -37,7 +37,10 @@ body {
 	
 	a.logo { position:fixed; z-index:1000; border:1px solid #999; display:inline-block; color:#000; font-weight:bold; font-size:13px; line-height:13px; padding:8px; left: 6px; top: 6px; background:rgba(255,255,255,0.8); box-shadow: 0px 1px 0px rgba(0,0,0,0.1); }
 		a.logo:hover { text-decoration:none; color:#333; background:#f8f8f8; }
-		
+	
+	a.toggle { position:fixed; z-index:1000; border:1px solid #999; display:none; color:#000; font-weight:bold; font-size:13px; line-height:13px; padding:8px; right: 6px; top: 6px; background:rgba(255,255,255,0.8); box-shadow: 0px 1px 0px rgba(0,0,0,0.1); }
+		a.toggle:hover { text-decoration:none; color:#333; background:#f8f8f8; }
+
 	/* menu */
 	
 	.menu
@@ -75,11 +78,24 @@ body {
 	.menu .header a.tool {
 		position:absolute;
 		top:7px;
+		left:6px;
+		box-shadow:none;
+		background:#f5f5f5;
+		border:0;
+		border-radius:0;
+	}
+
+	.menu .header a.close {
+		position:absolute;
+		top:7px;
 		right:6px;
 		box-shadow:none;
 		background:#f5f5f5;
 		border:0;
 		border-radius:0;
+		opacity:1;
+
+		display:none;
 	}
 
 	.menu .buttons
