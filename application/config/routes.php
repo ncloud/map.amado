@@ -69,6 +69,7 @@ $route['(:any)/manage/place/change/(:any)/(:num)/(:any)']	= 'manage/place_change
 $route['(:any)/manage/image/change/(:any)/(:num)/(:any)']	= 'manage/place_change/map:$1/$2/$3/$4';
 
 $route['(:any)/manage/course/edit/(:num)']			 		= 'manage/course_edit/map:$1/$2';
+$route['(:any)/manage/course/delete/(:num)']			 	= 'manage/course_delete/map:$1/$2';
 $route['(:any)/manage/course/change/(:any)/(:num)/(:any)']	= 'manage/course_change/map:$1/$2/$3/$4';
 
 $route['(:any)/manage/list/(:any)']					 = 'manage/lists/map:$1/$2';

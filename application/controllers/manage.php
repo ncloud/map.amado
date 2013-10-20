@@ -654,6 +654,27 @@ class Manage extends APP_Controller {
 		}	
 	}
 
+	function course_delete($id) {
+		
+		if(!$this->__check_map()) return false;
+
+		if($course = $this->m_course->get($id)) {
+			if($course->user_id != $this->user_data->id && !($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+			 	// 에러
+			 	$this->error('삭제할 권한이 없습니다.');
+			} else {
+				// 삭제완료
+
+				$this->m_course->delete($course->id);
+				
+				$this->m_map->update_time($this->map->id);
+				$this->__update_map_preview($this->map->id);
+
+				redirect($this->map->permalink.'/manage/course');
+			}
+		}
+	}
+
 	function course_change($type, $id, $value) {
 		if(!$this->__check_map()) return false;
 		if(!$this->__check_login()) return false;
