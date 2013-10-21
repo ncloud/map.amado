@@ -58,7 +58,9 @@
 			width:100%;
 			margin-left:0;
 			margin-bottom:20px;
-		}
+		}		
+
+		.navbar-inner .logo-wrap { width: 160px; }
 
 		.maps .map img.background {
 			width:100%;

@@ -2,7 +2,14 @@
   <?php echo isset($error) && !empty($error) ? $error : ''; ?>
 
 	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
-	<a class="toggle" href="#" onclick="toggleMenu(); return false;">메뉴</a>
+  <div class="toggle_wrap">
+     <div class="group">
+      <a class="course_btn active" href="#" onclick="changeMenu('course'); return false;">코스</a>
+      <a class="category_btn" href="#" onclick="changeMenu('category'); return false;">분류</a>
+     </div>
+
+	   <a class="menu_btn" href="#" onclick="toggleMenuForMobile(); return false;">메뉴</a>
+  </div>
 
     <!-- google map -->
     <div id="map"></div>
@@ -13,7 +20,7 @@
   	  <div class="header" id="header">
         <a class="btn tool" href="<?php echo site_url('/'.$map->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
   	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
-        <a class="btn close" href="#">&times;</a>
+        <a class="btn close" href="#" onclick="closeMenuForMobile(); return false;">&times;</a>
   	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -48,7 +55,7 @@
           foreach($course->targets as $target) {                  
         ?>
             <li>
-              <a href='#' onMouseOver="markerListMouseOver('course', '<?php echo $target->id;?>')" onMouseOut="markerListMouseOut('course', '<?php echo $target->id;?>')" onClick=\"goToMarker('course','<?php echo $target->id;?>');"><?php echo $target->title;?></a>
+              <a href='#' onMouseOver="markerListMouseOver('course', '<?php echo $target->id;?>')" onMouseOut="markerListMouseOut('course', '<?php echo $target->id;?>')" onClick="goToMarker('course','<?php echo $target->id;?>');"><?php echo $target->title;?></a>
             </li>
         <?php
           }
@@ -465,6 +472,8 @@
        //   map.setZoom(15);
           google.maps.event.trigger(gmarkers[type + '_' + marker_id], 'click');
         }
+
+        closeMenuForMobile();
       }
 
       function toggle(type, type_id) {
@@ -545,6 +554,11 @@
       }
 
       function changeMenu(menu) {
+        var $group = $('.toggle_wrap .group');
+
+        $group.find('a').removeClass('active');
+        $group.find('a.' + menu +'_btn').addClass('active');
+
         $tab_menu = $("#tab_menu");
         $tab_menu.find('li').removeClass('selected');
         $tab_menu.find('li.' + menu).addClass('selected');
@@ -638,14 +652,20 @@
           gmap.setZoom(zoomLvl);
       }
 
-      function toggleMenu()
+      function toggleMenuForMobile()
       {
         var $menu = $("#menu");
-        if($menu.css('display') == 'none') {
-          $menu.show();
+        if($menu.hasClass('mobile_visible')) {
+          $menu.removeClass('mobile_visible');
         } else {
-          $menu.hide();
+          $menu.addClass('mobile_visible');
         }
+      }
+
+      function closeMenuForMobile()
+      {
+        var $menu = $("#menu");
+        $menu.removeClass('mobile_visible');
       }
       
       // add modal form submit
