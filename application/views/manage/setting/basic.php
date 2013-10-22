@@ -59,6 +59,26 @@
           </div>
         </div>  
 
+        <hr />
+
+
+        <div class="control-group<?php echo isset($errors['default_menu']) ? ' error' : '';?>">
+          <label class="control-label" for="default_menu">기본 보기</label>
+          <div class="controls">
+            <div class='radio-group'>
+              <label class="radio inline">
+                <input type="radio" name="default_menu" value="course"<?php echo $map_data->default_menu == 'course' ? ' checked="checked"' : '';?>> 코스
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="default_menu" value="type"<?php echo $map_data->default_menu == 'type' ? ' checked="checked"' : '';?>> 분류
+              </label>
+            </div>
+            <span class="help-block">
+              지도에 처음 접근시 보이는 기본 메뉴를 정합니다. 코스가 없을때는 분류가 기본으로 보여집니다.
+            </span>
+          </div>
+        </div>
+
         <div class="control-group<?php echo isset($errors['add_role']) ? ' error' : '';?>">
           <label class="control-label" for="map_add_role">추가 권한</label>
           <div class="controls">

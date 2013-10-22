@@ -79,6 +79,7 @@ $route['(:any)/manage/type/add/(:any)/(:num)']       = 'manage/type_add/map:$1/$
 $route['(:any)/manage/type/add/(:any)']				 = 'manage/type_add/map:$1/$2';
 $route['(:any)/manage/type/delete/(:num)']		     = 'manage/type_delete/map:$1/$2';
 $route['(:any)/manage/type/edit/(:num)']		     = 'manage/type_edit/map:$1/$2';
+$route['(:any)/manage/type/change/(:num)/(:num)']	 = 'manage/type_change/map:$1/$2/$3';
 
 $route['(:any)/(:any)/(:any)/(:any)/(:any)/(:any)']	 = '$2/$3/map:$1/$4/$5/$6';
 $route['(:any)/(:any)/(:any)/(:any)/(:any)']		 = '$2/$3/map:$1/$4/$5';

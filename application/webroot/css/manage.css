@@ -45,6 +45,8 @@ body.error { background:#f5f5f5; }
 
 			.type_tools .add_window .btn { background:#fff; }
 				.type_tools .add_window .btn img { width:21px; height:24px; }
+
+			.type_tools .add_window .dropdown-menu { min-width: 156px; }
 			
 		.type_tools .buttons { }
 		.type_tools .close { font-size: 30px; line-height: 30px; }

@@ -69,7 +69,6 @@ class Page extends APP_Controller {
 
 				
 			$place_types = $this->m_place->get_types($this->map->id);
-			$this->set('place_types', $place_types);
 			
 			$place_lists_by_type = array();
 			$place_lists = $this->m_place->gets($this->map->id);
@@ -120,6 +119,13 @@ class Page extends APP_Controller {
 		          unset($place_lists[$key]->file);
 		        }
 		    }
+
+		    // 가져오기 분류가 비어있으면 숨긴다.
+			if(!isset($place_lists_by_type[IMPORT_TYPE_ID]) || count($place_lists_by_type[IMPORT_TYPE_ID]) == 0) {
+				array_pop($place_types);
+			}
+
+			$this->set('place_types', $place_types);
 
 	        $this->set('place_lists', $place_lists);
 			$this->set('place_lists_by_type', $place_lists_by_type);

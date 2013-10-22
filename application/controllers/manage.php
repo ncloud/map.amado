@@ -522,7 +522,6 @@ class Manage extends APP_Controller {
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
-		
 		$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
 		
 		switch($type) {
@@ -1042,6 +1041,7 @@ class Manage extends APP_Controller {
 
 		echo json_encode($output);
 	}
+
 	// AJAX Only
 	function type_delete($id) {		
 		$this->layout->setLayout('layouts/empty');
@@ -1080,6 +1080,55 @@ class Manage extends APP_Controller {
 		}
 
 		echo json_encode($output);
+	}
+
+	function type_change($id, $type_id) {		
+		$this->layout->setLayout('layouts/empty');
+
+		$output = new StdClass;
+		$output->success = false;
+
+		if(!$this->map->id) {
+			$output->success = false;
+			$output->message = '잘못된 접근입니다';
+		} else {
+			if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$output->success = false;			
+				$output->message = '변경 권한이 없습니다.';		
+			} else {
+				$datas = array();
+
+				if(empty($id) || empty($type_id)) {
+					$output->success = false;			
+					$output->message = '필수 항목이 없습니다. (ID)';	
+				} else {
+					$this->load->model('m_place');
+
+					if($type = $this->m_place->get_type($type_id)) {
+						if($type->map_id == $this->map->id) {
+							$this->m_place->update_field($id, 'type_id', $type->id);
+
+							$output->success = true;
+							$output->content = new StdClass;
+						} else {
+							$output->success = false;
+							$output->message = '잘못된 접근입니다.';
+						}
+					} else { // 없는 TYPE
+						$output->success = false;
+						$output->message = '잘못된 접근입니다.';
+					}
+				}
+			}
+		}
+
+		if($this->input->is_ajax_request()) {
+			echo json_encode($output);
+		} else {
+			$redirect = empty($this->queries['redirect_uri']) ? (!empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : site_url('/')) : $this->queries['redirect_uri'];
+
+			redirect($redirect);
+		}
 	}
 
 	// INVITE // NOT REQUIRE SITE ID
@@ -1351,6 +1400,14 @@ class Manage extends APP_Controller {
 			if($map) $map->is_viewed_home = $form['is_viewed_home'];
 		}
 
+		if(!isset($form['default_menu']) || empty($form['default_menu']) || !in_array($form['default_menu'], array('course', 'type'))) {
+			$errors['default_menu'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
+
+			if($map) $map->default_menu = 'course';
+		} else {
+			if($map) $map->default_menu = $form['default_menu'];
+		}
+
 		if(!isset($form['add_role']) || empty($form['add_role']) || !in_array($form['add_role'], array('guest', 'member', 'workman', 'admin'))) {
 			$errors['add_role'] = '잘못된 접근일 수 있습니다. 새로고침해주세요';
 
@@ -1441,6 +1498,8 @@ class Manage extends APP_Controller {
 			break;
 		}
 		$this->set('places', $places);
+
+		$this->set('place_types', $this->m_place->gets_type($map_id));
 		
 		$paging->max = floor($paging->total_count / $paging->per_page);
 		if($paging->total_count % $paging->per_page > 0) $paging->max ++;

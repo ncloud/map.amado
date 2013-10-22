@@ -3,10 +3,17 @@
 
 	<a class="logo" href="<?php echo site_url("/");?>">아마도.지도</a>
   <div class="toggle_wrap">
+
+    <?php
+      if($course_mode) {
+    ?>
      <div class="group">
       <a class="course_btn active" href="#" onclick="changeMenu('course'); return false;">코스</a>
       <a class="category_btn" href="#" onclick="changeMenu('category'); return false;">분류</a>
      </div>
+    <?php
+      }
+    ?>
 
 	   <a class="menu_btn" href="#" onclick="toggleMenuForMobile(); return false;">메뉴</a>
   </div>
@@ -34,11 +41,11 @@
 	  	if($course_mode) {
 	  ?>
 		  <ul id="tab_menu" class="tab">
-		  	<li class="course selected"><a href="#" onclick="changeMenu('course'); return false;">코스</a></li>
-		  	<li class="category"><a href="#" onclick="changeMenu('category'); return false;">분류</a></li>
+		  	<li class="course<?php echo $map->default_menu == 'course' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('course'); return false;">코스</a></li>
+		  	<li class="category<?php echo $map->default_menu == 'type' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('category'); return false;">분류</a></li>
 		  </ul>
 		  
-		  <ul class="list" id="list_by_course">
+		  <ul class="list" id="list_by_course"<?php echo $map->default_menu == 'type' ? ' style="display:none;"' : '';?>>
 		  <?php
         foreach($course_lists as $course) {
       ?>
@@ -70,7 +77,7 @@
 		} // course_mode end
 	  ?>
 	  
-      <ul class="list" id="list_by_category"<?php echo $course_mode ? ' style="display:none;"' : '';?>>
+      <ul class="list" id="list_by_category"<?php echo $course_mode && $map->default_menu == 'course' ? ' style="display:none;"' : '';?>>
         <?php
           foreach($place_types as $type) {
             $markers_count = $count_by_type[$type->id];
@@ -275,7 +282,7 @@
             label.bindTo('clickable', marker);
             label.bindTo('zIndex', marker);
 
-            <?php if($course_mode) { ?>
+            <?php if($course_mode && $map->default_menu == 'course') { ?>
             marker.setVisible(false);
             <?php } ?>
         });
@@ -317,7 +324,7 @@
           label.bindTo('clickable', marker);
           label.bindTo('zIndex', marker);
 
-          <?php if($course_mode) { ?>
+          <?php if($course_mode && $map->default_menu == 'course') { ?>
           marker.setVisible(false);
           <?php } ?>
         });
@@ -386,6 +393,10 @@
           label.bindTo('visible', marker);
           label.bindTo('clickable', marker);
           label.bindTo('zIndex', marker);
+
+          <?php if($course_mode && $map->default_menu == 'type') { ?>
+          marker.setVisible(false);
+          <?php } ?>
         });
 
         for(var i=1;i<paths.length;i++) {
@@ -408,7 +419,7 @@
           horizontalAlign: 'center',
         });
 
-        centerMap('<?php echo $course_mode ? 'course' : 'category';?>');
+        centerMap('<?php echo $course_mode  && $map->default_menu == 'course' ? 'course' : 'category';?>');
         
         // context menu
         var contextMenuOptions={};

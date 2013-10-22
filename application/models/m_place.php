@@ -10,17 +10,17 @@ class M_Place extends CI_Model
 	
 	function get($id)
 	{
-		return $this->db->from('places')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, attaches.filename as file')->get()->row();
+		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->where('places.id', $id)->join('attaches','places.id = attaches.parent_id','left')->select('places.*, place_types.name as type_name, attaches.filename as file')->get()->row();
 	}
 	
 	function gets($map_id)
 	{
-		return $this->db->from('places')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.map_id', $map_id)->order_by('places.id DESC')->select('places.*, attaches.filename as file')->get()->result();
+		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.map_id', $map_id)->order_by('places.id DESC')->select('places.*, place_types.name as type_name, attaches.filename as file')->get()->result();
 	}
 	
 	function gets_by_ids($ids)
 	{
-		$result = $this->db->from('places')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where_in('places.id', $ids)->order_by('places.id DESC')->select('places.*, attaches.filename as file')->get()->result();
+		$result = $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where_in('places.id', $ids)->order_by('places.id DESC')->select('places.*, place_types.name as type_name, attaches.filename as file')->get()->result();
 		if($result) {
 			$output = array();
 			foreach($result as $item) $output[$item->id] = $item;
@@ -37,7 +37,7 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->where('map_id', $map_id)->order_by('id DESC')->get()->result();		
+		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->where('places.map_id', $map_id)->order_by('places.id DESC')->select('places.*, place_types.name as type_name')->get()->result();		
 	}
 	
 	function gets_by_status($map_id, $status, $count, $index = 1)
@@ -143,6 +143,16 @@ class M_Place extends CI_Model
 		return $this->db->update('places', $data);
 	}
 
+	function update_field($id, $field, $value)
+	{
+		$data = array();
+		$data[$field] = $value;
+
+		
+		$this->db->where('id', $id);
+		return $this->db->update('places', $data);
+	}
+
 	function delete($id) {
 		// course deletes
 		$this->db->delete('course_targets', array('target_id'=>$id));
@@ -173,7 +183,7 @@ class M_Place extends CI_Model
 
 	function get_types($map_id)
 	{
-		$result = $this->db->from('place_types')->where('map_id', $map_id)->get()->result();
+		$result = $this->db->from('place_types')->where('map_id', $map_id)->order_by('order_index ASC')->get()->result();
 		$result = array_merge($result, $this->__default_types($map_id, count($result)));
 
 		return $result;

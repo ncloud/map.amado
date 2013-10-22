@@ -25,6 +25,7 @@
   		<th>#</th>
   		<th>인증</th>
       <th></th>
+      <th>분류</th>
   		<th>정보</th>
   		<th></th>
   	</thead>
@@ -58,6 +59,37 @@
             <?php
               }
             ?>
+      </td>
+      <td class="category">
+        <?php 
+            $type_name = $place->type_name;
+            if(empty($type_name)) $type_name = '분류없음';
+            
+            if($current_user->role == 'super-admin' || $current_user->role == 'admin') {  ?>
+            <div class="dropdown">
+              <a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#"><?php echo $type_name;?> <b class="caret"></b></a>
+              <ul id="menu1" class="dropdown-menu">
+              <?php
+                foreach($place_types as $place_type) {
+              ?>            
+              <li<?php echo $place->type_id == $place_type->id ? ' class="disabled"' : '';?>><a role="menuitem" tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/type/change/'.$place->id.'/'.$place_type->id);?>"><?php echo $place_type->name;?></a></li>
+              <?php
+                }
+
+                if(count($place_types)) {
+              ?>
+                <li class="divider"></li>
+              <?php
+                }
+              ?>
+                <li><a role="menuitem" tabindex="-1" href="<?php echo site_url($map->permalink.'/manage/type/change/'.$place->id.'/none');?>">분류없음</a></li>
+              </ul>
+            </div>
+
+        <?php } else { 
+                echo '<span>' . $type_name . '</span>';
+              }
+        ?>
       </td>
       <td class='info'>
           <?php echo $place->title;?>
