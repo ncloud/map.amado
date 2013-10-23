@@ -194,7 +194,7 @@
 
 	.input-append .dropdown-toggle { border-bottom:2px solid #ccc !important; height:24px !important; }
 
-	.column-menu {}
+	.column-menu { min-width:156px; }
 		.column-menu li { float:left; }
 
 	.btn { border: 0!important; background:#909090 !important; color:#fff !important; border-radius: 0!important; box-shadow: none!important; line-height: 25px!important; text-shadow:none !important; }
@@ -209,6 +209,12 @@
 	.btn-white { background: #fff !important; color:#333 !important; }
 	.btn-gray { background: #eee !important; color:#333 !important; }
 		.btn-gray .caret {  border-top-color:#888 !important; border-bottom-color:#888 !important;  }
+	
+	.btn-group.open .btn.dropdown-toggle { background-color:#eee !important; }
+		.btn-group.open .btn.dropdown-toggle .caret {  border-top-color:#fff !important; border-bottom-color:#fff !important;  }
+
+	.btn.dropdown-toggle {}
+		.btn.dropdown-toggle:hover { background-color:#eee !important; }
 
 /* list */
 	table tr td.num { width:20px; }
