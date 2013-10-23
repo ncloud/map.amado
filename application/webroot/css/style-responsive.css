@@ -59,8 +59,11 @@
 			margin-left:0;
 			margin-bottom:20px;
 		}		
+		
+		.navbar { position:fixed; }
+		.navbar-inner .logo-wrap { width: 130px; }
 
-		.navbar-inner .logo-wrap { width: 160px; }
+		.main-content .main-content-data { top:40px; }
 
 		.maps .map img.background {
 			width:100%;

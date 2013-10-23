@@ -34,8 +34,6 @@
       </fieldset>
       </form>
 
-      <hr />
-
       <div id="type_tools" class="type_tools">
         <div class="add_window input-append">
           <div class="btn-group">

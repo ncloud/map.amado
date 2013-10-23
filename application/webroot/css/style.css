@@ -22,9 +22,9 @@
 	}
 
 	.sortable li.placeholder {
-		border: 1px dashed #bbb;
-		background: #f8f8f8;
-		height: 30px;
+		background: #eee;
+		border-top:1px solid #ddd;
+		height: 46px;
 	}
 
 /* layout */
@@ -46,7 +46,7 @@
 .tooltip { z-index:10000;}
 
 /* bootstrap */
-	.badge { -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; }
+	.badge { -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; text-shadow:none; }
 
 	.dropdown-toggle { }	
 		.dropdown-toggle .caret {  margin-left:5px !important; margin-top:0px !important; vertical-align:middle; border-top-color:#ddd !important; border-bottom-color:#ddd !important; }
