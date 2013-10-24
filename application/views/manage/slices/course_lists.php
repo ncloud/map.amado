@@ -88,7 +88,7 @@
   <div class="pagination pagination-centered">
     <ul>
         <li<?php echo $paging->page == 1 ? ' class="disabled"' : '';?>>
-          <a href="<?php echo $paging->page == 1 ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page-1));?>">&larr;</a>
+          <a href="<?php echo $paging->page == 1 ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page-1));?>">이전</a>
         </li>
       <?php
         for($page = $paging->start; $page <= $paging->end ; $page++) {
@@ -96,7 +96,7 @@
         <li<?php echo $page == $paging->page ? ' class="active"' : '';?>><a href="<?php echo site_url($map->permalink.'/manage/list/course/'.$status.'/'.$page);?>"><?php print_r($page);?></a></li>
       <?php } ?>
         <li<?php echo $paging->page >= $paging->max ? ' class="diabled"' : '';?>>
-          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page+1));?>">&rarr;</a>
+          <a href="<?php echo $paging->page < $paging->max ? '#' : site_url($map->permalink.'/manage/list/course/'.$status.'/'.($paging->page+1));?>">다음</a>
         </li>
     </ul>
   </div>

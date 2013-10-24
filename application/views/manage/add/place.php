@@ -106,13 +106,17 @@
         <label class="control-label" for="place_address">주소 *</label>
         <div class="controls">
            <input type="text" id="place_address" class="span4" name="address" value="<?php echo isset($place) ? $place->address : ''?>" />
+
+           <span class="help-inline"><a href="#" role="button" class="btn" onclick="setCurrentPosition(this, '#place_address'); return false;">현재위치</a></span>
+
           <?php
           	if(!$modal_mode) {
           ?>
           <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">지도상에서 입력하기</a></span>
           <?php
-  			}
-  		?>
+      			}
+      		?>
+
           <p class="help-block">
             구글 지도에서 해당 주소를 검색하여 추가합니다. 정확한 주소를 입력해 주셔야 정확한 위치에 추가됩니다.
           </p>
@@ -279,3 +283,27 @@
 <?php 
 	} // modal_mode check end
 ?>
+
+<script type="text/javascript">
+  function setCurrentPosition(obj, to) {
+    var $obj = $(obj);
+    $obj.addClass('disabled');
+
+    GMaps.geolocate({
+      success: function(position){
+        if(gmap) gmap.setCenter(position.coords.latitude, position.coords.longitude);
+
+        $(to).val(position.coords.latitude + ', ' + position.coords.longitude);
+        $obj.removeClass('disabled');
+      },
+      error: function(error){
+        $obj.removeClass('disabled');
+      },
+      not_supported: function(){
+        alert("죄송합니다. 현재위치를 지원하지 않는 브라우저입니다.");
+        $obj.removeClass('disabled');
+      }
+    });
+  }
+</script>
+

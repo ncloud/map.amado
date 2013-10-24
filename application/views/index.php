@@ -25,7 +25,16 @@
     <div class="menu" id="menu">        
 	  
   	  <div class="header" id="header">
-        <a class="btn tool" href="<?php echo site_url('/'.$map->permalink.'/manage');?>"><i class="icon-wrench"></i></a>
+        <div class="btn-group tool">
+          <a class="btn  dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
+          <ul class="dropdown-menu">
+            <li><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
+            <li class="divider"></li>
+            <li><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
+            <li><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
+          </ul>
+        </div>
+
   	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
         <a class="btn close" href="#" onclick="closeMenuForMobile(); return false;">&times;</a>
   	  </div>
@@ -433,7 +442,7 @@
             ($map->add_role == 'admin' && in_array($current_user->role,array('admin','super-admin')))) {
         ?>
         menuItems.push({className:'context_menu_item', eventName:'add_here_click', label:'이곳에 장소 추가하기'});
-        menuItems.push({className:'context_menu_item', eventName:'add_image_here_click', label:'이곳에 사진  추가하기'});
+        menuItems.push({className:'context_menu_item', eventName:'add_image_here_click', label:'이곳에 사진 추가하기'});
         menuItems.push({});
         <?php
           }

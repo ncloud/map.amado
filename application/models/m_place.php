@@ -42,7 +42,7 @@ class M_Place extends CI_Model
 	
 	function gets_by_status($map_id, $status, $count, $index = 1)
 	{
-		$this->db->where('status', $status);
+		$this->db->where('places.status', $status);
 		
         if($index > 1) {
             $this->db->limit($count, ($index - 1));
@@ -50,7 +50,7 @@ class M_Place extends CI_Model
             $this->db->limit($count);
         }
 		
-		return $this->db->from('places')->where('map_id', $map_id)->order_by('id DESC')->get()->result();		
+		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->where('places.map_id', $map_id)->select('places.*, place_types.name as type_name')->order_by('places.id DESC')->get()->result();		
 	}
 	
 	

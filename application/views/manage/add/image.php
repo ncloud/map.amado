@@ -108,10 +108,12 @@
       <label class="control-label" for="image_address">주소 *</label>
       <div class="controls">       
         <input type="text" id="image_address" class="span4" name="address" value="<?php echo isset($image) ? $image->address : ''?>" />
+        <span class="help-inline"><a href="#" role="button" class="btn" onclick="setCurrentPosition(this, '#place_address'); return false;">현재위치</a></span>
+
         <?php
           if(!$modal_mode) {
         ?>
-        <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">좌표 입력하기</a></span>
+        <span class="help-inline"><a href="#myModal" role="button" class="btn" data-toggle="modal">지도상에서 입력하기</a></span>
         <?php
       }
     ?>
@@ -273,3 +275,26 @@
 <?php 
   } // modal_mode check end
 ?>
+
+<script type="text/javascript">
+  function setCurrentPosition(obj, to) {
+    var $obj = $(obj);
+    $obj.addClass('disabled');
+
+    GMaps.geolocate({
+      success: function(position){
+        if(gmap) gmap.setCenter(position.coords.latitude, position.coords.longitude);
+
+        $(to).val(position.coords.latitude + ', ' + position.coords.longitude);
+        $obj.removeClass('disabled');
+      },
+      error: function(error){
+        $obj.removeClass('disabled');
+      },
+      not_supported: function(){
+        alert("죄송합니다. 현재위치를 지원하지 않는 브라우저입니다.");
+        $obj.removeClass('disabled');
+      }
+    });
+  }
+</script>

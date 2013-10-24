@@ -223,7 +223,7 @@
           '    <input type="hidden" name="type' + index + '_icon_id" class="icon_id" value="' + (icon_id) + '" />' +
           '    <input type="hidden" name="type' + index + '_order" class="order" value="' + (now) + '" />' +
           '    <div class="icon"><img src="<?php echo site_url('/img/icons');?>/' + (icon_id) + '.png" alt="" /></div>' + 
-          '    <div class="text"><span class="name">' + name + '</span> <span class="badge">' + (count) + '</span></div>' +
+          '    <div class="text"><span class="name">' + name + '</span><!-- <span class="badge">' + (count) + '</span>--></div>' +
           '    <div class="btn-group">' + 
           '        <a class="btn btn-gray btn-mini dropdown-toggle" data-toggle="dropdown" href="#">' + 
           '          <span class="caret only-caret"></span>' + 
