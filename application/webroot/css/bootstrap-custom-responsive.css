@@ -1,0 +1,52 @@
+	@media (max-width: 979px) {
+		.modal-scrollable-inner {
+			padding-top:0;
+			padding-bottom:0;
+		}
+
+		input[type=text], input[type=password], textarea {
+			width:100% !important;
+			min-height:34px;
+			-webkit-box-sizing:border-box;
+			-moz-box-sizing:border-box;
+			box-sizing:border-box;
+		}
+
+		.help-inline { padding-left:0; padding-right:5px;  }
+		.help-block { margin-top:10px; }
+
+		.modal, .modal.container, .modal.modal-overflow {
+			left:0;
+			top:0;
+			right:0;
+			bottom:0;
+		}
+
+	}
+
+	@media (max-width: 530px) {				   
+		  .modal form .modal-body .control-label {
+		    float: none;
+		    width: auto;
+		    padding-top: 0;
+		    text-align: left;
+		    margin-bottom:10px;
+		    font-weight:bold;
+		  }
+		  .modal form .modal-body .controls {
+		    margin-left: 0;
+		  }
+		  .modal form .modal-body .control-list {
+		    padding-top: 0;
+		  }
+		  .modal form .modal-body .form-actions {
+		    padding-right: 10px;
+		    padding-left: 10px;
+		  }
+
+		  .modal form .modal-footer {
+		  	padding-left:0;
+		  	padding-right:0;
+		  	text-align:center;
+		  }
+	}

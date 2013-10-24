@@ -14,13 +14,15 @@
 <?php if(isset($og_map_name)) { ?><meta property="og:map_name" content="<?php echo $og_map_name;?>" /><?php } ?>
 <?php if(isset($og_image)) { ?><meta property="og:image" content="<?php echo $og_image;?>" /><?php } ?>
     
-	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
-	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
-    <link type="text/css" href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
+	<link href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
+	<link href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
+    <link href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
 
-    <link rel="stylesheet" href="<?php echo site_url('/css/reset.css');?>" />
-    <link rel="stylesheet" href="<?php echo site_url('/css/layout.css');?>" />
+	<link rel="stylesheet" href="<?php echo site_url("/css/bootstrap-custom.css");?>" />    
 
+    <link rel="stylesheet" href="<?php echo site_url('/css/map.css');?>" />
+    
+	<link rel="stylesheet" href="<?php echo site_url("/css/bootstrap-custom-responsive.css");?>" />    
 	<link rel="stylesheet" href="<?php echo site_url('/css/map-responsive.css');?>" />
 
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>

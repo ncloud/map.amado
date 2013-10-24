@@ -26,7 +26,7 @@
 	  
   	  <div class="header" id="header">
         <div class="btn-group tool">
-          <a class="btn  dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
+          <a class="btn btn-white dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
             <li class="divider"></li>
@@ -36,7 +36,7 @@
         </div>
 
   	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
-        <a class="btn close" href="#" onclick="closeMenuForMobile(); return false;">&times;</a>
+        <a class="btn btn-white close" href="#" onclick="closeMenuForMobile(); return false;">&times;</a>
   	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -482,7 +482,13 @@
       } 
       
       function resizeList() {
-        newHeight = $(window).height() - $("#header").outerHeight();
+        var header_height = $("#header").outerHeight();
+        if(header_height == 1) header_height = 45;
+
+        var tab_height = $("#tab_menu").outerHeight();
+
+        newHeight = $(window).height() - header_height - tab_height;
+        console.log(header_height + " " + tab_height)
         $('.list').css('height', newHeight + "px"); 
       }
       

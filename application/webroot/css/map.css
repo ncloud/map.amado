@@ -90,12 +90,6 @@ body {
 
 		div.tool .btn {
 			position:relative;
-
-			text-shadow:none !important;
-			box-shadow:none !important;
-			background:#f5f5f5 !important;
-			border:0 !important;
-			border-radius:0 !important;
 	
 			width:10px;
 			height:22px;
@@ -113,6 +107,10 @@ body {
 			background-image:url(../img/icons/menu_bar.png);
 			background-repeat:no-repeat;
 			background-position:center;
+		}
+
+		div.tool .dropdown-menu {
+			box-shadow:none !important;
 		}
 
 	.menu .header a.close {
@@ -380,37 +378,32 @@ body {
 	{
 	}
 
-	.add_modal .modal-body
+	..modal form .modal-body
 	{
-	  max-height: none !important;
+	  max-height: none;
 	}
 	
-	.add_modal fieldset
+	.modal form .modal-body .control-label
 	{
-	  padding-top: 15px !important;
+		width:120px;
 	}
 	
-	.add_modal .control-label
+	.modal form .modal-body .controls 
 	{
-		width:120px !important;
+		margin-left:135px;
 	}
 	
-	.add_modal .controls 
+	.modal form .modal-body .help-block
 	{
-		margin-left:135px !important;
+	  font-size: 8pt;
+	  color: #777;
+	  max-width: 300px;
 	}
-	
-		.add_modal .help-block
-		{
-		  font-size: 8pt !important;
-		  color: #777 !important;
-		  max-width: 300px !important;
-		}
 
-	.add_modal .modal-footer
+	.modal form .modal-footer
 	{
-	  text-align: left !important;
-	  padding-left:145px !important;
+	  text-align: left;
+	  padding-left:145px;
 	}
 	
 	
@@ -511,3 +504,4 @@ body {
 	
 	    .context_menu .context_menu_item { padding:5px; }
 	    .context_menu .context_menu_item:hover { background:#eee; }
+	

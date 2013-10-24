@@ -7,6 +7,8 @@
 	<link type="text/css" href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
     <link type="text/css" href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
 
+	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/bootstrap-custom.css");?>" />    
+
 	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/style.css");?>" />    
 	<link type="text/css" rel="stylesheet" href="<?php echo site_url("/css/manage.css");?>" />    
 	
