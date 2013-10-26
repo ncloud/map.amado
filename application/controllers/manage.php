@@ -949,6 +949,17 @@ class Manage extends APP_Controller {
 		$this->view('manage/setting/export');			
 	}
 
+	function delete()
+	{
+		if(!$this->__check_map()) return false;
+		if(!$this->__check_login()) return false;
+		if(!$this->__check_role()) return false;
+
+		$this->set('menu', 'delete');
+
+		$this->view('manage/setting/delete');
+	}
+
 	// AJAX Only
 	function type_add($name, $icon_id = false) {
 		$this->layout->setLayout('layouts/empty');

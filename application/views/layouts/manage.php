@@ -98,12 +98,13 @@
 		        	<a href="#" class="dropdown-toggle" data-toggle="dropdown">설정 <b class="caret"></b></a>
 
 		        	<ul class="dropdown-menu">
-		        		<li><a href="<?php echo site_url($map->permalink.'/manage/basic');?>">기본</a>
-		        		<li><a href="<?php echo site_url($map->permalink.'/manage/user');?>">사용자</a>
-		        		<li><a href="<?php echo site_url($map->permalink.'/manage/type');?>">분류</a>
+		        		<li<?php echo $menu == "basic" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/basic');?>">기본</a>
+		        		<li<?php echo $menu == "user" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/user');?>">사용자</a>
+		        		<li<?php echo $menu == "type" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/type');?>">분류</a>
 		        		<li class="divider"></li>
-		        		<li><a href="<?php echo site_url($map->permalink.'/manage/import');?>">가져오기</a></li>
-		        		<!--<li><a href="<?php echo site_url($map->permalink.'/manage/export');?>">내보내기</a></li>-->
+		        		<li<?php echo $menu == "import" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/import');?>">가져오기</a></li>
+		        		<!--<li<?php echo $menu == "export" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/export');?>">내보내기</a></li>-->
+		        		<li<?php echo $menu == "delete" ? ' class="active"' : "";?>><a href="<?php echo site_url($map->permalink.'/manage/delete');?>">삭제</a></li>
 		        	</ul>
 		        </li>
 		        <?php
