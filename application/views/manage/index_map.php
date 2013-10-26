@@ -1,6 +1,7 @@
   <div class="page-header">
   	<h4> 
-  		전체 지도
+  	<?php echo $manage_mode == 'admin' ?	'전체 지도' : '내 지도';?>
+
 		<small>(<?php echo $paging->total_count;?>)</small>
   	
 	  	<div class="pull-right">

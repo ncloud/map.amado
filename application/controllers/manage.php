@@ -47,10 +47,15 @@ class Manage extends APP_Controller {
 			$paging->page = $page;
 			$paging->per_page = 15;
 
+			$manage_mode = false;
 			if(in_array($this->user_data->role, array('admin','super-admin'))) {
+				$manage_mode = 'admin';
+
 				$paging->total_count = $this->m_map->get_count();
 				$maps = $this->m_map->gets_all($paging->per_page, ($page-1) * $paging->per_page);
 			} else {
+				$manage_mode = 'user';
+
 				$paging->total_count = $this->m_map->get_count_by_user_id($this->user_data->id);
 				$maps = $this->m_map->gets_all_by_user_id($this->user_data->id,$paging->per_page, ($page-1) * $paging->per_page);
 			}
@@ -66,6 +71,8 @@ class Manage extends APP_Controller {
 			if($paging->start == 0) $paging->start = 1;
 
 			$this->set('paging', $paging);
+
+			$this->set('manage_mode', $manage_mode);
 
 			$this->set('maps', $maps);
 			$this->view('manage/index_map');
@@ -154,7 +161,7 @@ class Manage extends APP_Controller {
 				$default_image->attached = 'no';
 				$default_image->owner_name = '';
 				$default_image->owner_email = '';
-				
+
 				if(!empty($_POST)) {
 					$this->load->model('m_image');
 

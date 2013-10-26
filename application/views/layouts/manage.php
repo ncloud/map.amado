@@ -31,7 +31,7 @@
 		  <div class="navbar-inner">
 		    <div class="container">
 		      <div class="logo-wrap">
-			      <a class="brand" href="<?php echo site_url("/");?>">아마도.지도</a>
+			      <a class="brand" href="<?php echo site_url("/manage");?>">아마도.지도</a>
 			      <?php if($map->id) { ?>
 			      <a class="sub-brand" href="<?php echo site_url($map->permalink."/manage/");?>"><?php echo $map->name;?></a>
 				  <?php } ?>

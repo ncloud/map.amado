@@ -325,7 +325,7 @@
 			   
           gmarkers['image_' + i] = marker;
 
-          var label = new Label({id: 'image_' + i, map:gmap.map, distance: {x:0, y:15}});
+          var label = new Label({id: 'image_' + i, map:gmap.map, distance: {x:0, y:20}});
           
           label.bindTo('position', marker);
           label.set("text", val.title);

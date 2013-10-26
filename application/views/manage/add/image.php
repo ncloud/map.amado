@@ -83,9 +83,12 @@
             if($edit_mode) {
               if(isset($image) && isset($image->image)) {
           ?>
-          <img src="<?php echo $image->image_small;?>" alt="" />
+          <p>
+            <img src="<?php echo $image->image_medium;?>" alt="" />
+          </p>
+
           <p class="help-block">
-            사진은 변경하실 수 없습니다.
+            # 사진은 변경하실 수 없습니다.
           </p>
           <?php
               }
@@ -235,8 +238,8 @@
     gmap = new GMaps({
       div: '#map',  
       zoom: 18,
-      <?php if(isset($place->lat)) { ?> lat: <?php echo $place->lat;?>, <?php } ?>
-      <?php if(isset($place->lng)) { ?> lng: <?php echo $place->lng;?>, <?php } ?>
+      <?php if(isset($image->lat)) { ?> lat: <?php echo $image->lat;?>, <?php } ?>
+      <?php if(isset($image->lng)) { ?> lng: <?php echo $image->lng;?>, <?php } ?>
       center_changed: function() {
         var center = gmap.getCenter();
         if(searched) {
