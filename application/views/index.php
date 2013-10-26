@@ -416,6 +416,10 @@
               strokeOpacity: 0.9,
               strokeWeight: 4
             });
+          
+          <?php if($course_mode && $map->default_menu == 'type') { ?>
+            gpath.setVisible(false);
+          <?php } ?>
 
             gpaths['path_' + i] = gpath;
         }
@@ -488,7 +492,6 @@
         var tab_height = $("#tab_menu").outerHeight();
 
         newHeight = $(window).height() - header_height - tab_height;
-        console.log(header_height + " " + tab_height)
         $('.list').css('height', newHeight + "px"); 
       }
       
