@@ -118,6 +118,16 @@ class M_Course extends CI_Model
 		return $this->db->delete('courses', array('id'=>$id));
 	}
 
+	function delete_by_map_id($id)
+	{
+		$courses = $this->db->from('courses')->where('map_id', $id)->get()->result();
+		if($courses) {
+			foreach($courses as $course) {
+				$this->delete($course->id);
+			}
+		}
+	}
+
 	function delete_target($id) {
 		return $this->db->delete('course_targets', array('id'=>$id));		
 	}

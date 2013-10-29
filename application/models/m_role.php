@@ -109,6 +109,11 @@ class M_Role extends CI_Model
 		return $this->db->delete('role_users', array('invite_code'=>$code));
 	}
 
+	public function delete_by_map_id($map_id)
+	{
+		return $this->db->delete('role_users', array('map_id'=>$map_id));		
+	}
+
 	public function update_invite_user($code, $user_id)
 	{
 		$data = new StdClass;

@@ -89,4 +89,9 @@ class M_Map extends CI_Model
 
 		return $this->db->update('maps', $data, array('id'=>$map_id));
 	}
+
+	function delete($id)
+	{
+		$this->db->delete('maps', array('id'=>$id));
+	}
 }

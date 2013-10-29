@@ -243,6 +243,11 @@ class M_Place extends CI_Model
 		return true;
 	}
 
+	function delete_by_map_id($map_id) {
+		$this->db->delete('place_types', array('map_id'=>$map_id));
+		$this->db->delete('places', array('map_id'=>$map_id));
+	}
+
 	function __default_types($map_id, $order_index)
 	{
 		$result = array();

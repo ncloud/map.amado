@@ -955,7 +955,39 @@ class Manage extends APP_Controller {
 		if(!$this->__check_login()) return false;
 		if(!$this->__check_role()) return false;
 
+		$message = null;
+		$errors = array();
+
+		if($_POST && !empty($_POST)) {
+			$code = isset($_POST['code']) ? $_POST['code'] : '';
+
+			if(empty($code) || $code != $this->map->permalink) {
+				$errors['code'] = '코드값이 비어있거나 잘못되었습니다. 다시 확인해주세요.';
+			} else if(!($this->user_data->role == 'super-admin' || $this->user_data->role == 'admin')) {
+				$errors['role'] = '권한이 없습니다.';
+			} else {
+				$this->load->model('m_place');
+				$this->load->model('m_course');
+				$this->load->model('m_role');
+
+				$this->m_course->delete_by_map_id($this->map->id);
+				$this->m_place->delete_by_map_id($this->map->id);
+				$this->m_role->delete_by_map_id($this->map->id);
+				$this->m_map->delete($this->map->id);
+
+				redirect('/manage');
+			}
+
+			if(count($errors)) {
+				$message = new StdClass;
+				$message->type = 'error';
+				$message->content = $errors;
+			} else {
+			}
+		}
+
 		$this->set('menu', 'delete');
+		$this->set('message', $message);
 
 		$this->view('manage/setting/delete');
 	}
@@ -1381,6 +1413,10 @@ class Manage extends APP_Controller {
 			$errors['permalink'] = '주소를 입력해주세요';
 
 			if($map) $map->permalink = '';
+		} else if($this->__check_permalink($form['permalink'])) {
+			$errors['permalink'] = '사용하실 수 있는 주소가 아닙니다. 다른 주소명을 입력해주세요.';
+
+			if($map) $map->permalink = $form['permalink'];
 		} else {
 			if($this->m_map->get_by_permalink($form['permalink'])) {
 				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
@@ -1446,6 +1482,10 @@ class Manage extends APP_Controller {
 			$errors['permalink'] = '주소를 입력해주세요';
 
 			if($map) $map->permalink = '';
+		} else if($this->__check_permalink($form['permalink'])) {
+			$errors['permalink'] = '사용하실 수 있는 주소가 아닙니다. 다른 주소명을 입력해주세요.';
+
+			if($map) $map->permalink = $form['permalink'];
 		} else {
 			if($this->m_map->get_by_permalink($form['permalink'], $map_id)) {
 				$errors['permalink'] = '이미 존재하는 주소입니다. 다른 주소를 입력해주세요';
@@ -1546,6 +1586,17 @@ class Manage extends APP_Controller {
 	{
 		if(empty($this->user_data->id)) {
 			redirect('/login?redirect_uri='.urlencode(site_url($_SERVER['PATH_INFO'])));
+			return false;
+		}
+
+		return true;
+	}
+
+	private function __check_permalink($permalink)
+	{
+		if(strlen($permalink) < 5) {
+			return false;
+		} else if(in_array($permalink, array('manage', 'owner', 'admin', 'ajax', 'test', 'invite', 'login', 'join', 'edit', 'upload', 'download', 'map', 'delete', 'page', 'tools', 'user'))) {
 			return false;
 		}
 
