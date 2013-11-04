@@ -1,0 +1,10 @@
+	@media (max-width: 530px) {
+		.toggle_wrap { display:block;  }
+		.menu .header a.close { display:inline-block; }
+
+		#map { margin-right:0; }
+		.menu { display:none; width:100%; z-index:1000; }	
+
+		.menu.mobile_visible { display:block; }
+
+	}

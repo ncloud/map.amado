@@ -38,13 +38,15 @@ body {
 	a.logo { position:fixed; z-index:1000; border:1px solid #999; display:inline-block; color:#000; font-weight:bold; font-size:13px; line-height:13px; padding:8px; left: 6px; top: 6px; background:rgba(255,255,255,0.8); box-shadow: 0px 1px 0px rgba(0,0,0,0.1); }
 		a.logo:hover { text-decoration:none; color:#333; background:#f8f8f8; }
 	
-	.toggle_wrap { position:fixed; z-index:1000; right: 6px; top: 6px; display:none;  }
+	.toggle_wrap { position:fixed; z-index:1000; left: 0px; top: 45px; display:none; width:100%; box-sizing:border-box; background:rgba(255,255,255,0.6); border-bottom:1px solid #ccc; padding:12px; }
 		.toggle_wrap .group { display:inline-block; letter-spacing:-4px; }
 
 		.toggle_wrap a { display:inline-block; border:1px solid #999; color:#000; font-weight:bold; font-size:13px; line-height:13px; padding:8px; background:rgba(255,255,255,0.8); box-shadow: 0px 1px 0px rgba(0,0,0,0.1); letter-spacing:0; }
 		.toggle_wrap a:hover { text-decoration:none; color:#333; background:#f8f8f8; }
 
 		.toggle_wrap a.active { color:#fff; background:rgba(0,0,0,0.3); }
+
+		.toggle_wrap a.current_location_btn { float:right; }
 
 	/* menu */
 	
@@ -60,19 +62,16 @@ body {
 	  background-color: #333;
 	  width: 250px;
 	}
-
-	.menu .header {	
-	}
 		
 	.menu .header {
-		background: #f6dd17;
+		background: #ffffff;
 		text-align: center;
 		font-size: 15px;
 		text-shadow:0px 1px 0px rgba(255,255,255,0.3);
 		margin:0;
 		color: #111;
 		line-height:44px;
-		border-bottom:1px solid #000;
+		border-bottom:1px solid #ccc;
 	}
 	
 	.menu .header a.map {
@@ -109,22 +108,46 @@ body {
 			background-position:center;
 		}
 
+		div.tool.open .btn.dropdown-toggle span {
+			background-image:url(../img/icons/menu_bar_white.png);
+		}
+
 		div.tool .dropdown-menu {
 			box-shadow:none !important;
 		}
 
-	.menu .header a.close {
+	.menu .header div.add {
 		position:absolute;
 		top:7px;
 		right:6px;
-		box-shadow:none;
-		background:#f5f5f5;
-		border:0;
-		border-radius:0;
-		opacity:1;
-
-		display:none;
+		line-height:0;
+		text-align:left;
 	}
+
+		div.add .btn {
+			position:relative;
+	
+			width:10px;
+			height:22px;
+		}
+
+		div.add .btn:hover {
+			background:#eee !important;
+		}
+
+		div.add .btn span {
+			position:absolute;
+			left:0; top:0; right:0; bottom:0;
+
+			display:inline-block;
+			
+			text-indent:-1000px;
+			overflow:hidden;
+
+			background-image:url(../img/icons/menu_add.png);
+			background-repeat:no-repeat;
+			background-position:center;
+		}
 
 	.menu .buttons
 	{
@@ -179,41 +202,31 @@ body {
 	}
 	
 		.tab li { float:left; width:50%; height:30px; text-align:center; font-size:13px; }
-		.tab li a { text-decoration:none; display:block; width:100%; color:#fff; line-height:30px; background:#666; box-sizing:border-box;  }
+		.tab li a { text-decoration:none; display:block; width:100%; color:#fff; line-height:30px; background:#ddd; box-sizing:border-box;  }
 		
-		.tab li a {
-					background-image: linear-gradient(bottom, rgb(68,68,68) 22%, rgb(75,75,75) 61%);
-					background-image: -o-linear-gradient(bottom, rgb(68,68,68) 22%, rgb(75,75,75) 61%);
-					background-image: -moz-linear-gradient(bottom, rgb(68,68,68) 22%, rgb(75,75,75) 61%);
-					background-image: -webkit-linear-gradient(bottom, rgb(68,68,68) 22%, rgb(75,75,75) 61%);
-					background-image: -ms-linear-gradient(bottom, rgb(68,68,68) 22%, rgb(75,75,75) 61%);
-					
-					background-image: -webkit-gradient(
-						linear,
-						left bottom,
-						left top,
-						color-stop(0.22, rgb(68,68,68)),
-						color-stop(0.61, rgb(75,75,75))
-					);
-				}
+		.tab li a { color:#999; background:#ddd; border-bottom:1px solid #ccc; }
 				
-		.tab li:first-child a { }
+		.tab li:first-child a { border-right:1px solid #ccc; }
 		.tab li:last-child a { }
 			.tab li:last-child.selected a { }
 
-		.tab li a:hover { background:#555; }
-		.tab li.selected a { background:#333; height:32px; }
+		.tab li a:hover { background:#d3d3d3; }
+		.tab li.selected a { color:#333; background:#eee; height:31px; border-bottom:0; }
 
-		.tab li a:active { background:#222; border-left:1px solid #333; color:#aaa; box-shadow:inset 0px 1px 1px rgba(0,0,0,0.4); }
+		.tab li a:active { background:#d0d0d0; box-shadow:inset 0px 1px 1px rgba(0,0,0,0.1); }
 		
-		
+	.menu_content {}
+		.menu_content .close_panel { display:none; width: 100%; text-align: center; border-top: 1px solid #ccc; font-size: 14px; background: #fff; }
+			.menu_content .close_panel a { display:block; padding: 10px; }
+			.menu_content .close_panel a:hover { text-decoration:none; }
+
 	/* list */
 	
 	.list
 	{
 	  height: 100%;
 	  overflow-y: auto;
-	  background-color: #333;
+	  background-color: #eee;
 	  margin:0; 
 	}
 			
@@ -221,8 +234,12 @@ body {
 		{
 		  font-size: 10pt;
 		  color: #eee;
-		  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		  border-bottom: 1px solid #ddd;
 		  overflow: hidden;
+		}
+
+		.list > li:hover {
+			background:#e8e8e8;
 		}
 		
 		.list > li img
@@ -248,7 +265,7 @@ body {
 		  display: block;
 		  overflow: hidden;
 		  padding: 3px 6px;
-		  color: #eee;
+		  color: #333;
 		  line-height:25pt;
 		  text-decoration:none;
 		}
@@ -281,7 +298,7 @@ body {
 		}
 		.list > li .toggle
 		{
-		  background-image: url("../img/icons/eye.png");
+		  background-image: url("../img/icons/eye_black.png");
 		  background-position: center center;
 		  background-repeat: no-repeat;
 		  width: 30px;
@@ -294,13 +311,14 @@ body {
 			height: 24px;
 			text-align: center;
 			font-size: 11px;
+			color:#fff;
 		}
 			
 		.list .list-items
 		{
 		  display: none;
-		  background:#222;
-		  box-shadow:inset 0px 1px 0px #111;
+		  background:#ddd;
+		  box-shadow:inset 0px 1px 0px #ccc;
 		  margin:0;
 		}
 		.list .list-items li
@@ -313,22 +331,20 @@ body {
 		  font-size: 8pt;
 		  padding:10px 5px 10px 32px;
 		  outline: none;
-		  color: #ccc;
+		  color: #333;
 		  font-weight: normal;
 		  line-height: 1.4em; 
 		  text-decoration:none;
 		}
 		.list .list-items li a:hover
 		{
-		  background-color: rgba(255,255,255,.03);
+		  background-color: #d3d3d3;
 		  text-decoration: none;
 		  outline: none;
-		  color: #fff;
 		}
 		.list .list-items li a:active
 		{
-		  color: #fff;
-		  background-color: #444;
+		  background-color: #aaa;
 		}
 	
 	/* marker */

@@ -8,14 +8,14 @@
       if($course_mode) {
     ?>
      <div class="group">
-      <a class="course_btn active" href="#" onclick="changeMenu('course'); return false;">코스</a>
-      <a class="category_btn" href="#" onclick="changeMenu('category'); return false;">분류</a>
+      <a class="course_btn<?php echo $map->default_menu == 'course' ? ' active' : '';?>" href="#" onclick="changeMenu('course'); return false;">코스</a>
+      <a class="category_btn<?php echo $map->default_menu == 'type' ? ' active' : '';?>" href="#" onclick="changeMenu('category'); return false;">분류</a>
      </div>
     <?php
       }
     ?>
 
-	   <a class="menu_btn" href="#" onclick="toggleMenuForMobile(); return false;">메뉴</a>
+	   <a class="current_location_btn" href="#" onclick="currentLocation(); return false;">현재위치</a>
   </div>
 
     <!-- google map -->
@@ -29,6 +29,7 @@
           <a class="btn btn-white dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
           <ul class="dropdown-menu">
             <li><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
+            <li><a href="#" onclick="showMenu(); return false;">메뉴</a></li>
             <li class="divider"></li>
             <li><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
             <li><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
@@ -36,7 +37,9 @@
         </div>
 
   	  	<a class="map" href="<?php echo site_url('/'.$map->permalink);?>"><?php echo $map->name;?></a>
-        <a class="btn btn-white close" href="#" onclick="closeMenuForMobile(); return false;">&times;</a>
+        <div class="btn-group add">
+          <a class="btn btn-white" href="#" onclick="$('#modal_add').modal();"><span>추가</span></a>
+        </div>
   	  </div>
 	  
 	  <?php if($current_user->id) { ?>
@@ -46,12 +49,13 @@
 	  </div>-->
 	  <?php } ?>
 	  
+    <div class="menu_content">
 	  <?php
 	  	if($course_mode) {
 	  ?>
 		  <ul id="tab_menu" class="tab">
-		  	<li class="course<?php echo $map->default_menu == 'course' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('course'); return false;">코스</a></li>
-		  	<li class="category<?php echo $map->default_menu == 'type' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('category'); return false;">분류</a></li>
+		  	<li class="course<?php echo $map->default_menu == 'course' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('course'); showMenu(); return false;">코스</a></li>
+		  	<li class="category<?php echo $map->default_menu == 'type' ? ' selected' : '';?>"><a href="#" onclick="changeMenu('category'); showMenu(); return false;">분류</a></li>
 		  </ul>
 		  
 		  <ul class="list" id="list_by_course"<?php echo $map->default_menu == 'type' ? ' style="display:none;"' : '';?>>
@@ -113,6 +117,9 @@
           }
         ?>
       </ul>
+
+      <div class="close_panel"><a href="#" onclick="closeMenu(); return false;">닫기</a></div>
+    </div>
     </div>
     
     <!-- more info modal -->
@@ -488,10 +495,16 @@
       function resizeList() {
         var header_height = $("#header").outerHeight();
         if(header_height == 1) header_height = 45;
-
+        
         var tab_height = $("#tab_menu").outerHeight();
 
         newHeight = $(window).height() - header_height - tab_height;
+
+        var $close_panel = $(".menu_content .close_panel");
+        if($close_panel.is(':visible')) {
+          newHeight -= $close_panel.height();
+        }
+
         $('.list').css('height', newHeight + "px"); 
       }
       
@@ -592,9 +605,6 @@
         $tab_menu.find('li').removeClass('selected');
         $tab_menu.find('li.' + menu).addClass('selected');
 
-        $('ul.list').hide();
-        $("#list_by_" + menu).show();
-
         var category_visible = (menu == 'category');
         var course_visible = menu == 'course';
 
@@ -681,6 +691,34 @@
           gmap.setZoom(zoomLvl);
       }
 
+      function showMenu()
+      {
+        var $active_button = $('.toggle_wrap .group a.active');
+
+        $('ul.list').hide();
+        $("#tab_menu").show();       
+        $('div.close_panel').show();
+
+
+        switch($active_button.text()) {
+          case '코스':
+            $("#list_by_course").show();
+          break;
+          case '분류':
+            $("#list_by_category").show();
+          break;
+        }
+
+        resizeList();
+      }
+
+      function closeMenu()
+      {
+        $('ul.list').hide();
+        $('#tab_menu').hide();  
+        $('div.close_panel').hide();
+      }
+
       function toggleMenuForMobile()
       {
         var $menu = $("#menu");
@@ -695,6 +733,19 @@
       {
         var $menu = $("#menu");
         $menu.removeClass('mobile_visible');
+      }
+
+      function currentLocation()
+      {
+        GMaps.geolocate({
+          success: function(position){
+            if(gmap) gmap.setCenter(position.coords.latitude, position.coords.longitude);
+          },
+          error: function(error){
+          },
+          not_supported: function(){
+          }
+        });
       }
       
       // add modal form submit

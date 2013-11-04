@@ -142,7 +142,7 @@ class Page extends APP_Controller {
 	        }
 			$this->set('category_default', $category_default);
 			
-	    	$this->view('index');
+	    	$this->view('map');
 	    }
     }
     
