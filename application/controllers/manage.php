@@ -198,9 +198,11 @@ class Manage extends APP_Controller {
 								redirect($this->map->permalink.'/manage');
 							}
 						} else {
+							$default_image = $this->m_image->get($image_id);
+
 							$message = new StdClass;
 							$message->type = 'success';
-							$message->content = array('id'=>$image_id, 'status'=>isset($_POST['status']) ? $_POST['status'] : 'pending');
+							$message->content = $default_image;
 						}
 					} else {
 						$message = new StdClass;
@@ -263,9 +265,12 @@ class Manage extends APP_Controller {
 								redirect($this->map->permalink.'/manage');
 							}
 						} else {
+							$default_place = $this->m_place->get($place_id);
+							$default_place->icon_id = $this->m_place->get_icon_id_by_type_id($default_place->type_id);
+
 							$message = new StdClass;
 							$message->type = 'success';
-							$message->content = array('id'=>$place_id, 'status'=>isset($_POST['status']) ? $_POST['status'] : 'pending');
+							$message->content = $default_place;
 						}
 					} else {
 						$message = new StdClass;
@@ -1277,11 +1282,20 @@ class Manage extends APP_Controller {
 			if($change_place) $change_place->owner_email = $form['owner_email'];
 		}
 		
+		if(isset($form['type_id']) && $change_place) $change_place->type_id = $form['type_id'];
+		else if($change_place) $change_place->type_id = '';
+
 		if(isset($form['url']) && $change_place) $change_place->url = $form['url'];
 		else if($change_place) $change_place->url = '';
 
 		if(isset($form['description']) && $change_place) $change_place->description = $form['description'];
 		else if($change_place) $change_place->description = '';
+
+		if(isset($form['lat']) && $change_place) $change_place->lat = $form['lat'];
+		else if($change_place) $change_place->lat = '';
+
+		if(isset($form['lng']) && $change_place) $change_place->lng = $form['lng'];
+		else if($change_place) $change_place->lng = '';
 
 		if(count($errors) == 0) return false;
 		return $errors;
@@ -1336,6 +1350,12 @@ class Manage extends APP_Controller {
 		
 		if(isset($form['description']) && $change_image) $change_image->description = $form['description'];
 		else if($change_image) $change_image->description = '';
+
+		if(isset($form['lat']) && $change_image) $change_image->lat = $form['lat'];
+		else if($change_image) $change_image->lat = '';
+
+		if(isset($form['lng']) && $change_image) $change_image->lng = $form['lng'];
+		else if($change_image) $change_image->lng = '';
 
 		if(count($errors) == 0) return false;
 		return $errors;

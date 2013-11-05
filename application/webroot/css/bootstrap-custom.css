@@ -29,7 +29,7 @@
 
 	hr { border-top:0; border-bottom:2px solid #ddd; }
 
-	.alert { border-radius:0; }
+	.alert { padding:10px 35px 10px 14px; border-radius:0; }
 	
 	.table { border-bottom:1px solid #ccc; }
 	.table th, .table td { vertical-align: middle; }
@@ -201,3 +201,10 @@
 		.btn.dropdown-toggle:hover { background-color:#eee !important; }
 
 		.buttons .btn.dropdown-toggle:hover { background-color:#aaa !important; }
+
+
+
+/* plugin */
+.notifications { border:0; box-shadow:0px 2px 0px rgba(0,0,0,0.05); text-shadow:none;  }
+	.notifications h3 { font-size:13px; line-height:15px; }
+	.notifications p { margin-top:6px; margin-bottom:0 ;}

@@ -248,6 +248,19 @@ class M_Place extends CI_Model
 		$this->db->delete('places', array('map_id'=>$map_id));
 	}
 
+	function get_icon_id_by_type_id($type_id)
+	{
+		if($type_id == IMPORT_TYPE_ID) return $type_id;
+		else {
+			$result = $this->db->from('place_types')->where('id', $type_id)->get()->row();
+			if($result) {
+				return $result->icon_id;
+			} else {
+				return false;
+			}
+		}
+	}
+
 	function __default_types($map_id, $order_index)
 	{
 		$result = array();

@@ -23,16 +23,15 @@
     
     <!-- right-side gutter -->
     <div class="menu" id="menu">        
-	  
   	  <div class="header" id="header">
         <div class="btn-group tool">
           <a class="btn btn-white dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
           <ul class="dropdown-menu">
-            <li><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
-            <li><a href="#" onclick="showMenu(); return false;">메뉴</a></li>
+            <li class="go_manage"><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
+            <li class="go_menu only_mobile"><a href="#" onclick="showMenu(); return false;">메뉴</a></li>
             <li class="divider"></li>
-            <li><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
-            <li><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
+            <li class="go_add_place"><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
+            <li class="go_add_image"><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
           </ul>
         </div>
 
@@ -162,6 +161,69 @@
       var gcourses = {};
       var gpaths = {};
       var overlay = null;
+
+      var markers = new Array();
+      var course_markers = new Array();
+      var images = new Array();
+
+      function add_place(i, val)
+      {
+          i = parseInt(i);
+
+          var iconSize = new google.maps.Size(32,36);
+          var iconCenter = new google.maps.Point(16,32);
+
+          // format marker URI for display and linking
+           var markerURL = val.url;
+           if(markerURL.substr(0,7) != "http://") {
+            markerURL = "http://" + markerURL; 
+           } 
+           var markerURL_short = markerURL.replace("http://", "");
+           var markerURL_short = markerURL_short.replace("www.", "");
+
+           var info = 
+              "<div class='marker_title'>"+val.title+"</div>"
+              + "<div class='marker_uri'><a target='_blank' href='"+markerURL+"'>"+markerURL_short+"</a></div>"
+              + "<div class='marker_desc'>"+val.description+"</div>"
+              + "<div class='marker_address'>"+val.address+"</div>";           
+
+            // build this marker
+            var markerImage = new google.maps.MarkerImage("<?php echo site_url('/img/icons/');?>/"+val.icon+".png", null, null, iconCenter, iconSize);
+            var marker = gmap.addMarker({
+                type: val.type,
+                type_id: val.type_id,
+                lat: val.lat,
+                lng: val.lng,
+                title: '',
+                zIndex: 10 + i,
+                icon: markerImage,
+                infoWindow: {
+                  content: info
+                },
+                click: function(e) {
+
+                },
+                mouseover: function() {
+                    $("#label_place_"+i).show();//fadeIn('fast');
+                },
+                mouseout: function() { 
+                    $("#label_place_"+i).hide();//fadeOut('fast');
+                }
+              });
+
+
+            gmarkers['place_' + i] = marker;
+            
+            // add marker label
+            var label = new Label({id: 'place_' + i, map:gmap.map, distance: {x:0, y:4}});
+            
+            label.bindTo('position', marker);
+            label.set("text", val.title);
+            label.bindTo('visible', marker);
+            label.bindTo('clickable', marker);
+            label.bindTo('zIndex', marker);
+      }
+
    
       $(document).ready(function(){
       	initialize();
@@ -174,9 +236,6 @@
       });
       
       function initialize() {
-        var markers = new Array();
-        var course_markers = new Array();
-        var images = new Array();
         <?php
             if($place_lists) {
               foreach($place_lists as $place) {
@@ -245,62 +304,11 @@
           if(typeof(val) == 'undefined') return;
 
           val = $.extend(val, {url:''});
+          marker = add_place(i, val);
 
-          var iconSize = new google.maps.Size(32,36);
-          var iconCenter = new google.maps.Point(16,32);
-
-          // format marker URI for display and linking
-           var markerURL = val.url;
-           if(markerURL.substr(0,7) != "http://") {
-            markerURL = "http://" + markerURL; 
-           } 
-           var markerURL_short = markerURL.replace("http://", "");
-           var markerURL_short = markerURL_short.replace("www.", "");
-
-           var info = 
-              "<div class='marker_title'>"+val.title+"</div>"
-              + "<div class='marker_uri'><a target='_blank' href='"+markerURL+"'>"+markerURL_short+"</a></div>"
-              + "<div class='marker_desc'>"+val.description+"</div>"
-              + "<div class='marker_address'>"+val.address+"</div>";           
-            
-            // build this marker
-            var markerImage = new google.maps.MarkerImage("<?php echo site_url('/img/icons/');?>/"+val.icon+".png", null, null, iconCenter, iconSize);
-            var marker = gmap.addMarker({
-                type: val.type,
-                type_id: val.type_id,
-                lat: val.lat,
-                lng: val.lng,
-                title: '',
-                zIndex: 10 + i,
-                icon: markerImage,
-                infoWindow: {
-                  content: info
-                },
-                click: function(e) {
-
-                },
-                mouseover: function() {
-                    $("#label_place_"+i).show();//fadeIn('fast');
-                },
-                mouseout: function() { 
-                    $("#label_place_"+i).hide();//fadeOut('fast');
-                }
-              });
-
-            gmarkers['place_' + i] = marker;
-            
-            // add marker label
-            var label = new Label({id: 'place_' + i, map:gmap.map, distance: {x:0, y:4}});
-            
-            label.bindTo('position', marker);
-            label.set("text", val.title);
-            label.bindTo('visible', marker);
-            label.bindTo('clickable', marker);
-            label.bindTo('zIndex', marker);
-
-            <?php if($course_mode && $map->default_menu == 'course') { ?>
+          <?php if($course_mode && $map->default_menu == 'course') { ?>
             marker.setVisible(false);
-            <?php } ?>
+          <?php } ?>
         });
 
         jQuery.each(images, function(i, val) {
@@ -694,18 +702,17 @@
       function showMenu()
       {
         var $active_button = $('.toggle_wrap .group a.active');
-
-        $('ul.list').hide();
-        $("#tab_menu").show();       
-        $('div.close_panel').show();
-
+        
+        toggleMenuForMobile(true);
 
         switch($active_button.text()) {
           case '코스':
             $("#list_by_course").show();
+            $("#list_by_category").hide();
           break;
           case '분류':
             $("#list_by_category").show();
+            $("#list_by_course").hide();
           break;
         }
 
@@ -714,18 +721,30 @@
 
       function closeMenu()
       {
-        $('ul.list').hide();
-        $('#tab_menu').hide();  
-        $('div.close_panel').hide();
+        toggleMenuForMobile(false);
       }
 
-      function toggleMenuForMobile()
+      function toggleMenuForMobile(mode)
       {
+        if(typeof(mode) == 'undefined') mode = 'auto';
+
         var $menu = $("#menu");
-        if($menu.hasClass('mobile_visible')) {
-          $menu.removeClass('mobile_visible');
+        if(mode == 'auto') {
+          if($menu.hasClass('mobile_visible')) {
+            $menu.removeClass('mobile_visible');
+            $(".menu .go_menu").removeClass('checked');
+          } else {
+            $menu.addClass('mobile_visible');
+            $(".menu .go_menu").addlass('checked');
+          }
         } else {
-          $menu.addClass('mobile_visible');
+          if(mode) { // show
+            $menu.addClass('mobile_visible');
+            $(".menu .go_menu").addClass('checked');
+          } else { // hide
+            $menu.removeClass('mobile_visible');
+            $(".menu .go_menu").removeClass('checked');
+          }
         }
       }
 
@@ -779,11 +798,24 @@
             $form.find('.error').removeClass('error');
 
             if(data.success) {
-               $('.top-center').notify({
-                  key: 'addform',
-                  message: { html: '<h3>장소를 추가했습니다.</h3>' + (data.content.status == 'approved' ? '새로고침하시면 실제 입력된 모습을 보실 수 있습니다.' : '관리자의 승인 후 실제 지도에 입력됩니다.') },
-                  type:'success'
-                }).show();
+               if(data.content.status != 'approved') {
+                 $('.top-center').notify({
+                    key: 'addform',
+                    message: { html: '<h3>장소를 추가했습니다.</h3>' + '<p>관리자의 승인 후 실제 지도에 입력됩니다.</p>' },
+                    type:'success'
+                  }).show();
+               } else {
+                 $('.top-center').notify({
+                    key: 'addform',
+                    message: { html: '<h3>장소를 추가했습니다.</h3>' },
+                    type:'success'
+                  }).show();
+
+                 var place = data.content;
+                 markers[place.id] = {type:'category', type_id:place.type_id, title:place.title, icon:place.icon_id, lat:place.lat, lng:place.lng, description:place.description, url:place.url, address:place.address};
+
+                 add_place(place.id, markers[place.id]);
+               }
 
               $("#modal_add").modal('hide');
             } else {
@@ -804,6 +836,8 @@
                  }).show();
             	}
             }
+
+            $("#addform").modal('hide');
           }
       });
       
@@ -832,8 +866,6 @@
       $("#addform_image").ajaxForm({    
             dataType: 'json',
             success:function(data) {
-              console.log(data);
-
               $form = $("#addform_image");
               $form.find('.error').removeClass('error');
 
@@ -864,6 +896,8 @@
                 }
                 
               }
+
+             $("#addform_image").modal('hide');
             }
       });
     </script>
