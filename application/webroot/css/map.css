@@ -384,7 +384,7 @@ body {
 	  margin-top: 10px;
 	}
 	.marker_desc img {
-	    max-width: 220px;
+	    max-width: 220px !important;
 	}
 	
 	.marker_address

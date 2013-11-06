@@ -199,6 +199,9 @@ class Manage extends APP_Controller {
 							}
 						} else {
 							$default_image = $this->m_image->get($image_id);
+				          	$default_image->image = site_url('files/uploads/'.$default_image->file);
+				          	$default_image->image_small = site_url('files/uploads/'.str_replace('.','_s.',$default_image->file));
+				          	$default_image->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$default_image->file));
 
 							$message = new StdClass;
 							$message->type = 'success';

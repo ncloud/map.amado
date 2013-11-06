@@ -147,6 +147,13 @@
       <?php echo $this->view('/manage/add/image', array('modal_mode'=>true));?>
     </div>
 
+    <div id="imageLightbox" class="lightbox hide fade"  tabindex="-1" role="dialog" aria-hidden="true">
+      <div class='lightbox-content'>
+        <img src="" />
+        <div class="lightbox-caption"><p>Your caption here</p></div>
+      </div>
+    </div>
+
 	<script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
     
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
@@ -211,7 +218,6 @@
                 }
               });
 
-
             gmarkers['place_' + i] = marker;
             
             // add marker label
@@ -222,6 +228,49 @@
             label.bindTo('visible', marker);
             label.bindTo('clickable', marker);
             label.bindTo('zIndex', marker);
+
+            return marker;
+      }
+
+      function add_image(i, val) {          
+        i = parseInt(i);
+
+        var info = "<div class='marker_title'>"+val.title+"</div>"
+              + "<div class='marker_desc'><img src='"+val.original_image+"' alt='' /></div>";
+              
+          var markerImage = new google.maps.MarkerImage(val.image, null, null, new google.maps.Point(15,15), new google.maps.Size(30,30));
+          var marker = gmap.addMarker({
+              type: val.type,
+              type_id: val.type_id,
+              lat: val.lat,
+              lng: val.lng,
+              title: '',
+              zIndex: 10 + i,
+              icon: markerImage,
+              click: function(e) {
+                console.log(val);
+                  $("#imageLightbox").find('img').attr('src', val.original_image);
+                  $('#imageLightbox').lightbox({show:true});
+              },
+              mouseover: function() {
+                      $("#label_image_"+i).show();//fadeIn('fast');
+                  },
+              mouseout: function() { 
+                  $("#label_image_"+i).hide();//fadeOut('fast');
+              }
+            });
+         
+          gmarkers['image_' + i] = marker;
+
+          var label = new Label({id: 'image_' + i, map:gmap.map, distance: {x:0, y:20}});
+          
+          label.bindTo('position', marker);
+          label.set("text", val.title);
+          label.bindTo('visible', marker);
+          label.bindTo('clickable', marker);
+          label.bindTo('zIndex', marker);
+
+          return marker;
       }
 
    
@@ -304,7 +353,7 @@
           if(typeof(val) == 'undefined') return;
 
           val = $.extend(val, {url:''});
-          marker = add_place(i, val);
+          var marker = add_place(i, val);
 
           <?php if($course_mode && $map->default_menu == 'course') { ?>
             marker.setVisible(false);
@@ -312,41 +361,9 @@
         });
 
         jQuery.each(images, function(i, val) {
-          var info = "<div class='marker_title'>"+val.title+"</div>"
-              + "<div class='marker_desc'><img src='"+val.original_image+"' alt='' /></div>";
-              
-          var markerImage = new google.maps.MarkerImage(val.image, null, null, new google.maps.Point(15,15), new google.maps.Size(30,30));
-          var marker = gmap.addMarker({
-              type: val.type,
-              type_id: val.type_id,
-      			  lat: val.lat,
-      			  lng: val.lng,
-      			  title: '',
-      			  zIndex: 10 + i,
-              icon: markerImage,
-              infoWindow: {
-              	content: info
-              },
-      			  click: function(e) {
+          if(typeof(val) == 'undefined') return;
 
-      			  },
-      			  mouseover: function() {
-      	              $("#label_image_"+i).show();//fadeIn('fast');
-      	          },
-  	          mouseout: function() { 
-  	              $("#label_image_"+i).hide();//fadeOut('fast');
-  	          }
-      			});
-			   
-          gmarkers['image_' + i] = marker;
-
-          var label = new Label({id: 'image_' + i, map:gmap.map, distance: {x:0, y:20}});
-          
-          label.bindTo('position', marker);
-          label.set("text", val.title);
-          label.bindTo('visible', marker);
-          label.bindTo('clickable', marker);
-          label.bindTo('zIndex', marker);
+          var marker = add_image(i, val);
 
           <?php if($course_mode && $map->default_menu == 'course') { ?>
           marker.setVisible(false);
@@ -869,14 +886,29 @@
               $form = $("#addform_image");
               $form.find('.error').removeClass('error');
 
-              if(data.success) {
-                 $('.top-center').notify({
-                    key: 'addform',
-                    message: { html: '<h3>사진을 추가했습니다.</h3>' + (data.content.status == 'approved' ? '새로고침하시면 실제 입력된 모습을 보실 수 있습니다.' : '관리자의 승인 후 실제 지도에 입력됩니다.') },
-                    type:'success'
-                  }).show();
+                if(data.success) {
+                 if(data.content.status != 'approved') {
+                   $('.top-center').notify({
+                      key: 'addform',
+                      message: { html: '<h3>사진을 추가했습니다.</h3>' + '<p>관리자의 승인 후 실제 지도에 입력됩니다.</p>' },
+                      type:'success'
+                    }).show();
+                 } else {
+                   $('.top-center').notify({
+                      key: 'addform',
+                      message: { html: '<h3>사진을 추가했습니다.</h3>' },
+                      type:'success'
+                    }).show();
+                 }
 
                 $("#modal_image_add").modal('hide');
+
+                 var place = data.content;
+                 var image = {type:'category', type_id: 'image', title:place.title, image:place.image_small, original_image:place.image, lat:place.lat, lng:place.lng};
+                 images.push(image);
+
+                 add_image(images.length-1, image);
+
               } else {
                 if(typeof(data.content) == 'object') {
                   $.each(data.content, function(index, content) {
