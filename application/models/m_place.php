@@ -17,6 +17,12 @@ class M_Place extends CI_Model
 	{
 		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.map_id', $map_id)->order_by('places.id DESC')->select('places.*, place_types.name as type_name, attaches.filename as file')->get()->result();
 	}
+
+	function gets_new_places($map_id, $last_id)
+	{
+		return $this->db->from('places')->join('place_types','places.type_id = place_types.id','left')->join('attaches','places.id = attaches.parent_id','left')->where('places.status','approved')->where('places.map_id', $map_id)->where('places.id >', $last_id)->order_by('places.id DESC')->select('places.*, place_types.name as type_name, attaches.filename as file')->get()->result();
+
+	}
 	
 	function gets_by_ids($ids)
 	{

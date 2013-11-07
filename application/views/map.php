@@ -88,7 +88,7 @@
     <?php
 		} // course_mode end
 	  ?>
-	  
+	
       <ul class="list" id="list_by_category"<?php echo $course_mode && $map->default_menu == 'course' ? ' style="display:none;"' : '';?>>
         <?php
           foreach($place_types as $type) {
@@ -101,8 +101,9 @@
                 <ul class='list-items list_category_{$type->id}'>";
 			
 			if($markers_count > 0) {
-				$markers = $place_lists_by_type[$type->id];
+				      $markers = $place_lists_by_type[$type->id];
 	            foreach($markers as $marker) {
+                if($marker->attached != 'no') continue;
 	            	$marker_id = $marker->id;
 	              echo "<li class='type_{$marker->type_id}'>
 	                    <a href='#' onMouseOver=\"markerListMouseOver('place', '{$marker_id}')\" onMouseOut=\"markerListMouseOut('place', '{$marker_id}')\" onClick=\"goToMarker('place','{$marker_id}');\">{$marker->title}</a>
@@ -138,7 +139,7 @@
     
     <!-- add something modal -->
     <div class="modal hide add_modal" id="modal_add">
-    	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$place_types));?>
+    	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$only_place_types));?>
     </div>
     
     
@@ -146,11 +147,14 @@
     <div class="modal hide add_modal" id="modal_image_add">     
       <?php echo $this->view('/manage/add/image', array('modal_mode'=>true));?>
     </div>
-
-    <div id="imageLightbox" class="lightbox hide fade"  tabindex="-1" role="dialog" aria-hidden="true">
-      <div class='lightbox-content'>
-        <img src="" />
-        <div class="lightbox-caption"><p>Your caption here</p></div>
+    
+    <!-- image modal -->
+    <div class="modal hide fade" id="modal_image">
+      <div class="modal-body">
+        <img src="" alt="" />
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
       </div>
     </div>
 
@@ -173,9 +177,18 @@
       var course_markers = new Array();
       var images = new Array();
 
-      function add_place(i, val)
+      var last_place_id = <?php echo $last_place_id;?>;
+
+      function add_place(i, val, add_category_menu)
       {
+          if(typeof(add_category_menu) == 'undefined') add_category_menu = false;
+
           i = parseInt(i);
+
+          var id = parseInt(val.id);
+          if(last_place_id < id) last_place_id = id;
+
+          if(typeof(gmarkers['place_' + i]) != 'undefined') return false;
 
           var iconSize = new google.maps.Size(32,36);
           var iconCenter = new google.maps.Point(16,32);
@@ -229,13 +242,31 @@
             label.bindTo('clickable', marker);
             label.bindTo('zIndex', marker);
 
+            if(add_category_menu) {
+                var $category = $("#list_by_category .category_" + val.type_id);
+                var $to = $category.find(".list_category_" + val.type_id);
+                var html = '<li class="type_' + val.type_id + '">' + 
+                            '<a href="#" onmouseover="markerListMouseOver(\'place\', \'' + i + '\')" onmouseout="markerListMouseOut(\'place\', , \'' + i + '\')" onclick="goToMarker(\'place\',, \'' + i + '\');">' + val.title + '</a>' +
+                           '</li>';
+
+                $to.append(html);
+
+                var $total = $category.find('.item .info .total');
+                var total_text = $total.text();
+                total_text = parseInt(total_text.substr(1, total_text.length-1)) + 1;
+
+                $total.text('(' + total_text + ')');
+            }
+
             return marker;
       }
 
       function add_image(i, val) {          
-        i = parseInt(i);
+          i = parseInt(i);
+          var id = parseInt(val.id);
+          if(last_place_id < id) last_place_id = id;
 
-        var info = "<div class='marker_title'>"+val.title+"</div>"
+          var info = "<div class='marker_title'>"+val.title+"</div>"
               + "<div class='marker_desc'><img src='"+val.original_image+"' alt='' /></div>";
               
           var markerImage = new google.maps.MarkerImage(val.image, null, null, new google.maps.Point(15,15), new google.maps.Size(30,30));
@@ -248,9 +279,8 @@
               zIndex: 10 + i,
               icon: markerImage,
               click: function(e) {
-                console.log(val);
-                  $("#imageLightbox").find('img').attr('src', val.original_image);
-                  $('#imageLightbox').lightbox({show:true});
+                  $("#modal_image").find('img').attr('src', val.original_image);
+                  $('#modal_image').modal('show');
               },
               mouseover: function() {
                       $("#label_image_"+i).show();//fadeIn('fast');
@@ -277,7 +307,9 @@
       $(document).ready(function(){
       	initialize();
 		
-        resizeList() 
+        resizeList();
+
+        checkNewPlaces();
       });
       
       $(window).resize(function() {
@@ -289,9 +321,9 @@
             if($place_lists) {
               foreach($place_lists as $place) {
                 if($place->attached == 'no') {
-                  echo "markers[{$place->id}] = {type:'category', type_id:'{$place->type_id}', title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', url:'{$place->url}', address:'{$place->address}'};"; 
+                  echo "markers[{$place->id}] = {id:'{$place->id}', type:'category', type_id:'{$place->type_id}', title:'{$place->title}', icon:'{$place->icon_id}', lat:'{$place->lat}', lng:'{$place->lng}', description:'{$place->description}', url:'{$place->url}', address:'{$place->address}'};"; 
                 } else if($place->attached == 'image') {
-                  echo "images.push({type:'category', type_id: 'image', title:'{$place->title}', image:'{$place->image_small}', original_image:'{$place->image}', lat:'{$place->lat}', lng:'{$place->lng}'});";
+                  echo "images.push({id:'{$place->id}', type:'category', type_id: 'image', title:'{$place->title}', image:'{$place->image_small}', original_image:'{$place->image}', lat:'{$place->lat}', lng:'{$place->lng}'});";
                 }
               }
             }
@@ -514,8 +546,58 @@
                     break;
             }
         });
-
       } 
+
+      function checkNewPlaces() {
+        var reading_new = false;
+        setInterval(function() {
+          if(!reading_new) {
+            reading_new = true;
+
+            $.ajax({
+              url:"<?php echo site_url('/ajax/check_places/' . $map->id);?>/" + last_place_id,
+              dataType:"json",
+              success:function(data) {
+                reading_new = false;
+
+                if(data.success) {
+                  if(data.result_count > 0) {
+                    $.each(data.result, function(index, result) {
+                      if(result.attached == 'image') {
+                         var place = result;
+                         var image = {id: place.id, type:'category', type_id: 'image', title:place.title, image:place.image_small, original_image:place.image, lat:place.lat, lng:place.lng};
+                         images.push(image);
+
+                         add_image(images.length-1, image);
+
+                         $('.bottom-left').notify({
+                            key: 'newplace',
+                            message: { text: place.owner_name + '님의 사진이 추가되었습니다.' },
+                            type:'success'
+                          }).show();
+                      } else {
+                         var place = result;
+                         markers[place.id] = {id: place.id, type:'category', type_id:place.type_id, title:place.title, icon:place.icon_id, lat:place.lat, lng:place.lng, description:place.description, url:place.url, address:place.address};
+
+                         add_place(place.id, markers[place.id], true);
+
+                         $('.bottom-left').notify({
+                            key: 'newplace',
+                            message: { text: place.owner_name + '님의 장소가 추가되었습니다.' },
+                            type:'success'
+                          }).show();
+                      }
+                    });
+                  }
+                }
+              },
+              error: function() {
+                reading_new = false;
+              }
+            });
+          }
+        }, 3000);
+      }
       
       function resizeList() {
         var header_height = $("#header").outerHeight();
@@ -831,7 +913,7 @@
                  var place = data.content;
                  markers[place.id] = {type:'category', type_id:place.type_id, title:place.title, icon:place.icon_id, lat:place.lat, lng:place.lng, description:place.description, url:place.url, address:place.address};
 
-                 add_place(place.id, markers[place.id]);
+                 add_place(place.id, markers[place.id], true);
                }
 
               $("#modal_add").modal('hide');
@@ -904,7 +986,7 @@
                 $("#modal_image_add").modal('hide');
 
                  var place = data.content;
-                 var image = {type:'category', type_id: 'image', title:place.title, image:place.image_small, original_image:place.image, lat:place.lat, lng:place.lng};
+                 var image = {id: place.id, type:'category', type_id: 'image', title:place.title, image:place.image_small, original_image:place.image, lat:place.lat, lng:place.lng};
                  images.push(image);
 
                  add_image(images.length-1, image);

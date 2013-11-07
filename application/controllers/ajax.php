@@ -7,6 +7,39 @@ class Ajax extends APP_Controller {
 		$this->layout->setLayout('layouts/empty');
 	}
 
+	function check_places($map_id, $last_id)
+	{
+		$output = new StdClass;
+		$output->success = false;
+
+		$this->load->model('m_place');
+		$this->load->helper('parse');
+
+		if($places = $this->m_place->gets_new_places($map_id, $last_id)) {
+			$output->success = true;
+			$output->result_count = count($places);
+
+			uasort($places, 'parseForLat');
+
+	        foreach($places as $key => $place) {
+	          $places[$key]->icon_id = $this->m_place->get_icon_id_by_type_id($place->type_id);
+	          $places[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
+	        	
+	          if($place->attached == 'image') {
+	          	$places[$key]->image = site_url('files/uploads/'.$place->file);
+	          	$places[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
+	          	$places[$key]->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
+	          }
+
+	          unset($places[$key]->file);
+	        }
+			
+			$output->result = $places;
+		}
+
+		echo json_encode($output);
+	}
+
 	function places($map_id) {
 		$output = new StdClass;
 		$output->success = false;

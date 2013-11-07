@@ -17,7 +17,6 @@
 	<link href="<?php echo site_url("/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 	<link href="<?php echo site_url("/bootstrap/css/bootstrap-modal.css");?>" rel="stylesheet" />
     <link href="<?php echo site_url('/bootstrap/css/bootstrap-notify.css');?>" rel="stylesheet">
-    <link href="<?php echo site_url('/bootstrap/css/bootstrap-lightbox.css');?>" rel="stylesheet">
 
 	<link rel="stylesheet" href="<?php echo site_url("/css/bootstrap-custom.css");?>" />    
 
@@ -31,7 +30,6 @@
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modalmanager.js");?>"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modal.js");?>"></script>
     <script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-notify.js");?>"></script>
-    <script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-lightbox.js");?>"></script>
 
 	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>
 
@@ -46,6 +44,7 @@
 </head>
 <body>    
 	<div class='notifications top-center'></div>
+	<div class='notifications bottom-left'></div>
     
     <div id="content">
         <?php echo $content_for_layout;?>

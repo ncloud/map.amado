@@ -82,7 +82,7 @@
         <label class="control-label" for="place_type_id">분류</label>
         <div class="controls">
           <select id="place_type_id" class="span3" name="type_id">
-          	<option value="">분류를 선택해주세요</option>
+          	<option value="0">분류를 선택해주세요</option>
             <?php
             	foreach($place_types as $type) {
             ?>

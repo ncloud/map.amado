@@ -66,10 +66,11 @@ class Page extends APP_Controller {
 	        	$course_default->lng = DEFAULT_LNG;
 	        }
 			$this->set('course_default', $course_default);
-
 				
 			$place_types = $this->m_place->get_types($this->map->id);
-			
+			$only_place_types = $place_types;
+			array_pop($only_place_types);
+
 			$place_lists_by_type = array();
 			$place_lists = $this->m_place->gets($this->map->id);
 			if($place_lists) {
@@ -85,32 +86,39 @@ class Page extends APP_Controller {
 			
 			// 분류없음
 			$notype = new StdClass;
-			$notype->icon_id = 1;
+			$notype->id = 0;
+			$notype->icon_id = 0;
 			$notype->name = '분류없음';
 
+			$place_types[0]  = $notype;
 			$count_by_type[0] = 0;
 			$place_types_by_id[0] = $notype;
+
 
 			foreach($place_types as $place_type) {
 				$count_by_type[$place_type->id] = 0;
 				$place_types_by_id[$place_type->id] = $place_type;
 			}
 
+			$last_place_id = 0;
+
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
+		          if($last_place_id < $place->id) $last_place_id = $place->id;
+
 		          $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
 		          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
 		        	
-				  if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();
-				  if($place->type_id) $place_lists_by_type[$place->type_id][] = $place;
-				  
-		          if($place->type_id) $count_by_type[$place->type_id]++;
-
 		          if($place->attached == 'image') {
 		          	$place_lists[$key]->image = site_url('files/uploads/'.$place->file);
 		          	$place_lists[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
 		          	$place_lists[$key]->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
 		          } else if($place->attached == 'no') {
+					if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();
+					  
+					$place_lists_by_type[$place->type_id][] = $place;
+			        $count_by_type[$place->type_id]++;
+
 			        $full_lat += $place->lat;
 			        $full_lng += $place->lng;
 			        $full_count ++;
@@ -120,12 +128,15 @@ class Page extends APP_Controller {
 		        }
 		    }
 
+		    $this->set('last_place_id', $last_place_id);
+
 		    // 가져오기 분류가 비어있으면 숨긴다.
 			if(!isset($place_lists_by_type[IMPORT_TYPE_ID]) || count($place_lists_by_type[IMPORT_TYPE_ID]) == 0) {
 				array_pop($place_types);
 			}
 
 			$this->set('place_types', $place_types);
+			$this->set('only_place_types', $only_place_types);
 
 	        $this->set('place_lists', $place_lists);
 			$this->set('place_lists_by_type', $place_lists_by_type);
