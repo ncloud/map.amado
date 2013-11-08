@@ -35,9 +35,15 @@
           <ul class="dropdown-menu">
             <li class="go_manage"><a href="<?php echo site_url('/'.$map->permalink.'/manage');?>">관리</a></li>
             <li class="go_menu only_mobile"><a href="#" onclick="showMenu(); return false;">메뉴</a></li>
+         <?php
+         	if($can_add) {
+         ?>
             <li class="divider"></li>
             <li class="go_add_place"><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
             <li class="go_add_image"><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
+         <?php
+			}
+		?>
           </ul>
         </div>
 
