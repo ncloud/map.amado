@@ -69,6 +69,7 @@ class Page extends APP_Controller {
 				
 			$place_types = $this->m_place->get_types($this->map->id);
 			$only_place_types = $place_types;
+			
 			array_pop($only_place_types);
 
 			$place_lists_by_type = array();
@@ -90,18 +91,18 @@ class Page extends APP_Controller {
 			$notype->icon_id = 0;
 			$notype->name = '분류없음';
 
-			$place_types[0]  = $notype;
+			array_unshift($place_types, $notype);
+			
 			$count_by_type[0] = 0;
 			$place_types_by_id[0] = $notype;
-
 
 			foreach($place_types as $place_type) {
 				$count_by_type[$place_type->id] = 0;
 				$place_types_by_id[$place_type->id] = $place_type;
 			}
+			
 
 			$last_place_id = 0;
-
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
 		          if($last_place_id < $place->id) $last_place_id = $place->id;
