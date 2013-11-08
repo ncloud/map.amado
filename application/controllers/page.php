@@ -101,13 +101,11 @@ class Page extends APP_Controller {
 				$place_types_by_id[$place_type->id] = $place_type;
 			}
 			
-
 			$last_place_id = 0;
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
 		          if($last_place_id < $place->id) $last_place_id = $place->id;
 
-		          $place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
 		          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
 		        	
 		          if($place->attached == 'image') {
@@ -115,6 +113,8 @@ class Page extends APP_Controller {
 		          	$place_lists[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
 		          	$place_lists[$key]->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
 		          } else if($place->attached == 'no') {
+					$place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
+
 					if(!isset($place_lists_by_type[$place->type_id])) $place_lists_by_type[$place->type_id] = array();
 					  
 					$place_lists_by_type[$place->type_id][] = $place;
