@@ -17,7 +17,7 @@
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modalmanager.js");?>"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-modal.js");?>"></script>
 	<script type="text/javascript" src="<?php echo site_url("/bootstrap/js/bootstrap-notify.js");?>"></script>	
-	<script type="text/javascript" src="<?php echo site_url("/js/basic.js");?>"></script>	
+	<script type="text/javascript" src="<?php echo site_url("/js/lib/basic.js");?>"></script>	
 
 	<script type="text/javascript">
 		var service = {url: "<?php echo site_url('/');?>"};
