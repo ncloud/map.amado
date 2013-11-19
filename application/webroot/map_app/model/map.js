@@ -1,11 +1,7 @@
 
 define( [ 'backbone' ], function( Backbone ) {
-
     return Backbone.Model.extend( {
-
-        defaults: {
-        },
-
+		urlRoot: '/ajax/map_data',
         initialize: function() {
         }
     } );

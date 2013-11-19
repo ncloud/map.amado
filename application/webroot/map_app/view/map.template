@@ -1,0 +1,104 @@
+
+  
+  <a class="logo" href="/">아마도.지도</a>
+  <div class="toggle_wrap">
+    {{#if course_mode}}
+     <div class="group">
+      <a class="course_btn{{#ifCond map.default_menu 'course'}} active{{/ifCond}}" href="#" onclick="changeMenu('course'); return false;">코스</a>
+      <a class="category_btn{{#ifCond map.default_menu 'type'}} active{{/ifCond}}" href="#" onclick="changeMenu('category'); return false;">분류</a>
+     </div>
+    {{/if}}
+
+     <a class="current_location_btn" href="#" onclick="currentLocation(); return false;">현재위치</a>
+  </div>
+
+  <!-- google map -->
+  <div id="map"></div>
+    
+  <!-- right-side gutter -->
+    <div class="menu" id="menu">        
+      <div class="header" id="header">
+        <div class="btn-group tool">
+          <a class="btn btn-white dropdown-toggle" data-toggle="dropdown" href="#"><span>메뉴</span></a>
+          <ul class="dropdown-menu">
+            <li class="go_manage"><a href="/{{map.permalink}}/manage'">관리</a></li>
+            <li class="go_menu only_mobile"><a href="#" onclick="showMenu(); return false;">메뉴</a></li>
+         {{#if can_add}}
+            <li class="divider"></li>
+            <li class="go_add_place"><a href="#" onclick="$('#modal_add').modal(); return false;">장소 추가</a></li>
+            <li class="go_add_image"><a href="#" onclick="$('#modal_image_add').modal(); return false;">사진 추가</a></li>
+         {{/if}}
+          </ul>
+        </div>
+
+        <a class="map" href="/{{map.permalink}}">{{map.name}}</a>
+        <div class="btn-group add">
+        {{#if can_add}}
+          <a class="btn btn-white" href="#" onclick="$('#modal_add').modal();"><span>추가</span></a>
+        {{/if}}
+        </div>
+      </div>
+      
+    {{#if user}}
+      <!--<div class="buttons" id="buttons">
+      <a href="#modal_info" class="btn btn-large btn-info" data-toggle="modal"><i class="icon-info-sign icon-white"></i>About this Map</a>
+            <a href="#modal_add" class="btn btn-large btn-success" data-toggle="modal"><i class="icon-plus-sign icon-white"></i>장소 추가하기</a>
+      </div>-->
+    {{/if}}
+    
+    <div class="menu_content">
+    {{#if course}}
+      <ul id="tab_menu" class="tab">
+        <li class="course{{#ifCond map.default_menu 'course'}} selected{{/ifCond}}"><a href="#" onclick="changeMenu('course'); showMenu(); return false;">코스</a></li>
+        <li class="category{{#ifCond map.default_menu 'type'}} selected{{/ifCond}}"><a href="#" onclick="changeMenu('category'); showMenu(); return false;">분류</a></li>
+      </ul>
+      
+      <ul class="list" id="list_by_course"{{#ifCond map.default_menu 'type'}} style="display:none;"{{/ifCond}}>
+        {{#each course.courses}}
+        <li class="course course_{{id}}">
+          <div class='item'>
+            <div class="toggle" onClick="toggle('course','{{id}}'); return false;" id="filter_course_{{id}}"></div>
+            <a href="#" onMouseOver="courseListMouseOver('{{id}}');" onMouseOut="courseListMouseOut('{{id}}');" onClick="toggleList('course','{{id}}'); return false;"  class="info">
+              <img src="/img/icons/course/{{icon}}.png" alt='' />{{title}} <span class='total'>({{targets.length}})</span>
+              <span class="index">{{course_index}}</span>
+            </a>
+          </div>                
+          <ul class='list-items list_course_{{id}}'>
+          {{#each targets}}
+            <li>
+              <a href='#' onMouseOver="markerListMouseOver('course', '{{id}}')" onMouseOut="markerListMouseOut('course', '{{id}}')" onClick="goToMarker('course','{{id}}');">{{title}}</a>
+            </li>
+          {{/each}}
+          </ul>
+        </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  
+      <ul class="list" id="list_by_category"{{#if course_mode}} {{#ifCond map.default_menu 'course'}} style="display:none;"{{/ifCond}}{{/if}}>
+
+        {{#each place.types}}
+           <li class='category category_{{id}}'>
+                <div class='item'>
+                  <div class='toggle' onClick="toggle('category', '{{id}}'); return false;" id='filter_category_{{id}}'></div>
+                  <a href='#' onClick=\"toggleList('category','{{id}}'); return false;\" class='info'><img src='/img/icons/{{icon_id}}.png' alt='' />{{name}} <span class='total'>({{count}})</span></a>
+                </div>
+                <ul class='list-items list_category_{{id}}'>
+            {{#if count}}
+              {{#each markers}}
+                  {{#ifCond attached 'no'}}
+                  <li class='type_{{type_id}}'>
+                        <a href='#' onMouseOver="markerListMouseOver('place', '{{map_id}}')" onMouseOut="markerListMouseOut('place', '{{id}}')" onClick="goToMarker('place','{$marker_id}');">{{title}}</a>
+                      </li>
+                  {{/ifCond}}
+              {{/each}}
+            {{/if}}            
+                </ul>
+              </li>
+        {{/each}}
+      </ul>
+
+      <div class="close_panel"><a href="#" onclick="closeMenu(); return false;">닫기</a></div>
+    </div>
+  </div>
+</div>

@@ -219,4 +219,120 @@ class Ajax extends APP_Controller {
 			}
 		}
 	}
+
+
+	function map_data($map_id) {
+    	$this->load->model('m_place');
+    	$this->load->model('m_course');
+		$this->load->model('m_image');
+		
+		$this->load->helper('parse');
+
+		header('Content-Type: application/json');
+
+		$output = new StdClass;
+		$output->success = false;
+
+		if($map = $this->m_map->get($map_id)) {
+			$output->success = true;
+			
+			if($this->user_data->id) {
+				$output->user = new StdClass;
+				$output->user->id = $this->user_data->id;
+				$output->user->name = $this->user_data->name;
+				$output->user->display_name = $this->user_data->display_name;
+				$output->user->map_role = $this->m_role->get_role($map_id, $this->user_data->id);
+			} else {
+				$output->user = null;
+			}
+
+			$output->map = $map;
+			$output->place = new StdClass;
+			$output->course = false;
+
+			$course_mode = false;
+
+			$course_lists = $this->m_course->gets($map->id);
+			if(!empty($course_lists)) {
+				$course_index = 1;
+				foreach($course_lists as $key => $course) {					
+					$course_lists[$key]->course_index = $course_index ++;
+
+					$course_lists[$key]->color = '#0099ff'; // TODO: change color
+					$course_lists[$key]->icon = 1;
+					$course_lists[$key]->targets = $this->m_course->gets_targets($course->id, true);
+				}
+
+				$course_mode = true;
+			}
+
+			$output->course = new StdClass;
+			if($course_mode) {
+				$output->course->courses = $course_lists;
+		    } else {
+		    	$output->course->courses = array();
+		    }
+				
+			$place_types = $this->m_place->get_types($map->id);
+
+			$place_lists = $this->m_place->gets($map->id);
+			if($place_lists) {
+				uasort($place_lists, 'parseForLat');
+			}
+			
+			$place_types_by_id = array();
+			$count_by_type = array();
+			
+			// 분류없음
+			$notype = new StdClass;
+			$notype->id = 0;
+			$notype->map_id = $map->id;
+			$notype->icon_id = 0;
+			$notype->name = '분류없음';
+			$notype->order_index = "1";
+			$notype->view_add_mode = false;
+
+			array_unshift($place_types, $notype);
+			
+			$count_by_type[0] = 0;
+			$place_types_by_id[0] = $notype;
+
+			foreach($place_types as $place_type) {
+				$count_by_type[$place_type->id] = 0;
+				$place_types_by_id[$place_type->id] = $place_type;
+			}
+			
+			if($place_lists) {
+		        foreach($place_lists as $key => $place) {
+		          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
+		        	
+		          if($place->attached == 'image') {
+		          	$place_lists[$key]->image = site_url('files/uploads/'.$place->file);
+		          	$place_lists[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
+		          	$place_lists[$key]->image_medium = site_url('files/uploads/'.str_replace('.','_m.',$place->file));
+		          } else if($place->attached == 'no') {
+					$place_lists[$key]->icon_id = $place_types_by_id[$place->type_id]->icon_id;
+					  
+			        $count_by_type[$place->type_id]++;
+		          }
+
+		          unset($place_lists[$key]->file);
+		        }
+		    }
+
+		    // 가져오기 분류가 비어있으면 숨긴다.
+			if(!isset($place_lists_by_type[IMPORT_TYPE_ID]) || count($place_lists_by_type[IMPORT_TYPE_ID]) == 0) {
+				array_pop($place_types);
+			}
+
+			foreach($place_types as $key => $place_type) {
+				$place_types[$key]->count = $count_by_type[$place_type->id];
+			}
+
+			$output->place->types = $place_types;
+	        $output->place->places = $place_lists;
+		}
+
+		echo json_encode($output);		
+	}
 }

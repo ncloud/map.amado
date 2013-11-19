@@ -14,7 +14,7 @@
 <?php if(isset($og_map_name)) { ?><meta property="og:map_name" content="<?php echo $og_map_name;?>" /><?php } ?>
 <?php if(isset($og_image)) { ?><meta property="og:image" content="<?php echo $og_image;?>" /><?php } ?>
     
-	<link href="<?php echo site_url("/cornerstone/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
+<link href="<?php echo site_url("/cornerstone/bootstrap/css/bootstrap.css");?>" rel="stylesheet" />
 
 <?php echo $styles_for_layout;?>
 <?php echo $scripts_for_layout;?>

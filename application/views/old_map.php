@@ -157,7 +157,7 @@
     
     <!-- add something modal -->
     <div class="modal hide add_modal" id="modal_add">
-    	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$only_place_types));?>
+    	<?php echo $this->view('/manage/add/place', array('modal_mode'=>true, 'place_types'=>$place_types_for_add));?>
     </div>
     
     
