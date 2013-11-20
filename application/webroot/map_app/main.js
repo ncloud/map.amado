@@ -1,27 +1,55 @@
+	
 	// for no cache
 	require.config({ 
+			paths: {
+				async: 'lib/async'
+			},
 			urlArgs: "v=" +  (new Date()).getTime() 
 		});
 	
 	requirejs.config( {
+		paths: [
+			{
+				async: 'lib/async'
+			}
+		],
+		packages: [
+                {
+                        name: 'jquery.form',
+                        location: '../js/plugin',
+                        main: 'jquery.form.js'
+                },
+                {
+                        name: 'gmap',
+                        location: '../js/plugin',
+                        main: 'gmap.js'
+                },
+                {
+                        name: 'gmap.label',
+                        location: '../js/plugin',
+                        main: 'gmap.label.js'
+                },
+                {
+                        name: 'gmap.menu',
+                        location: '../js/plugin',
+                        main: 'gmap.menu.js'
+                }
+        ],
 	    shim: {
 	        'template!view/map': [ 
 	        	'style!css/bootstrap-custom',
 	        	'style!css/bootstrap-custom-responsive',
 	        	'style!css/map',
 	        	'style!css/map-responsive',
-	        	'script!../js/plugin/jquery.form' ]
+	        	'../../js/plugin/jquery.form', 
+	        	'../../js/plugin/gmap', 
+	        	'../../js/plugin/gmap.label', 
+	        	'../../js/plugin/context_menu'
+	        	]
 	    }
 	} );
-/*
-	<script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
-    
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-	<script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.js');?>"></script>
-  <script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.label.js');?>"></script>
-	<script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>*/
 
-	define([ 'jquery', 'backbone', 'model/map', 'view/map' ], 
+	define([ 'jquery', 'backbone', 'model/map', 'view/map', 'async!https://maps.googleapis.com/maps/api/js?sensor=true' ], 
 		function($, backbone, M_MapView, MapView) {
 
 			// ifCond

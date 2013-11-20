@@ -24,14 +24,14 @@
  * as this file.
  *
  */
-	$system_path = "../../codeigniter/system";
+	$system_path = "../codeigniter/system";
 	
 /*
  *---------------------------------------------------------------
  * SHARE FOLDER NAME
  *---------------------------------------------------------------
  */	
-	$share_path = "../../codeigniter/share";
+	$share_path = "../codeigniter/share";
 	
 /*
  *---------------------------------------------------------------
