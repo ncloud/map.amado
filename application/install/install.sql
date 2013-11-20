@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `maps` (
   `description` text,
   `permalink` varchar(128) DEFAULT NULL,
   `privacy` enum('public','private') DEFAULT 'public',  
-  `preview_map_url` varchar(255) DEFULT NULL,
+  `preview_map_url` varchar(255) DEFAULT NULL,
   `add_role` enum('guest','member','workman','admin') DEFAULT 'member',
   `default_menu` enum('course','type') DEFAULT 'course',
   `is_viewed_home` enum('yes','no') DEFAULT 'yes',
