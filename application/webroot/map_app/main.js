@@ -1,5 +1,7 @@
 	// for no cache
-	require.config({ urlArgs: "v=" +  (new Date()).getTime() });
+	require.config({ 
+			urlArgs: "v=" +  (new Date()).getTime() 
+		});
 	
 	requirejs.config( {
 	    shim: {
@@ -7,9 +9,17 @@
 	        	'style!css/bootstrap-custom',
 	        	'style!css/bootstrap-custom-responsive',
 	        	'style!css/map',
-	        	'style!css/map-responsive' ]
+	        	'style!css/map-responsive',
+	        	'script!../js/plugin/jquery.form' ]
 	    }
 	} );
+/*
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/jquery.form.js');?>"></script>
+    
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.js');?>"></script>
+  <script type="text/javascript" src="<?php echo site_url('/js/plugin/gmap.label.js');?>"></script>
+	<script type="text/javascript" src="<?php echo site_url('/js/plugin/context_menu.js');?>"></script>*/
 
 	define([ 'jquery', 'backbone', 'model/map', 'view/map' ], 
 		function($, backbone, M_MapView, MapView) {

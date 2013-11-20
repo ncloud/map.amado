@@ -45,7 +45,6 @@ define( [ 'backbone', 'template!view/map' ], function( Backbone, mapTemplate ) {
 
 	    		// add param
 	    		params.course_mode = params.course.courses.length > 0;
-	    		params.can_add = true;
 
 	    		this.$el.html( mapTemplate( params ) );
 			}

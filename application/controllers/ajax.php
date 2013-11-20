@@ -242,6 +242,10 @@ class Ajax extends APP_Controller {
 				$output->user->name = $this->user_data->name;
 				$output->user->display_name = $this->user_data->display_name;
 				$output->user->map_role = $this->m_role->get_role($map_id, $this->user_data->id);
+				$output->user->can_add = ($map->add_role == 'guest' || 
+									($map->add_role == 'member' && in_array($output->user->map_role,array('member','workman','admin','super-admin'))) ||
+            						($map->add_role == 'workman' && in_array($output->user->map_role,array('workman','admin','super-admin'))) ||
+            						($map->add_role == 'admin' && in_array($output->user->map_role,array('admin','super-admin'))));
 			} else {
 				$output->user = null;
 			}
@@ -305,7 +309,7 @@ class Ajax extends APP_Controller {
 			if($place_lists) {
 		        foreach($place_lists as $key => $place) {
 		          $place_lists[$key]->description = str_replace(array("\r\n","\n","\r"),'<br />',$place->description);
-		        	
+		        
 		          if($place->attached == 'image') {
 		          	$place_lists[$key]->image = site_url('files/uploads/'.$place->file);
 		          	$place_lists[$key]->image_small = site_url('files/uploads/'.str_replace('.','_s.',$place->file));
