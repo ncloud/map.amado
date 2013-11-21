@@ -366,25 +366,24 @@ body {
 	  color: #fff;
 	  border-radius: 2px;
 	}
+
 	.marker_title
 	{
+	  font-size:16px;
 	  font-weight: bold;
-	  max-width: 350px;
 	}
+
 	.marker_uri
 	{
 	  font-size: 9pt;
 	  color: #999;
 	}
+
 	.marker_desc
 	{
-	  max-width: 240px;
 	  color: #555;
 	  font-size: 9pt;
 	  margin-top: 10px;
-	}
-	.marker_desc img {
-	    max-width: 220px !important;
 	}
 	
 	.marker_address
@@ -400,7 +399,7 @@ body {
 	{
 	}
 
-	..modal form .modal-body
+	.modal form .modal-body
 	{
 	  max-height: none;
 	}
@@ -479,6 +478,9 @@ body {
 	{
 	  margin-top: 25px;
 	}
+
+	#modal_image {}
+		#modal_image .modal-body { text-align:center; }
 	
 	/* basic */
 

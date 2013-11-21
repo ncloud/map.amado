@@ -140,7 +140,6 @@ class Manage extends APP_Controller {
 		
 		$message = null;
 
-
         if($this->map->add_role == 'guest' || 
             ($this->map->add_role == 'member' && in_array($this->user_data->role,array('member','workman','admin','super-admin'))) ||
             ($this->map->add_role == 'workman' && in_array($this->user_data->role,array('workman','admin','super-admin'))) ||

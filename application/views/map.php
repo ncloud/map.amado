@@ -166,13 +166,22 @@
       <?php echo $this->view('/manage/add/image', array('modal_mode'=>true));?>
     </div>
     
+    <!-- place modal -->
+    <div class="modal hide" id="modal_place">
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">닫기</a>
+      </div>
+    </div>
+
     <!-- image modal -->
-    <div class="modal hide fade" id="modal_image">
+    <div class="modal hide" id="modal_image">
       <div class="modal-body">
         <img src="" alt="" />
       </div>
       <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
+        <a href="#" class="btn" data-dismiss="modal">닫기</a>
       </div>
     </div>
 
@@ -235,11 +244,10 @@
                 title: '',
                 zIndex: 10 + i,
                 icon: markerImage,
-                infoWindow: {
-                  content: info
-                },
+             //   infoWindow: { content: info },
                 click: function(e) {
-
+                  $("#modal_place").find('.modal-body').html(info);
+                  $('#modal_place').modal('show');
                 },
                 mouseover: function() {
                     $("#label_place_"+i).show();//fadeIn('fast');
@@ -297,8 +305,9 @@
               zIndex: 10 + i,
               icon: markerImage,
               click: function(e) {
-                  $("#modal_image").find('img').attr('src', val.original_image);
-                  $('#modal_image').modal('show');
+                  $("#modal_image").find('img').load(function() {
+                    $('#modal_image').modal('show');
+                  }).attr('src', val.original_image);
               },
               mouseover: function() {
                       $("#label_image_"+i).show();//fadeIn('fast');
@@ -592,15 +601,17 @@
                           }).show();
                       } else {
                          var place = result;
-                         markers[place.id] = {id: place.id, type:'category', type_id:place.type_id, title:place.title, icon:place.icon_id, lat:place.lat, lng:place.lng, description:place.description, url:place.url, address:place.address};
+                         if(typeof(markers[place.id]) == 'undefined') {
+                           markers[place.id] = {id: place.id, type:'category', type_id:place.type_id, title:place.title, icon:place.icon_id, lat:place.lat, lng:place.lng, description:place.description, url:place.url, address:place.address};
 
-                         add_place(place.id, markers[place.id], true);
+                           add_place(place.id, markers[place.id], true);
 
-                         $('.bottom-left').notify({
-                            key: 'newplace',
-                            message: { text: place.owner_name + '님의 장소가 추가되었습니다.' },
-                            type:'success'
-                          }).show();
+                           $('.bottom-left').notify({
+                              key: 'newplace',
+                              message: { text: place.owner_name + '님의 장소가 추가되었습니다.' },
+                              type:'success'
+                            }).show();
+                         }
                       }
                     });
                   }

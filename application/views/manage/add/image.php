@@ -211,7 +211,7 @@
     <div class="text-left pull-left">
       <div class="input-append">
         <form onsubmit="searchFromAddress(this); return false;">
-          <input class="span3" id="address_for_search" type="text" placeholder="주소" value="<?php echo isset($image) ? ($image->address_is_position == 'no' ? $image->address : '') : '';?>" />
+          <input class="span4" id="address_for_search" type="text" placeholder="주소" value="<?php echo isset($image) ? ($image->address_is_position == 'no' ? $image->address : '') : '';?>" />
           <input type="submit" class="btn" type="button" value="주소 검색" />
         </form>
     </div>
@@ -245,7 +245,7 @@
         if(searched) {
           searched = false;
         } else {
-          $('#address_for_search').val(center.jb + ', ' + center.kb);
+          $('#address_for_search').val(center.lat() + ', ' + center.lng());
         }
       }
     });
@@ -270,7 +270,7 @@
     var address = $('#address_for_search').val();
     var center = gmap.getCenter();
 
-    $("#image_address").val(address ? address : (center.jb + ', ' + center.kb));
+    $("#image_address").val(address ? address : (center.lat() + ', ' + center.lng()));
     $("#myModal").modal('hide');
   }
 </script>

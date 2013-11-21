@@ -216,7 +216,7 @@
   	<div class="text-left pull-left">
   		<div class="input-append">
   			<form onsubmit="searchFromAddress(this); return false;">
-		  		<input class="span3" id="address_for_search" type="text" placeholder="주소" value="<?php echo isset($place) ? ($place->address_is_position == 'no' ? $place->address : '') : '';?>" />
+		  		<input class="span4" id="address_for_search" type="text" placeholder="주소" value="<?php echo isset($place) ? ($place->address_is_position == 'no' ? $place->address : '') : '';?>" />
 		  		<input type="submit" class="btn" type="button" value="주소 검색" />
 		  	</form>
 		</div>
