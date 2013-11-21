@@ -4,7 +4,7 @@
   <div class="toggle_wrap">
     {{#if course_mode}}
      <div class="group">
-      <a class="course_btn{{#ifCond map.default_menu 'course'}} active{{/ifCond}}" href="#" onclick="changeMenu('course'); return false;">코스</a>
+      <a class="course_btn{{#ifCond map.default_menu 'course'}} active{{/ifCond}}" href="#">코스</a>
       <a class="category_btn{{#ifCond map.default_menu 'type'}} active{{/ifCond}}" href="#" onclick="changeMenu('category'); return false;">분류</a>
      </div>
     {{/if}}
@@ -49,7 +49,7 @@
     <div class="menu_content">
     {{#if course}}
       <ul id="tab_menu" class="tab">
-        <li class="course{{#ifCond map.default_menu 'course'}} selected{{/ifCond}}"><a href="#" onclick="changeMenu('course'); showMenu(); return false;">코스</a></li>
+        <li class="course{{#ifCond map.default_menu 'course'}} selected{{/ifCond}}"><a href="#">코스</a></li>
         <li class="category{{#ifCond map.default_menu 'type'}} selected{{/ifCond}}"><a href="#" onclick="changeMenu('category'); showMenu(); return false;">분류</a></li>
       </ul>
       
@@ -102,4 +102,15 @@
     </div>
   </div>
 </div>
+  
+  <script type="text/javascript" src="/js/plugin/gmap.js"></script>
+  <script type="text/javascript" src="/js/plugin/gmap.label.js"></script>
+  <script type="text/javascript" src="/js/plugin/context_menu.js"></script>
 
+  <!--
+  <script type="text/javascript" src="/js/plugin/jquery.form.js"></script>
+    
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+  <script type="text/javascript" src="/js/plugin/gmap.js"></script>
+  <script type="text/javascript" src="/js/plugin/gmap.label.js"></script>
+  <script type="text/javascript" src="/js/plugin/context_menu.js"></script>-->

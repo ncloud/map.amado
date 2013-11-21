@@ -8,31 +8,11 @@
 		});
 	
 	requirejs.config( {
-		paths: [
-			{
-				async: 'lib/async'
-			}
-		],
 		packages: [
                 {
                         name: 'jquery.form',
                         location: '../js/plugin',
                         main: 'jquery.form.js'
-                },
-                {
-                        name: 'gmap',
-                        location: '../js/plugin',
-                        main: 'gmap.js'
-                },
-                {
-                        name: 'gmap.label',
-                        location: '../js/plugin',
-                        main: 'gmap.label.js'
-                },
-                {
-                        name: 'gmap.menu',
-                        location: '../js/plugin',
-                        main: 'gmap.menu.js'
                 }
         ],
 	    shim: {
@@ -41,16 +21,13 @@
 	        	'style!css/bootstrap-custom-responsive',
 	        	'style!css/map',
 	        	'style!css/map-responsive',
-	        	'../../js/plugin/jquery.form', 
-	        	'../../js/plugin/gmap', 
-	        	'../../js/plugin/gmap.label', 
-	        	'../../js/plugin/context_menu'
-	        	]
+	        	'jquery.form', 
+	        ]
 	    }
 	} );
 
-	define([ 'jquery', 'backbone', 'model/map', 'view/map', 'async!https://maps.googleapis.com/maps/api/js?sensor=true' ], 
-		function($, backbone, M_MapView, MapView) {
+	define([ 'jquery', 'backbone', 'model/map', 'view/map' ], 
+		function($, backbone, M_Map, MapView) {
 
 			// ifCond
 			Handlebars.registerHelper('ifCond', function(v1, v2, options) {
@@ -62,7 +39,7 @@
 
 		    return {
 		        launch: function() {
-					var m_map = new M_MapView({id:1});
+					var m_map = new M_Map({id:1});
 					var map = new MapView({ model:m_map });
 
 					$('body').append(map.render().el);
