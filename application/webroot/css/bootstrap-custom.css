@@ -112,7 +112,7 @@
 	
 	.input-append .add-on, .input-append .btn, .input-append .btn-group { margin-left:0; }
 
-  	.modal { border:0; box-shadow:0px 2px 0px rgba(0,0,0,0.2); border-radius:0px !important; -webkit-border-radius: 0px !important; -moz-border-radius: 0px !important; }
+  	.modal { background:#f8f8f8; border:0; box-shadow:0px 2px 0px rgba(0,0,0,0.2); border-radius:0px !important; -webkit-border-radius: 0px !important; -moz-border-radius: 0px !important; }
     	.modal form { margin-bottom:0; }
     	.modal form .modal-body { padding-top:24px; }
 			.modal form .modal-body .control-label { width:50px; }

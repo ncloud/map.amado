@@ -1,3 +1,6 @@
+	@media (max-width: 979px) {
+	}
+	
 	@media (max-width: 530px) {
 		.toggle_wrap { display:block;  }
 		
@@ -13,11 +16,12 @@
 
 		.menu_content { 
     		pointer-events:none;
-			transition: opacity .5s ease; 
+			/*transition: opacity .5s ease; 
 			opacity:0;
-			background:rgba(0,0,0,0.3); 
+			background:rgba(0,0,0,0.3);*/
 
 			top: 0;
+			padding-top:45px;
 			position: absolute;
 			z-index: 10000;
 			width: 100%;
@@ -29,13 +33,10 @@
 			.menu.mobile_visible .list { opacity:1; }
 			.menu.mobile_visible .close_panel { display:block; }
 
-
 		.menu.mobile_visible .menu_content { 
     		pointer-events: auto;
-			opacity:1;
-			padding-top:200px;
-			padding-top:0;
-			background: rgba(0,0,0,0.5); 
+			/*opacity:1;
+			background: rgba(0,0,0,0.5);*/
 		}
 
 	}

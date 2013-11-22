@@ -1,5 +1,6 @@
 	@media (max-width: 979px) {
 		.modal-scrollable-inner {
+			margin-top:45px;
 			padding-top:0;
 			padding-bottom:0;
 		}
